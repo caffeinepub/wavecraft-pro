@@ -1,0 +1,202 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Build a production-ready music visualizer video maker web app called “WaveCraft Pro” for a personal website, with full feature access/unlocked (premium features available to the owner) and a premium dark creator-dashboard UX.",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- WaveCraft Pro wordmark logo, dark-theme friendly, high contrast (wavecraft-pro-logo.dim_512x512.png)\n- Abstract waveform hero background, dark charcoal with neon accent streaks (hero-waveform-bg.dim_1920x1080.png)\n- Set of 6 minimal line icons for dashboard navigation (icons-dashboard-set.dim_512x512.png)",
+  "existing_features": [
+    {
+      "id": "feature-build-the-wavecraft-pro-web-app-as-a-mobile-first-creator-tool-optimized-for-android-chrome-responsive-layouts-that-start-with-small-screens-touch-friendly-controls-and-a-creator-dashboard-ui-left-sidebar-navigation-center-live-preview-canvas-right-side-controls-panel-and-a-top-bar-with-save-and-export",
+      "title": "Build the WaveCraft Pro web app as a mobile-first creator tool optimized for Android Chrome: responsive layouts that start with small screens, touch-friendly controls, and a creator-dashboard UI (left sidebar navigation, center live preview canvas, right-side controls panel, and a top bar with Save and Export).",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-omit-all-monetization-and-plan-gating-no-subscriptions-no-stripe-no-paid-plans-no-pro-feature-gates-and-ensure-all-features-are-available-to-the-site-owner-with-no-restrictions",
+      "title": "Remove/omit all monetization and plan-gating: no subscriptions, no Stripe, no paid plans, no pro feature gates, and ensure all features are available to the site owner with no restrictions.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-audio-upload-and-playback-using-a-single-web-audio-api-audiocontext-instance-with-efficient-decoding-and-analysis-for-mp3-wav-files-supporting-real-time-preview-without-lag",
+      "title": "Implement audio upload and playback using a single Web Audio API AudioContext instance with efficient decoding and analysis for MP3/WAV files, supporting real-time preview without lag.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-lightweight-visualizer-engine-that-renders-smoothly-with-a-30fps-cap-by-default-uses-requestanimationframe-efficiently-and-avoids-react-re-renders-during-animation-store-animation-state-in-refs-not-react-state",
+      "title": "Implement a lightweight visualizer engine that renders smoothly with a 30fps cap by default, uses requestAnimationFrame efficiently, and avoids React re-renders during animation (store animation state in refs, not React state).",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-modular-visualizer-modes-with-configurable-parameters-including-circular-spectrum-horizontal-bar-equalizer-vertical-bar-equalizer-waveform-line-radial-neon-ring-particle-reactive-mode-minimal-lo-fi-soft-glow-mode-and-an-optional-webgl-3d-tunnel-mode-that-can-be-disabled-for-performance",
+      "title": "Provide modular visualizer modes with configurable parameters, including: circular spectrum, horizontal bar equalizer, vertical bar equalizer, waveform line, radial neon ring, particle-reactive mode, minimal lo‑fi soft glow mode, and an optional WebGL 3D tunnel mode that can be disabled for performance.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-audio-analysis-features-needed-for-band-reactive-visuals-fft-spectrum-plus-bass-mid-treble-separation-a-sensitivity-slider-and-best-effort-bpm-detection-for-display-use-in-animation-timing",
+      "title": "Implement audio analysis features needed for band-reactive visuals: FFT spectrum plus bass/mid/treble separation, a sensitivity slider, and (best-effort) BPM detection for display/use in animation timing.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-editing-controls-for-audio-timing-and-transitions-trim-audio-range-start-end-fade-in-and-fade-out-ensuring-preview-remains-responsive",
+      "title": "Add editing controls for audio timing and transitions: trim audio range (start/end), fade in, and fade out, ensuring preview remains responsive.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-background-customization-options-for-the-video-solid-color-multi-stop-gradient-builder-image-upload-background-and-subtle-animated-particles-overlay",
+      "title": "Add background customization options for the video: solid color, multi-stop gradient builder, image upload background, and subtle animated particles overlay.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-text-and-branding-overlays-song-title-artist-name-font-selection-from-bundled-fonts-position-size-controls-entrance-animation-presets-and-a-logo-upload-overlay-keep-a-watermark-overlay-as-an-optional-toggle-only-default-off-with-no-plan-gating",
+      "title": "Add text and branding overlays: song title, artist name, font selection (from bundled fonts), position/size controls, entrance animation presets, and a logo upload overlay. Keep a watermark overlay as an optional toggle only (default off) with no plan gating.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-in-browser-mp4-export-using-ffmpeg-wasm-no-server-side-rendering-with-settings-for-720p-1080p-4k-30-60fps-bitrate-selection-estimated-file-size-and-render-time-estimate-and-an-export-progress-indicator",
+      "title": "Implement in-browser MP4 export using ffmpeg.wasm (no server-side rendering) with settings for 720p/1080p/4K, 30/60fps, bitrate selection, estimated file size and render-time estimate, and an export progress indicator.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-an-in-app-render-queue-for-exports-that-runs-client-side-since-server-side-queues-are-not-available-allow-users-to-enqueue-multiple-export-jobs-view-job-status-cancel-a-job-and-run-jobs-sequentially",
+      "title": "Implement an in-app render queue for exports that runs client-side (since server-side queues are not available): allow users to enqueue multiple export jobs, view job status, cancel a job, and run jobs sequentially.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-project-persistence-so-users-can-save-load-projects-audio-reference-metadata-visual-settings-using-the-motoko-backend-include-basic-crud-create-list-load-rename-delete",
+      "title": "Add project persistence so users can save/load “projects” (audio reference metadata + visual settings) using the Motoko backend; include basic CRUD: create, list, load, rename, delete.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-landing-marketing-page-with-a-modern-saas-style-layout-hero-demo-preview-section-feature-highlights-visualizer-showcase-pricing-section-without-payments-faq-and-cta-and-include-the-user-s-facebook-page-link-https-www-facebook-com-share-14ssrwttdeb",
+      "title": "Create a landing/marketing page with a modern SaaS-style layout (hero, demo preview section, feature highlights, visualizer showcase, pricing section without payments, FAQ, and CTA), and include the user’s Facebook page link: https://www.facebook.com/share/14SsrwttdEB/",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-coherent-premium-dark-visual-theme-consistently-across-landing-app-typography-spacing-components-avoid-blue-purple-as-the-primary-palette-use-a-dark-charcoal-base-with-high-contrast-accent-colors-and-clear-visual-hierarchy-suitable-for-creator-tools",
+      "title": "Apply a coherent premium dark visual theme consistently across landing + app (typography, spacing, components). Avoid blue/purple as the primary palette; use a dark charcoal base with high-contrast accent colors and clear visual hierarchy suitable for creator tools.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-production-level-reliability-and-performance-safeguards-error-boundaries-for-key-ui-areas-graceful-handling-of-export-failures-memory-resource-cleanup-audiocontext-nodes-object-urls-animation-loops-and-lazy-load-heavy-modules-ffmpeg-wasm-optional-3d-only-when-needed",
+      "title": "Add production-level reliability and performance safeguards: error boundaries for key UI areas, graceful handling of export failures, memory/resource cleanup (AudioContext nodes, object URLs, animation loops), and lazy-load heavy modules (ffmpeg.wasm, optional 3D) only when needed.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "WaveCraft Pro core app: upload MP3/WAV, real-time preview, customizable visualizers, export high-quality MP4 up to 4K",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Audio engine features: waveform + FFT spectrum, BPM detection, bass/mid/treble separation, sensitivity, trim range, fade in/out without preview lag",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Modular visualizer system incl. circular spectrum, horizontal/vertical equalizers, waveform line, particles, 3D tunnel, radial neon ring, minimal lo-fi glow; with color/gradient/glow/blur/speed controls and band-reactive behavior",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Background options: solid, multi-stop gradients, image upload, subtle animated particles, AI abstract background generator",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Text & branding: song title/artist, custom fonts, position/size, entrance animations, logo upload, watermark toggle",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Export pipeline: FFmpeg-based rendering with 720p/1080p/4K, 30/60fps, bitrate selection, file size + time estimates, progress indicator, and render queue system",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Premium dashboard UI/UX: left sidebar (Dashboard/Projects/Templates/Pricing/Settings), center live preview canvas, right control panel, top bar with save/export/profile; micro-interactions",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Performance & quality: WebGL optimization, no memory leaks, clean AudioContext handling, lazy loading heavy components, debounced state, efficient redraw strategy, production error handling, env config + .env template",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Landing/marketing site: hero, demo preview, feature highlights, visualizer showcase, pricing, FAQ, CTA, SEO meta tags",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Personal-site mode: full control with all features unlocked (premium made free for owner use; no plan restrictions)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Include link to Facebook page (https://www.facebook.com/share/14SsrwttdEB/) in the website",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "WaveCraft Pro",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

@@ -1,0 +1,174 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-16T04:08:23.574Z",
+  "summary": "Diff adds an authenticated creator dashboard shell (sidebar/topbar/preview/controls panels), a Zustand-based audio engine with upload/playback + trim UI, basic audio analysis sliders UI, initial canvas preview wiring, partial visualizer mode implementations, an ErrorBoundary, and a Motoko backend actor with project/user-profile/authz scaffolding. Many requested creator features are still placeholders (“coming soon”) or not evidenced in the diff (export via ffmpeg.wasm, render queue, backgrounds, overlays, full visualizer modes, BPM detection, full project CRUD, landing page content).",
+  "missing_requirements": [
+    {
+      "id": "REQ-5",
+      "requirement": "Provide modular visualizer modes with configurable parameters, including: circular spectrum, horizontal bar equalizer, vertical bar equalizer, waveform line, radial neon ring, particle-reactive mode, minimal lo‑fi soft glow mode, and an optional WebGL 3D tunnel mode.",
+      "reason": "Only three modes are evidenced (CircularSpectrum, BarEqualizerHorizontal, BarEqualizerVertical). No evidence for waveform line, radial neon ring, particle-reactive mode, minimal lo‑fi soft glow mode, or optional WebGL 3D tunnel mode and its disable/perf handling.",
+      "evidence": [
+        "frontend/src/features/visualizer/modes/CircularSpectrum.ts",
+        "frontend/src/features/visualizer/modes/BarEqualizerHorizontal.ts",
+        "frontend/src/features/visualizer/modes/BarEqualizerVertical.ts"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "Implement audio analysis features needed for band-reactive visuals: FFT spectrum plus bass/mid/treble separation, a sensitivity slider, and (best-effort) BPM detection for display/use in animation timing.",
+      "reason": "UI shows sensitivity and bass/mid/treble multipliers, but no evidence of FFT/band separation implementation or BPM detection/display logic in the provided diff summary.",
+      "evidence": [
+        "frontend/src/features/audio/AnalysisStatus.tsx"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "requirement": "Add background customization options for the video: solid color, multi-stop gradient builder, image upload background, and subtle animated particles overlay.",
+      "reason": "Background controls panel is a placeholder (“coming soon”) with no implementation of solid/gradient/image/particles options.",
+      "evidence": [
+        "frontend/src/features/background/BackgroundControlsPanel.tsx"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "requirement": "Add text and branding overlays: song title, artist name, font selection (from bundled fonts), position/size controls, entrance animation presets, and a logo upload overlay. Keep a watermark overlay as an optional toggle only (default off) with no plan gating.",
+      "reason": "Overlays controls panel is a placeholder (“coming soon”) with no evidence of title/artist/logo/font/animation controls nor watermark toggle behavior.",
+      "evidence": [
+        "frontend/src/features/overlays/OverlaysControlsPanel.tsx"
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "requirement": "Implement in-browser MP4 export using ffmpeg.wasm with settings for 720p/1080p/4K, 30/60fps, bitrate selection, estimated file size and render-time estimate, and an export progress indicator.",
+      "reason": "Export panel is a placeholder (“coming soon”) and no ffmpeg.wasm integration, settings UI, progress, or MP4 generation is evidenced.",
+      "evidence": [
+        "frontend/src/features/export/ExportPanel.tsx"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "requirement": "Implement an in-app render queue for exports that runs client-side: enqueue multiple export jobs, view job status, cancel a job, and run jobs sequentially.",
+      "reason": "No evidence of any render queue/job model/UI or sequential execution/cancelation logic.",
+      "evidence": [
+        "frontend/src/features/export/ExportPanel.tsx"
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "requirement": "Add project persistence using the Motoko backend; include basic CRUD: create, list, load, rename, delete.",
+      "reason": "Frontend ProjectsPanel only lists project IDs and creates a new project; no load/open, rename, or delete UI/flows are evidenced. Backend shows list/create/update (truncated), but no evidence in the diff summary for delete or a dedicated rename operation, and no frontend wiring for load/rename/delete.",
+      "evidence": [
+        "frontend/src/features/projects/ProjectsPanel.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "requirement": "Create a landing/marketing page with hero, demo preview, feature highlights, visualizer showcase, pricing section without payments, FAQ, CTA, and include the Facebook page link https://www.facebook.com/share/14SsrwttdEB/.",
+      "reason": "LandingPage is referenced but its implementation/content (including required sections and Facebook link) is not shown in the diff summary, so it cannot be verified as implemented.",
+      "evidence": [
+        "frontend/src/App.tsx"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Implement a lightweight visualizer engine that renders smoothly with a 30fps cap by default, uses requestAnimationFrame efficiently, and avoids React re-renders during animation (store animation state in refs, not React state).",
+      "reason": "PreviewCanvas calls initializeCanvas from useVisualizerEngine, but the visualizer engine implementation (fps cap, rAF loop, refs vs React state, stop/cleanup) is not present in the shown diff summary, so the requirement cannot be confirmed.",
+      "evidence": [
+        "frontend/src/features/preview/PreviewCanvas.tsx",
+        "frontend/src/features/audio/AnalysisStatus.tsx"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "requirement": "Add editing controls for audio timing and transitions: trim audio range (start/end), fade in, and fade out, ensuring preview remains responsive.",
+      "reason": "UI includes fade-in/out sliders, but the audio engine does not apply fade-in/out to playback (no GainNode automation or similar is evidenced). Trim is applied via source.start offsets, but fades are not implemented in playback.",
+      "evidence": [
+        "frontend/src/features/audio/AudioEditingPanel.tsx",
+        "frontend/src/features/audio/useAudioEngine.ts"
+      ]
+    },
+    {
+      "id": "REQ-15",
+      "requirement": "Add production-level reliability and performance safeguards: graceful handling of export failures, memory/resource cleanup (AudioContext nodes, object URLs, animation loops), and lazy-load heavy modules (ffmpeg.wasm, optional 3D) only when needed.",
+      "reason": "An ErrorBoundary exists, but export failure handling and ffmpeg lazy-loading are not evidenced (export is placeholder). Also, audio resource cleanup is incomplete/unclear (e.g., analyser connects to destination; source stop without disconnect; no object URL handling is shown). Visualizer loop cleanup/lazy loading cannot be verified from the provided summary.",
+      "evidence": [
+        "frontend/src/features/errors/ErrorBoundary.tsx",
+        "frontend/src/features/export/ExportPanel.tsx",
+        "frontend/src/features/audio/useAudioEngine.ts",
+        "frontend/src/features/preview/PreviewCanvas.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "User profile management (get/save user profile) and profile setup modal flow",
+      "reason": "BuildRequest focuses on a music visualizer creator tool with project persistence; it does not request user profile CRUD or a mandatory profile setup modal.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/features/auth/ProfileSetupModal.tsx",
+        "frontend/src/features/app-shell/TopBar.tsx"
+      ]
+    },
+    {
+      "description": "Custom authorization/access-control mixin and admin/user permission checks in the Motoko canister",
+      "reason": "BuildRequest specifies using Internet Identity but does not request role-based access control framework/mixins; project persistence could be simpler and still meet CRUD requirements.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "description": "Projects include advanced musical analysis fields (polarity, musicalKey, refPoints with harmonic analysis/chords/tenor/bass, etc.)",
+      "reason": "BuildRequest project persistence is for “audio reference metadata + visual settings”; the diff introduces extensive music-theory/refpoint structures not requested.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    }
+  ],
+  "confidence": 0.78,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+    "frontend/src/features/app-shell/SidebarNav.tsx",
+    "frontend/src/features/app-shell/TopBar.tsx",
+    "frontend/src/features/audio/AnalysisStatus.tsx",
+    "frontend/src/features/audio/AudioEditingPanel.tsx",
+    "frontend/src/features/audio/AudioUploadPanel.tsx",
+    "frontend/src/features/audio/useAudioEngine.ts",
+    "frontend/src/features/auth/AuthGate.tsx",
+    "frontend/src/features/auth/ProfileSetupModal.tsx",
+    "frontend/src/features/background/BackgroundControlsPanel.tsx",
+    "frontend/src/features/errors/ErrorBoundary.tsx",
+    "frontend/src/features/export/ExportPanel.tsx",
+    "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
+    "frontend/src/features/preview/PreviewCanvas.tsx",
+    "frontend/src/features/projects/ProjectsPanel.tsx",
+    "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
+    "frontend/src/features/visualizer/VisualizerEngine.ts",
+    "frontend/src/features/visualizer/modes/BarEqualizerHorizontal.ts",
+    "frontend/src/features/visualizer/modes/BarEqualizerVertical.ts",
+    "frontend/src/features/visualizer/modes/CircularSpectrum.ts",
+    "frontend/src/features/visualizer/modes/MinimalLofiGlow.ts",
+    "frontend/src/features/visualizer/modes/ParticleReactive.ts",
+    "frontend/src/features/visualizer/modes/RadialNeonRing.ts",
+    "frontend/src/features/visualizer/modes/WaveformLine.ts",
+    "frontend/src/features/visualizer/useVisualizerEngine.ts",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/lib/utils.ts",
+    "frontend/src/main.tsx",
+    "frontend/src/pages/CreatorDashboard.tsx",
+    "frontend/src/pages/LandingPage.tsx",
+    "frontend/src/utils/urlParams.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

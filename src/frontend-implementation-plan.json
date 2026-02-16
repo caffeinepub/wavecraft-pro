@@ -1,0 +1,567 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "WaveCraft Pro — Frontend (mobile-first visualizer creator + in-browser MP4 export)",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Create a mobile-first creator dashboard shell optimized for Android Chrome with sidebar, live preview center, controls panel, and top bar Save/Export actions.",
+      "acceptanceCriteria": [
+        "On a ~360px wide viewport, the app uses a vertical-first layout and touch-sized controls without horizontal scrolling.",
+        "The main app shell includes: left sidebar nav, center preview area, right controls panel, and top bar actions.",
+        "No interactions rely on hover-only behavior; primary actions are usable via touch."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "create",
+          "description": "Create the top-level app with routing between the public landing page and the creator dashboard area, and wire global providers (React Query already in main.tsx) into the app shell."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "create",
+          "description": "Implement the creator-dashboard layout (mobile-first), including: left sidebar navigation, center preview canvas area, right-side controls panel, and top bar actions (Save, Export) with touch-friendly spacing and no hover-only dependencies."
+        },
+        {
+          "path": "frontend/src/features/app-shell/SidebarNav.tsx",
+          "operation": "create",
+          "description": "Create a touch-friendly sidebar navigation component used by the CreatorDashboardLayout for navigating between editor sections (Audio, Visualizer, Background, Text/Branding, Export, Projects)."
+        },
+        {
+          "path": "frontend/src/features/app-shell/TopBar.tsx",
+          "operation": "create",
+          "description": "Create a top bar used by the CreatorDashboardLayout that exposes Save and Export actions and a compact status area suitable for mobile."
+        },
+        {
+          "path": "frontend/src/features/preview/PreviewCanvas.tsx",
+          "operation": "create",
+          "description": "Create the live preview canvas component that hosts the visualizer render surface and overlay rendering without triggering per-frame React re-renders."
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "operation": "modify",
+          "description": "Ensure App import resolves (create App.tsx if missing) and keep the existing QueryClientProvider and InternetIdentityProvider wiring intact."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Remove any monetization/plan-gating UI and ensure all features (including export options like 4K) are always available with no pro/premium checks.",
+      "acceptanceCriteria": [
+        "There are no UI routes or settings for payments/subscriptions.",
+        "Export options (including 4K) are not locked behind any plan logic.",
+        "No code path checks for 'pro/premium' status to enable features."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/LandingPage.tsx",
+          "operation": "create",
+          "description": "Create the marketing landing page pricing section copy to clearly indicate all features are unlocked and avoid any subscriptions/Stripe/payment purchase flow references."
+        },
+        {
+          "path": "frontend/src/features/export/ExportPanel.tsx",
+          "operation": "create",
+          "description": "Implement export settings UI with all resolutions (720p/1080p/4K), fps (30/60), and bitrate controls always enabled (no plan or premium gating logic)."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Ensure routing does not include any payments/subscriptions pages and navigation does not surface monetization-related options."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Implement MP3/WAV upload, decoding, and playback via a single reusable Web Audio API AudioContext with real-time analysis-ready playback.",
+      "acceptanceCriteria": [
+        "Users can select an MP3 or WAV file and immediately preview audio playback in the app.",
+        "Only one AudioContext is created and reused; it is properly resumed on user gesture.",
+        "Audio analysis runs during playback without noticeable UI stutter on mid-range Android devices."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/audio/useAudioEngine.ts",
+          "operation": "create",
+          "description": "Create a React hook that owns a single AudioContext instance (reused), handles user-gesture resume, decodes MP3/WAV efficiently, and exposes playback controls and analysis node wiring."
+        },
+        {
+          "path": "frontend/src/features/audio/AudioUploadPanel.tsx",
+          "operation": "create",
+          "description": "Create an audio upload + playback control panel (touch-friendly) that accepts MP3/WAV input and connects to useAudioEngine for immediate preview."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "modify",
+          "description": "Wire AudioUploadPanel into the right-side controls panel and connect it to the PreviewCanvas playback/analysis pipeline."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Build a lightweight visualizer render loop with a default 30fps cap, efficient requestAnimationFrame usage, and animation state stored in refs to avoid React re-renders.",
+      "acceptanceCriteria": [
+        "The visualizer loop does not trigger React state updates every frame (verified by implementation approach).",
+        "Animation frame rate is capped (default 30fps) with an option to raise to 60fps for exports if needed.",
+        "Stopping playback stops the animation loop and releases per-frame resources."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/visualizer/VisualizerEngine.ts",
+          "operation": "create",
+          "description": "Implement the core visualizer engine that renders to a canvas using requestAnimationFrame with a configurable FPS cap (default 30). Store per-frame state in refs and provide start/stop lifecycle APIs to avoid React re-renders during animation."
+        },
+        {
+          "path": "frontend/src/features/preview/PreviewCanvas.tsx",
+          "operation": "modify",
+          "description": "Integrate VisualizerEngine into the preview canvas, ensuring playback start/stop controls the loop and that stopping cleans up timers/animation frames."
+        },
+        {
+          "path": "frontend/src/features/export/exportConfig.ts",
+          "operation": "create",
+          "description": "Define shared configuration for preview FPS (30) and export FPS (optionally 60) so the visualizer engine can switch behavior for exports without altering the preview responsiveness."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Provide modular visualizer modes (2D + optional 3D) with configurable parameters and clear performance guidance for heavier modes.",
+      "acceptanceCriteria": [
+        "Users can switch between the listed visualizer modes from the UI.",
+        "Each mode renders in the preview and responds to the audio analysis signal.",
+        "3D tunnel mode is clearly marked as heavier and can be turned off/avoided on mobile without breaking the app."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/visualizer/modes/index.ts",
+          "operation": "create",
+          "description": "Create a registry of visualizer modes (2D game is not applicable; this is a visualizer renderer) including: circular spectrum, horizontal bar equalizer, vertical bar equalizer, waveform line, radial neon ring, particle-reactive mode, minimal lo-fi soft glow mode, and an optional WebGL 3D tunnel mode."
+        },
+        {
+          "path": "frontend/src/features/visualizer/modes/CircularSpectrum.ts",
+          "operation": "create",
+          "description": "Implement the circular spectrum mode renderer module using the shared audio analysis signal."
+        },
+        {
+          "path": "frontend/src/features/visualizer/modes/BarEqualizerHorizontal.ts",
+          "operation": "create",
+          "description": "Implement the horizontal bar equalizer mode renderer module using the shared audio analysis signal."
+        },
+        {
+          "path": "frontend/src/features/visualizer/modes/BarEqualizerVertical.ts",
+          "operation": "create",
+          "description": "Implement the vertical bar equalizer mode renderer module using the shared audio analysis signal."
+        },
+        {
+          "path": "frontend/src/features/visualizer/modes/WaveformLine.ts",
+          "operation": "create",
+          "description": "Implement the waveform line mode renderer module using the shared audio analysis signal."
+        },
+        {
+          "path": "frontend/src/features/visualizer/modes/RadialNeonRing.ts",
+          "operation": "create",
+          "description": "Implement the radial neon ring mode renderer module using the shared audio analysis signal."
+        },
+        {
+          "path": "frontend/src/features/visualizer/modes/ParticleReactive.ts",
+          "operation": "create",
+          "description": "Implement the particle-reactive mode renderer module using the shared audio analysis signal, optimized for mobile preview."
+        },
+        {
+          "path": "frontend/src/features/visualizer/modes/MinimalLofiGlow.ts",
+          "operation": "create",
+          "description": "Implement the minimal lo-fi soft glow mode renderer module using the shared audio analysis signal and subtle bloom/glow styling."
+        },
+        {
+          "path": "frontend/src/features/visualizer/modes/ThreeDTunnel.lazy.tsx",
+          "operation": "create",
+          "description": "Create a lazily-loaded 3D tunnel mode wrapper (3D game is not applicable; this is a WebGL visualizer). Ensure the mode is marked as heavier and can be avoided/disabled for performance."
+        },
+        {
+          "path": "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
+          "operation": "create",
+          "description": "Create UI controls to switch modes and tune mode parameters in a touch-friendly way, including a clear label/warning for the heavier optional 3D tunnel mode."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "modify",
+          "description": "Wire VisualizerControlsPanel into the right-side controls panel and connect selected mode + parameters to the VisualizerEngine."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Add audio analysis features: FFT spectrum, bass/mid/treble separation, sensitivity control, and best-effort BPM detection with graceful failure.",
+      "acceptanceCriteria": [
+        "Visualizer controls include a sensitivity slider that visibly changes response strength.",
+        "Visualizer modes can be configured to react differently to bass vs high frequencies (e.g., separate gain multipliers).",
+        "BPM is calculated and displayed when possible; if detection fails, UI indicates unavailable without crashing."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/audio/analysis/audioAnalysis.ts",
+          "operation": "create",
+          "description": "Implement FFT-driven analysis helpers that compute spectrum data plus bass/mid/treble band energy and apply sensitivity scaling for downstream visualizer usage."
+        },
+        {
+          "path": "frontend/src/features/audio/analysis/bpmDetection.ts",
+          "operation": "create",
+          "description": "Implement best-effort BPM detection (non-blocking) suitable for mobile; return a result or an 'unavailable' state without throwing."
+        },
+        {
+          "path": "frontend/src/features/audio/AnalysisStatus.tsx",
+          "operation": "create",
+          "description": "Create UI that displays detected BPM (or indicates unavailable) and exposes a sensitivity slider and per-band multipliers for bass/mid/treble reactions."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "modify",
+          "description": "Wire AnalysisStatus into the controls panel and feed sensitivity/band settings into the visualizer engine/modes."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Add responsive audio editing controls for trim start/end and fade-in/fade-out with smooth preview behavior.",
+      "acceptanceCriteria": [
+        "Users can set trim start/end times and preview plays only the selected region.",
+        "Fade-in and fade-out durations can be adjusted and are audible in preview.",
+        "Changing trim/fades does not restart the whole app or cause major UI lag."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/audio/editing/audioEditing.ts",
+          "operation": "create",
+          "description": "Implement trim and fade calculations applied during preview playback (gain automation / envelope shaping) without requiring app-wide resets."
+        },
+        {
+          "path": "frontend/src/features/audio/AudioEditingPanel.tsx",
+          "operation": "create",
+          "description": "Create a touch-friendly panel to edit trim start/end and fade-in/fade-out, updating the audio engine in real time."
+        },
+        {
+          "path": "frontend/src/features/audio/useAudioEngine.ts",
+          "operation": "modify",
+          "description": "Integrate trim/fade settings so preview playback only plays the selected region and applies fade envelopes efficiently."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "modify",
+          "description": "Wire AudioEditingPanel into the right-side controls panel alongside audio upload/playback."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Add background customization: solid color, multi-stop gradient builder, image upload background, and subtle animated particles overlay.",
+      "acceptanceCriteria": [
+        "Users can switch between solid/gradient/image background modes.",
+        "Gradient builder supports multiple color stops with adjustable positions.",
+        "Uploaded background images render behind the visualizer in preview."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/background/BackgroundModel.ts",
+          "operation": "create",
+          "description": "Define the background settings model for solid/gradient/image and particles overlay settings, used consistently by preview and export."
+        },
+        {
+          "path": "frontend/src/features/background/GradientBuilder.tsx",
+          "operation": "create",
+          "description": "Implement a multi-stop gradient builder UI with adjustable stop positions and colors, designed for mobile touch interaction."
+        },
+        {
+          "path": "frontend/src/features/background/BackgroundControlsPanel.tsx",
+          "operation": "create",
+          "description": "Create UI to switch background modes (solid/gradient/image), upload an image background, and configure subtle animated particles overlay."
+        },
+        {
+          "path": "frontend/src/features/background/ParticlesOverlay.ts",
+          "operation": "create",
+          "description": "Implement a lightweight animated particles overlay renderer that can be enabled/disabled and runs without per-frame React state updates."
+        },
+        {
+          "path": "frontend/src/features/preview/PreviewCanvas.tsx",
+          "operation": "modify",
+          "description": "Render background layers (solid/gradient/image) behind the visualizer and optionally render the particles overlay, ensuring uploaded image object URLs are managed safely."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "modify",
+          "description": "Wire BackgroundControlsPanel into the right-side controls panel and connect it to PreviewCanvas rendering."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Add text/branding overlays (title/artist/fonts/position/animations/logo) plus optional watermark toggle (default off) with no plan gating.",
+      "acceptanceCriteria": [
+        "Title and artist overlays can be enabled/disabled and positioned with touch-friendly controls.",
+        "Logo image can be uploaded and positioned/scaled in the preview.",
+        "Watermark overlay can be toggled on/off and is OFF by default; it is not forced by any plan logic."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/overlays/OverlaysModel.ts",
+          "operation": "create",
+          "description": "Define overlay settings for song title, artist name, bundled font selection, position/size, entrance animation presets, logo upload settings, and optional watermark toggle (default off)."
+        },
+        {
+          "path": "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
+          "operation": "create",
+          "description": "Create touch-friendly controls for enabling/disabling overlays, selecting fonts (from bundled fonts), adjusting size/position, selecting entrance animation presets, uploading a logo, and toggling watermark."
+        },
+        {
+          "path": "frontend/src/features/overlays/OverlayRenderer.ts",
+          "operation": "create",
+          "description": "Implement overlay rendering (text + logo + optional watermark) layered over the preview canvas with entrance animations that do not require per-frame React updates."
+        },
+        {
+          "path": "frontend/src/features/preview/PreviewCanvas.tsx",
+          "operation": "modify",
+          "description": "Integrate OverlayRenderer on top of the visualizer and background layers; ensure logo object URLs are managed and released when replaced."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "modify",
+          "description": "Wire OverlaysControlsPanel into the right-side controls panel and connect it to PreviewCanvas overlay rendering."
+        },
+        {
+          "path": "frontend/src/assets/fonts/README.md",
+          "operation": "create",
+          "description": "Document where bundled fonts live and how they are referenced by the overlays font selection (keep fonts local/bundled as required)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "summary": "Implement in-browser MP4 export using ffmpeg.wasm with resolution/fps/bitrate options, file size/time estimates, and responsive progress UI.",
+      "acceptanceCriteria": [
+        "Export produces a downloadable MP4 file fully in the browser using ffmpeg.wasm.",
+        "Users can choose resolution (720p/1080p/4K) and fps (30/60) and bitrate.",
+        "The UI shows export progress continuously (percent or stage-based) and remains responsive during export."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/package.json",
+          "operation": "create",
+          "description": "Add/ensure frontend dependencies needed for in-browser ffmpeg.wasm export and any required helpers (keep export fully client-side and avoid server-side rendering)."
+        },
+        {
+          "path": "frontend/src/features/export/ffmpeg/loadFfmpeg.ts",
+          "operation": "create",
+          "description": "Implement lazy-loading/initialization of ffmpeg.wasm so it is not downloaded/initialized until the user opens/starts export (or explicitly preloads)."
+        },
+        {
+          "path": "frontend/src/features/export/renderToMp4.ts",
+          "operation": "create",
+          "description": "Implement the client-side render pipeline that captures frames/audio from the current project configuration and produces a downloadable MP4 via ffmpeg.wasm, reporting progress updates."
+        },
+        {
+          "path": "frontend/src/features/export/estimates.ts",
+          "operation": "create",
+          "description": "Implement bitrate-based estimated file size and render-time estimate calculations for the export UI."
+        },
+        {
+          "path": "frontend/src/features/export/ExportPanel.tsx",
+          "operation": "modify",
+          "description": "Add export controls for 720p/1080p/4K, 30/60fps, bitrate selection, estimated file size and render time, and an export progress indicator with responsive UI during export."
+        },
+        {
+          "path": "frontend/src/features/app-shell/TopBar.tsx",
+          "operation": "modify",
+          "description": "Wire the top bar Export action to open/focus the export panel and start export flows without blocking the UI thread."
+        }
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "summary": "Implement a client-side sequential render queue for exports with enqueue, status, cancel, and job management.",
+      "acceptanceCriteria": [
+        "Users can create multiple export jobs without losing prior settings.",
+        "Queued jobs run one at a time and display status (queued/running/completed/failed/canceled).",
+        "Users can cancel a running job and it stops without breaking subsequent jobs."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/export/queue/types.ts",
+          "operation": "create",
+          "description": "Define export job types and status states (queued/running/completed/failed/canceled) for the in-app render queue."
+        },
+        {
+          "path": "frontend/src/features/export/queue/useRenderQueue.ts",
+          "operation": "create",
+          "description": "Implement a client-side render queue that runs jobs sequentially, supports cancelation of a running job, and persists job settings in memory for the session."
+        },
+        {
+          "path": "frontend/src/features/export/queue/RenderQueuePanel.tsx",
+          "operation": "create",
+          "description": "Create UI to view queued jobs, job status, progress per running job, and cancel controls, optimized for mobile."
+        },
+        {
+          "path": "frontend/src/features/export/ExportPanel.tsx",
+          "operation": "modify",
+          "description": "Add controls to enqueue exports into the render queue and display queue state; ensure enqueue preserves prior settings."
+        }
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "summary": "Add project persistence UI (create/list/load/rename/delete) backed by the Motoko backend actor, integrated into the creator workflow.",
+      "acceptanceCriteria": [
+        "Users can save a project configuration and see it in a Projects list.",
+        "Users can reopen a saved project and the preview/settings restore correctly.",
+        "Projects can be renamed and deleted; backend persists the list across refreshes."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/projects/projectSerialization.ts",
+          "operation": "create",
+          "description": "Implement serialization/deserialization between the editor state (audio reference metadata + visual settings) and the backend Project shape used by the actor interface."
+        },
+        {
+          "path": "frontend/src/features/projects/queries.ts",
+          "operation": "create",
+          "description": "Create React Query hooks for listing projects, loading a project, creating, saving/updating, renaming, and deleting via the backend actor functions from frontend/src/backend.d.ts. Use the selected authorization component patterns for authenticated access. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/projects/ProjectsPanel.tsx",
+          "operation": "create",
+          "description": "Create a Projects UI panel to create, list, load, rename, and delete projects; handle backend authorization failures gracefully. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/app-shell/TopBar.tsx",
+          "operation": "modify",
+          "description": "Wire the top bar Save action to project save/update behavior and provide clear feedback for success/failure without requiring a full reload."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "modify",
+          "description": "Wire ProjectsPanel into the sidebar navigation and right-side panel, and connect load/save actions to restore preview/settings correctly."
+        },
+        {
+          "path": "frontend/src/features/auth/AuthGate.tsx",
+          "operation": "create",
+          "description": "Create an authentication gate for creator features that requires Internet Identity login before showing project data, and clears cached data on logout using React Query per the selected authorization component guidance. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/auth/ProfileSetupModal.tsx",
+          "operation": "create",
+          "description": "Prompt first-time logged-in users to set a display name using getCallerUserProfile/saveCallerUserProfile, and prevent modal flash by respecting actor dependency/loading state per the selected authorization component guidance. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wrap creator dashboard routes with AuthGate while keeping the landing page publicly accessible; wire ProfileSetupModal after login."
+        }
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "summary": "Create a responsive SaaS-style landing/marketing page with required sections and the provided Facebook link.",
+      "acceptanceCriteria": [
+        "Landing page contains the listed sections and is responsive on mobile.",
+        "The Facebook link is present and navigates to the provided URL.",
+        "Pricing section does not reference subscriptions/Stripe and clearly indicates features are available (no purchase flow)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/LandingPage.tsx",
+          "operation": "modify",
+          "description": "Implement the landing page sections: hero, demo preview, feature highlights, visualizer showcase, pricing (no payments), FAQ, and CTA; include the Facebook page link to https://www.facebook.com/share/14SsrwttdEB/."
+        },
+        {
+          "path": "frontend/public/assets/generated/wavecraft-pro-logo.dim_512x512.png",
+          "operation": "create",
+          "description": "Add the generated WaveCraft Pro wordmark logo asset at frontend/public/assets/generated/wavecraft-pro-logo.dim_512x512.png and wire it into the landing page and app shell branding."
+        },
+        {
+          "path": "frontend/public/assets/generated/hero-waveform-bg.dim_1920x1080.png",
+          "operation": "create",
+          "description": "Add the generated hero background asset at frontend/public/assets/generated/hero-waveform-bg.dim_1920x1080.png and wire it into the landing page hero section."
+        },
+        {
+          "path": "frontend/public/assets/generated/icons-dashboard-set.dim_512x512.png",
+          "operation": "create",
+          "description": "Add the generated dashboard icons set at frontend/public/assets/generated/icons-dashboard-set.dim_512x512.png and wire it into the dashboard navigation visuals."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register the landing page route as the public entry and ensure navigation/CTA routes users into the creator dashboard."
+        }
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "summary": "Apply a coherent premium dark theme across landing and app, using charcoal base and high-contrast accents (not primarily blue/purple), with clear hierarchy and accessible interaction states.",
+      "acceptanceCriteria": [
+        "UI uses a consistent dark theme across pages with a defined accent palette (not primarily blue/purple).",
+        "Controls and panels have clear hierarchy and readability on mobile.",
+        "Interactive states (focus/active/disabled) are clearly visible for accessibility."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "create",
+          "description": "Create/adjust global Tailwind CSS variables and base styles to define a dark charcoal theme with high-contrast accent colors (avoid blue/purple as primary), including focus/active/disabled states."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Refine theme tokens (colors/radius/shadows) to support the premium dark dashboard look consistently across landing and creator UI."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "modify",
+          "description": "Apply consistent layout styling (panels, separators, typography, spacing) for a premium dark creator dashboard with strong visual hierarchy on mobile."
+        },
+        {
+          "path": "frontend/src/pages/LandingPage.tsx",
+          "operation": "modify",
+          "description": "Apply the same theme primitives to the landing page sections for consistent branding and accessibility."
+        }
+      ]
+    },
+    {
+      "id": "REQ-15",
+      "summary": "Add reliability/performance safeguards: error boundaries, graceful export failure handling, resource cleanup, and lazy-loading of heavy modules (ffmpeg.wasm and optional 3D).",
+      "acceptanceCriteria": [
+        "If ffmpeg export fails, the UI shows a helpful error and allows retry without a full reload.",
+        "Stopping/changing audio releases old object URLs and disconnects audio nodes to avoid leaks.",
+        "ffmpeg.wasm is not downloaded/initialized until the user opens/starts export (or explicitly preloads)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/errors/ErrorBoundary.tsx",
+          "operation": "create",
+          "description": "Create an error boundary component to wrap key UI areas (creator dashboard, preview, export panel) and show a recovery UI instead of crashing the whole app."
+        },
+        {
+          "path": "frontend/src/features/export/ExportPanel.tsx",
+          "operation": "modify",
+          "description": "Handle export failures gracefully (clear error messaging, allow retry), keep UI responsive, and ensure cancellation/cleanup works with the render queue."
+        },
+        {
+          "path": "frontend/src/features/audio/useAudioEngine.ts",
+          "operation": "modify",
+          "description": "Add robust cleanup: disconnect/stop nodes, close or reuse AudioContext appropriately, and release any created object URLs when audio changes or is removed."
+        },
+        {
+          "path": "frontend/src/features/visualizer/VisualizerEngine.ts",
+          "operation": "modify",
+          "description": "Ensure visualizer start/stop lifecycle cleans up animation loops and per-frame resources, and supports switching modes without leaking references."
+        },
+        {
+          "path": "frontend/src/features/visualizer/modes/ThreeDTunnel.lazy.tsx",
+          "operation": "modify",
+          "description": "Ensure optional WebGL 3D tunnel mode remains lazily loaded and can be disabled/avoided on mobile without breaking the app."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wrap major routes/sections with ErrorBoundary and ensure failures in creator tools do not take down the landing page."
+        }
+      ]
+    }
+  ]
+}
