@@ -1,335 +1,140 @@
 {
   "kind": "build_request",
-  "title": "WaveCraft Pro — Mobile-first music visualizer video maker (all features unlocked) with in-browser MP4 export",
+  "title": "Enable all “Coming Soon” options (Background, Text & Branding, 3D Tunnel, Export) and persist settings",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Build the WaveCraft Pro web app as a mobile-first creator tool optimized for Android Chrome: responsive layouts that start with small screens, touch-friendly controls, and a creator-dashboard UI (left sidebar navigation, center live preview canvas, right-side controls panel, and a top bar with Save and Export).",
+      "id": "REQ-16",
+      "text": "Replace the placeholder “Background controls coming soon” UI with fully functional Background controls, including: solid color background, multi-stop gradient background builder, image upload background, and a subtle animated particles overlay; all controls must update the live preview immediately without noticeable lag on mobile.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2",
-          "msg-6",
-          "msg-11"
+          "msg-user-latest",
+          "msg-user-all"
         ],
         "quotes": [
-          "Build a mobile-first Music Visualizer Video Maker web app optimized primarily for Android users.",
-          "Build a production-ready SaaS web application called “WaveCraft Pro” — a high-performance Music Visualizer Video Maker designed for YouTubers, musicians, and lo-fi creators.",
-          "no adjust ment just mak it like this thate I have full control and I can youse full website"
+          "start building  99.99 pursent accurate",
+          "All",
+          "Background controls coming soon"
         ]
       },
       "acceptanceCriteria": [
-        "On a ~360px wide viewport, the app uses a vertical-first layout and touch-sized controls without horizontal scrolling.",
-        "The main app shell includes: left sidebar nav, center preview area, right controls panel, and top bar actions.",
-        "No interactions rely on hover-only behavior; primary actions are usable via touch."
+        "In the Background section, the placeholder text is removed and interactive controls are displayed for: solid color, multi-stop gradient, image upload, and particles overlay.",
+        "Changing any Background control updates the PreviewCanvas immediately (no page reload).",
+        "Uploaded background images are previewed correctly and can be replaced/cleared.",
+        "Particles overlay can be enabled/disabled and its intensity/density can be adjusted.",
+        "The Background controls are usable on small screens (Android Chrome), with touch-friendly inputs and no horizontal overflow."
       ]
     },
     {
-      "id": "REQ-2",
-      "text": "Remove/omit all monetization and plan-gating: no subscriptions, no Stripe, no paid plans, no pro feature gates, and ensure all features are available to the site owner with no restrictions.",
+      "id": "REQ-17",
+      "text": "Implement the Text & Branding (Overlays) controls to fully replace the “Overlay controls coming soon” placeholder, including: song title text, artist name text, font selection from bundled fonts, position controls, size controls, entrance animation preset selection, logo upload overlay, and an optional watermark toggle (default off); overlays must render in the live preview.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-latest",
+          "msg-user-all"
+        ],
+        "quotes": [
+          "All",
+          "Overlay controls coming soon"
+        ]
+      },
+      "acceptanceCriteria": [
+        "In the Text & Branding section, the placeholder text is removed and controls exist for title, artist, font selection, position, size, entrance animation preset, logo upload, and watermark toggle (default off).",
+        "Edits to title/artist/logo immediately appear in the PreviewCanvas.",
+        "Logo upload supports common image formats and renders with correct aspect ratio (no stretching).",
+        "Watermark is off by default and can be toggled on/off without any plan gating or paywalls.",
+        "Overlays remain readable across backgrounds (e.g., via subtle shadow/outline or contrast-aware styling)."
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "text": "Implement the “3D Tunnel (Heavy)” visualizer mode as a real WebGL-based 3D tunnel mode (not a “coming soon” text stub), and provide a clear on/off performance-safe behavior so devices can switch away without crashes or memory leaks.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-latest",
+          "msg-user-all"
+        ],
+        "quotes": [
+          "All",
+          "3D Tunnel (Heavy)",
+          "3D Tunnel mode (WebGL) - Coming soon"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Selecting “3D Tunnel (Heavy)” produces an actual animated 3D tunnel visual rather than a “coming soon” message.",
+        "Switching into and out of 3D Tunnel mode does not leak resources (no accumulating RAF loops, contexts, or GPU resources), and the preview continues to work after multiple toggles.",
+        "3D Tunnel mode can be disabled gracefully on unsupported devices/browsers with a clear fallback message and automatic switch to a 2D mode."
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "text": "Replace the placeholder Export panel (“Export controls coming soon”) with functional in-browser MP4 export UI and flow consistent with the existing Export feature set (ffmpeg.wasm, resolution/FPS/bitrate controls, time+size estimates, progress indicator, and client-side render queue).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-latest"
+        ],
+        "quotes": [
+          "start building  99.99 pursent accurate",
+          "Export controls coming soon"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The Export panel shows real export controls (no placeholder text) and allows selecting resolution (720p/1080p/4K), FPS (30/60), and bitrate.",
+        "Export shows estimated file size and render time before running (best-effort estimate).",
+        "Export runs fully in-browser and displays progress throughout.",
+        "Users can enqueue multiple export jobs, see job statuses, cancel a job, and jobs run sequentially client-side.",
+        "Export failures are handled gracefully with an actionable error message and the app remains usable afterward."
+      ]
+    },
+    {
+      "id": "REQ-20",
+      "text": "Persist all newly-enabled “Coming Soon” settings (Background settings, Text & Branding settings, and 3D Tunnel mode selection/settings where applicable) in Projects so users can Save and later Load a project and see the same preview configuration restored.",
       "target": "both",
       "source": {
         "messageIds": [
-          "msg-2",
-          "msg-9",
-          "msg-11"
+          "msg-user-latest",
+          "msg-user-all"
         ],
         "quotes": [
-          "No paid plans\nNo subscription system\nNo Stripe\nNo watermark\nCompletely free\nRemove all monetization logic.",
-          "make the premium for free now",
-          "no adjust ment just mak it like this thate I have full control and I can youse full website"
+          "Add other options thats are in coming soon",
+          "All"
         ]
       },
       "acceptanceCriteria": [
-        "There are no UI routes or settings for payments/subscriptions.",
-        "Export options (including 4K) are not locked behind any plan logic.",
-        "No code path checks for 'pro/premium' status to enable features."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Implement audio upload and playback using a single Web Audio API AudioContext instance with efficient decoding and analysis for MP3/WAV files, supporting real-time preview without lag.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2",
-          "msg-6"
-        ],
-        "quotes": [
-          "Upload MP3 or WAV",
-          "Use single AudioContext instance"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Users can select an MP3 or WAV file and immediately preview audio playback in the app.",
-        "Only one AudioContext is created and reused; it is properly resumed on user gesture.",
-        "Audio analysis runs during playback without noticeable UI stutter on mid-range Android devices."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Implement a lightweight visualizer engine that renders smoothly with a 30fps cap by default, uses requestAnimationFrame efficiently, and avoids React re-renders during animation (store animation state in refs, not React state).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "Limit animation to 30fps",
-          "Use requestAnimationFrame efficiently",
-          "Avoid re-rendering React state during animation",
-          "Use refs instead of state for animation data"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The visualizer loop does not trigger React state updates every frame (verified by implementation approach).",
-        "Animation frame rate is capped (default 30fps) with an option to raise to 60fps for exports if needed.",
-        "Stopping playback stops the animation loop and releases per-frame resources."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Provide modular visualizer modes with configurable parameters, including: circular spectrum, horizontal bar equalizer, vertical bar equalizer, waveform line, radial neon ring, particle-reactive mode, minimal lo‑fi soft glow mode, and an optional WebGL 3D tunnel mode that can be disabled for performance.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "Include:\nCircular spectrum\nHorizontal bar equalizer\nVertical bar equalizer\nWaveform line\nParticle reactive system\n3D tunnel (reactive)\nRadial neon ring\nMinimal lo-fi soft glow mode"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Users can switch between the listed visualizer modes from the UI.",
-        "Each mode renders in the preview and responds to the audio analysis signal.",
-        "3D tunnel mode is clearly marked as heavier and can be turned off/avoided on mobile without breaking the app."
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Implement audio analysis features needed for band-reactive visuals: FFT spectrum plus bass/mid/treble separation, a sensitivity slider, and (best-effort) BPM detection for display/use in animation timing.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "FFT frequency spectrum analysis",
-          "BPM detection",
-          "Bass / mid / treble separation",
-          "Sensitivity slider"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Visualizer controls include a sensitivity slider that visibly changes response strength.",
-        "Visualizer modes can be configured to react differently to bass vs high frequencies (e.g., separate gain multipliers).",
-        "BPM is calculated and displayed when possible; if detection fails, UI indicates unavailable without crashing."
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Add editing controls for audio timing and transitions: trim audio range (start/end), fade in, and fade out, ensuring preview remains responsive.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "Trim audio range",
-          "Fade in / fade out",
-          "Audio preview must not lag."
-        ]
-      },
-      "acceptanceCriteria": [
-        "Users can set trim start/end times and preview plays only the selected region.",
-        "Fade-in and fade-out durations can be adjusted and are audible in preview.",
-        "Changing trim/fades does not restart the whole app or cause major UI lag."
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "text": "Add background customization options for the video: solid color, multi-stop gradient builder, image upload background, and subtle animated particles overlay.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "Solid color",
-          "Multi-stop gradient builder",
-          "Image upload",
-          "Subtle animated particles"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Users can switch between solid/gradient/image background modes.",
-        "Gradient builder supports multiple color stops with adjustable positions.",
-        "Uploaded background images render behind the visualizer in preview."
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "text": "Add text and branding overlays: song title, artist name, font selection (from bundled fonts), position/size controls, entrance animation presets, and a logo upload overlay. Keep a watermark overlay as an optional toggle only (default off) with no plan gating.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "Song title",
-          "Artist name",
-          "Custom fonts",
-          "Position controls",
-          "Size scaling",
-          "Entrance animation presets",
-          "Logo upload",
-          "Watermark toggle (for free plan)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Title and artist overlays can be enabled/disabled and positioned with touch-friendly controls.",
-        "Logo image can be uploaded and positioned/scaled in the preview.",
-        "Watermark overlay can be toggled on/off and is OFF by default; it is not forced by any plan logic."
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "text": "Implement in-browser MP4 export using ffmpeg.wasm (no server-side rendering) with settings for 720p/1080p/4K, 30/60fps, bitrate selection, estimated file size and render-time estimate, and an export progress indicator.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-2",
-          "msg-6"
-        ],
-        "quotes": [
-          "Use ffmpeg.wasm in browser for rendering",
-          "Export to:\n720p\n1080p\nMP4 format",
-          "Options:\n720p / 1080p / 4K\n30fps / 60fps\nBitrate selection\nEstimated file size\nRender time estimate\nRender progress indicator"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Export produces a downloadable MP4 file fully in the browser using ffmpeg.wasm.",
-        "Users can choose resolution (720p/1080p/4K) and fps (30/60) and bitrate.",
-        "The UI shows export progress continuously (percent or stage-based) and remains responsive during export."
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "text": "Implement an in-app render queue for exports that runs client-side (since server-side queues are not available): allow users to enqueue multiple export jobs, view job status, cancel a job, and run jobs sequentially.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "Queue system for rendering."
-        ]
-      },
-      "acceptanceCriteria": [
-        "Users can create multiple export jobs without losing prior settings.",
-        "Queued jobs run one at a time and display status (queued/running/completed/failed/canceled).",
-        "Users can cancel a running job and it stops without breaking subsequent jobs."
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "text": "Add project persistence so users can save/load “projects” (audio reference metadata + visual settings) using the Motoko backend; include basic CRUD: create, list, load, rename, delete.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-6",
-          "msg-11"
-        ],
-        "quotes": [
-          "My Projects",
-          "no adjust ment just mak it like this thate I have full control and I can youse full website"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Users can save a project configuration and see it in a Projects list.",
-        "Users can reopen a saved project and the preview/settings restore correctly.",
-        "Projects can be renamed and deleted; backend persists the list across refreshes."
-      ]
-    },
-    {
-      "id": "REQ-13",
-      "text": "Create a landing/marketing page with a modern SaaS-style layout (hero, demo preview section, feature highlights, visualizer showcase, pricing section without payments, FAQ, and CTA), and include the user’s Facebook page link: https://www.facebook.com/share/14SsrwttdEB/",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "Create marketing site with:\nHero section\nDemo video preview\nFeature highlights\nVisualizer showcase\nPricing\nFAQ\nCall-to-action",
-          "give my Facebook page link https://www.facebook.com/share/14SsrwttdEB/"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Landing page contains the listed sections and is responsive on mobile.",
-        "The Facebook link is present and navigates to the provided URL.",
-        "Pricing section does not reference subscriptions/Stripe and clearly indicates features are available (no purchase flow)."
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "text": "Apply a coherent premium dark visual theme consistently across landing + app (typography, spacing, components). Avoid blue/purple as the primary palette; use a dark charcoal base with high-contrast accent colors and clear visual hierarchy suitable for creator tools.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "Design language: Dark premium dashboard."
-        ]
-      },
-      "acceptanceCriteria": [
-        "UI uses a consistent dark theme across pages with a defined accent palette (not primarily blue/purple).",
-        "Controls and panels have clear hierarchy and readability on mobile.",
-        "Interactive states (focus/active/disabled) are clearly visible for accessibility."
-      ]
-    },
-    {
-      "id": "REQ-15",
-      "text": "Add production-level reliability and performance safeguards: error boundaries for key UI areas, graceful handling of export failures, memory/resource cleanup (AudioContext nodes, object URLs, animation loops), and lazy-load heavy modules (ffmpeg.wasm, optional 3D) only when needed.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6",
-          "msg-2"
-        ],
-        "quotes": [
-          "Production-level error handling",
-          "WebGL optimized\nNo memory leaks\nClean audio context handling\nLazy loading heavy components",
-          "Smooth on mid-range Android devices"
-        ]
-      },
-      "acceptanceCriteria": [
-        "If ffmpeg export fails, the UI shows a helpful error and allows retry without a full reload.",
-        "Stopping/changing audio releases old object URLs and disconnects audio nodes to avoid leaks.",
-        "ffmpeg.wasm is not downloaded/initialized until the user opens/starts export (or explicitly preloads)."
+        "Backend Project model is extended to store background settings and overlay settings (and any necessary visualizer mode/settings) and returns them on getProject.",
+        "A state migration is added only if required to preserve existing stored projects; existing projects continue to load successfully after upgrade.",
+        "Frontend Save updates the current project with the new settings; Load applies those settings back into the UI and PreviewCanvas.",
+        "No plan gating or subscription logic is introduced as part of persistence changes."
       ]
     }
   ],
   "constraints": [
-    "Use React + TypeScript + Tailwind + React Query on the frontend (no Next.js).",
-    "Backend must be a single Motoko actor (no Node.js backend, no FFmpeg server-side).",
-    "No WebSockets; progress updates must be client-side (ffmpeg.wasm progress) and/or polling if backend is involved.",
-    "Do not edit files under frontend/src/components/ui or other immutable template paths if present; compose reusable components instead.",
-    "Do not add Stripe, subscriptions, paid plans, or any monetization logic."
+    "Backend must remain a single Motoko actor in backend/main.mo; generate backend/migration.mo only if a state upgrade is required to preserve existing data.",
+    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything in frontend/src/components/ui; compose these components instead.",
+    "Use English for any user-facing text.",
+    "Keep all features unlocked; do not add subscriptions, Stripe, or any plan gating."
   ],
   "nonGoals": [
-    "Implementing server-side FFmpeg rendering or VPS-based rendering.",
-    "Integrating S3-compatible storage.",
-    "Third-party auth systems (NextAuth/JWT) beyond what Internet Identity provides.",
-    "AI background generation using external LLM/AI services."
+    "Adding third-party authentication providers beyond Internet Identity.",
+    "Adding external databases or non-Motoko backend services.",
+    "Implementing real-time features (WebSockets/chat/push)."
   ],
   "imageRequirements": {
-    "required": [
-      "WaveCraft Pro wordmark logo, dark-theme friendly, high contrast (wavecraft-pro-logo.dim_512x512.png)",
-      "Abstract waveform hero background, dark charcoal with neon accent streaks (hero-waveform-bg.dim_1920x1080.png)",
-      "Set of 6 minimal line icons for dashboard navigation (icons-dashboard-set.dim_512x512.png)"
-    ],
+    "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

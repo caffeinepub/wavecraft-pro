@@ -1,20 +1,34 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from 'next-themes';
+import { Toaster } from '@/components/ui/sonner';
 import { useInternetIdentity } from './hooks/useInternetIdentity';
 import LandingPage from './pages/LandingPage';
 import CreatorDashboard from './pages/CreatorDashboard';
 import { ErrorBoundary } from './features/errors/ErrorBoundary';
-import { Toaster } from '@/components/ui/sonner';
-import { ThemeProvider } from 'next-themes';
 
-export default function App() {
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+function App() {
   const { identity } = useInternetIdentity();
   const isAuthenticated = !!identity;
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-      <ErrorBoundary>
-        {isAuthenticated ? <CreatorDashboard /> : <LandingPage />}
-      </ErrorBoundary>
-      <Toaster />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <ErrorBoundary>
+          {isAuthenticated ? <CreatorDashboard /> : <LandingPage />}
+          <Toaster />
+        </ErrorBoundary>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
+
+export default App;

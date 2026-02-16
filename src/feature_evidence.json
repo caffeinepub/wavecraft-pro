@@ -2,314 +2,13 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-build-the-wavecraft-pro-web-app-as-a-mobile-first-creator-tool-optimized-for-android-chrome-responsive-layouts-that-start-with-small-screens-touch-friendly-controls-and-a-creator-dashboard-ui-left-sidebar-navigation-center-live-preview-canvas-right-side-controls-panel-and-a-top-bar-with-save-and-export",
-      "featureTitle": "Build the WaveCraft Pro web app as a mobile-first creator tool optimized for Android Chrome: responsive layouts that start with small screens, touch-friendly controls, and a creator-dashboard UI (left sidebar navigation, center live preview canvas, right-side controls panel, and a top bar with Save and Export).",
+      "featureId": "feature-replace-the-placeholder-background-controls-coming-soon-ui-with-fully-functional-background-controls-including-solid-color-background-multi-stop-gradient-background-builder-image-upload-background-and-a-subtle-animated-particles-overlay-all-controls-must-update-the-live-preview-immediately-without-noticeable-lag-on-mobile",
+      "featureTitle": "Replace the placeholder “Background controls coming soon” UI with fully functional Background controls, including: solid color background, multi-stop gradient background builder, image upload background, and a subtle animated particles overlay; all controls must update the live preview immediately without noticeable lag on mobile.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-        "frontend/src/features/app-shell/SidebarNav.tsx",
-        "frontend/src/features/app-shell/TopBar.tsx",
-        "frontend/src/features/preview/PreviewCanvas.tsx",
-        "frontend/src/main.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-remove-omit-all-monetization-and-plan-gating-no-subscriptions-no-stripe-no-paid-plans-no-pro-feature-gates-and-ensure-all-features-are-available-to-the-site-owner-with-no-restrictions",
-      "featureTitle": "Remove/omit all monetization and plan-gating: no subscriptions, no Stripe, no paid plans, no pro feature gates, and ensure all features are available to the site owner with no restrictions.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/features/export/ExportPanel.tsx",
-        "frontend/src/pages/LandingPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-audio-upload-and-playback-using-a-single-web-audio-api-audiocontext-instance-with-efficient-decoding-and-analysis-for-mp3-wav-files-supporting-real-time-preview-without-lag",
-      "featureTitle": "Implement audio upload and playback using a single Web Audio API AudioContext instance with efficient decoding and analysis for MP3/WAV files, supporting real-time preview without lag.",
-      "files": [
-        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-        "frontend/src/features/audio/AudioUploadPanel.tsx",
-        "frontend/src/features/audio/useAudioEngine.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-a-lightweight-visualizer-engine-that-renders-smoothly-with-a-30fps-cap-by-default-uses-requestanimationframe-efficiently-and-avoids-react-re-renders-during-animation-store-animation-state-in-refs-not-react-state",
-      "featureTitle": "Implement a lightweight visualizer engine that renders smoothly with a 30fps cap by default, uses requestAnimationFrame efficiently, and avoids React re-renders during animation (store animation state in refs, not React state).",
-      "files": [
-        "frontend/src/features/preview/PreviewCanvas.tsx",
-        "frontend/src/features/visualizer/VisualizerEngine.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-provide-modular-visualizer-modes-with-configurable-parameters-including-circular-spectrum-horizontal-bar-equalizer-vertical-bar-equalizer-waveform-line-radial-neon-ring-particle-reactive-mode-minimal-lo-fi-soft-glow-mode-and-an-optional-webgl-3d-tunnel-mode-that-can-be-disabled-for-performance",
-      "featureTitle": "Provide modular visualizer modes with configurable parameters, including: circular spectrum, horizontal bar equalizer, vertical bar equalizer, waveform line, radial neon ring, particle-reactive mode, minimal lo‑fi soft glow mode, and an optional WebGL 3D tunnel mode that can be disabled for performance.",
-      "files": [
-        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-        "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
-        "frontend/src/features/visualizer/modes/BarEqualizerHorizontal.ts",
-        "frontend/src/features/visualizer/modes/BarEqualizerVertical.ts",
-        "frontend/src/features/visualizer/modes/CircularSpectrum.ts",
-        "frontend/src/features/visualizer/modes/MinimalLofiGlow.ts",
-        "frontend/src/features/visualizer/modes/ParticleReactive.ts",
-        "frontend/src/features/visualizer/modes/RadialNeonRing.ts",
-        "frontend/src/features/visualizer/modes/WaveformLine.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-audio-analysis-features-needed-for-band-reactive-visuals-fft-spectrum-plus-bass-mid-treble-separation-a-sensitivity-slider-and-best-effort-bpm-detection-for-display-use-in-animation-timing",
-      "featureTitle": "Implement audio analysis features needed for band-reactive visuals: FFT spectrum plus bass/mid/treble separation, a sensitivity slider, and (best-effort) BPM detection for display/use in animation timing.",
-      "files": [
-        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-        "frontend/src/features/audio/AnalysisStatus.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-editing-controls-for-audio-timing-and-transitions-trim-audio-range-start-end-fade-in-and-fade-out-ensuring-preview-remains-responsive",
-      "featureTitle": "Add editing controls for audio timing and transitions: trim audio range (start/end), fade in, and fade out, ensuring preview remains responsive.",
-      "files": [
-        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-        "frontend/src/features/audio/AudioEditingPanel.tsx",
-        "frontend/src/features/audio/useAudioEngine.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-background-customization-options-for-the-video-solid-color-multi-stop-gradient-builder-image-upload-background-and-subtle-animated-particles-overlay",
-      "featureTitle": "Add background customization options for the video: solid color, multi-stop gradient builder, image upload background, and subtle animated particles overlay.",
-      "files": [
-        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
         "frontend/src/features/background/BackgroundControlsPanel.tsx",
-        "frontend/src/features/preview/PreviewCanvas.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-text-and-branding-overlays-song-title-artist-name-font-selection-from-bundled-fonts-position-size-controls-entrance-animation-presets-and-a-logo-upload-overlay-keep-a-watermark-overlay-as-an-optional-toggle-only-default-off-with-no-plan-gating",
-      "featureTitle": "Add text and branding overlays: song title, artist name, font selection (from bundled fonts), position/size controls, entrance animation presets, and a logo upload overlay. Keep a watermark overlay as an optional toggle only (default off) with no plan gating.",
-      "files": [
-        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-        "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
-        "frontend/src/features/preview/PreviewCanvas.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-9"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-in-browser-mp4-export-using-ffmpeg-wasm-no-server-side-rendering-with-settings-for-720p-1080p-4k-30-60fps-bitrate-selection-estimated-file-size-and-render-time-estimate-and-an-export-progress-indicator",
-      "featureTitle": "Implement in-browser MP4 export using ffmpeg.wasm (no server-side rendering) with settings for 720p/1080p/4K, 30/60fps, bitrate selection, estimated file size and render-time estimate, and an export progress indicator.",
-      "files": [
-        "frontend/src/features/app-shell/TopBar.tsx",
-        "frontend/src/features/export/ExportPanel.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-10"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-an-in-app-render-queue-for-exports-that-runs-client-side-since-server-side-queues-are-not-available-allow-users-to-enqueue-multiple-export-jobs-view-job-status-cancel-a-job-and-run-jobs-sequentially",
-      "featureTitle": "Implement an in-app render queue for exports that runs client-side (since server-side queues are not available): allow users to enqueue multiple export jobs, view job status, cancel a job, and run jobs sequentially.",
-      "files": [
-        "frontend/src/features/export/ExportPanel.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-11"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-project-persistence-so-users-can-save-load-projects-audio-reference-metadata-visual-settings-using-the-motoko-backend-include-basic-crud-create-list-load-rename-delete",
-      "featureTitle": "Add project persistence so users can save/load “projects” (audio reference metadata + visual settings) using the Motoko backend; include basic CRUD: create, list, load, rename, delete.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-        "frontend/src/features/app-shell/TopBar.tsx",
-        "frontend/src/features/auth/AuthGate.tsx",
-        "frontend/src/features/auth/ProfileSetupModal.tsx",
-        "frontend/src/features/projects/ProjectsPanel.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-12"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-create-a-landing-marketing-page-with-a-modern-saas-style-layout-hero-demo-preview-section-feature-highlights-visualizer-showcase-pricing-section-without-payments-faq-and-cta-and-include-the-user-s-facebook-page-link-https-www-facebook-com-share-14ssrwttdeb",
-      "featureTitle": "Create a landing/marketing page with a modern SaaS-style layout (hero, demo preview section, feature highlights, visualizer showcase, pricing section without payments, FAQ, and CTA), and include the user’s Facebook page link: https://www.facebook.com/share/14SsrwttdEB/",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/pages/LandingPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-13"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-apply-a-coherent-premium-dark-visual-theme-consistently-across-landing-app-typography-spacing-components-avoid-blue-purple-as-the-primary-palette-use-a-dark-charcoal-base-with-high-contrast-accent-colors-and-clear-visual-hierarchy-suitable-for-creator-tools",
-      "featureTitle": "Apply a coherent premium dark visual theme consistently across landing + app (typography, spacing, components). Avoid blue/purple as the primary palette; use a dark charcoal base with high-contrast accent colors and clear visual hierarchy suitable for creator tools.",
-      "files": [
-        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-        "frontend/src/index.css",
-        "frontend/src/pages/LandingPage.tsx",
-        "frontend/tailwind.config.js"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-14"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-production-level-reliability-and-performance-safeguards-error-boundaries-for-key-ui-areas-graceful-handling-of-export-failures-memory-resource-cleanup-audiocontext-nodes-object-urls-animation-loops-and-lazy-load-heavy-modules-ffmpeg-wasm-optional-3d-only-when-needed",
-      "featureTitle": "Add production-level reliability and performance safeguards: error boundaries for key UI areas, graceful handling of export failures, memory/resource cleanup (AudioContext nodes, object URLs, animation loops), and lazy-load heavy modules (ffmpeg.wasm, optional 3D) only when needed.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/features/audio/useAudioEngine.ts",
-        "frontend/src/features/errors/ErrorBoundary.tsx",
-        "frontend/src/features/export/ExportPanel.tsx",
+        "frontend/src/features/background/backgroundRenderers.ts",
+        "frontend/src/features/background/particlesOverlay.ts",
+        "frontend/src/features/background/useBackgroundSettings.ts",
         "frontend/src/features/visualizer/VisualizerEngine.ts"
       ],
       "components": [
@@ -318,10 +17,109 @@
         "shadcn-ui@1.0.0",
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-15"
+        "REQ-16"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-the-text-branding-overlays-controls-to-fully-replace-the-overlay-controls-coming-soon-placeholder-including-song-title-text-artist-name-text-font-selection-from-bundled-fonts-position-controls-size-controls-entrance-animation-preset-selection-logo-upload-overlay-and-an-optional-watermark-toggle-default-off-overlays-must-render-in-the-live-preview",
+      "featureTitle": "Implement the Text & Branding (Overlays) controls to fully replace the “Overlay controls coming soon” placeholder, including: song title text, artist name text, font selection from bundled fonts, position controls, size controls, entrance animation preset selection, logo upload overlay, and an optional watermark toggle (default off); overlays must render in the live preview.",
+      "files": [
+        "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
+        "frontend/src/features/overlays/overlayRenderers.ts",
+        "frontend/src/features/overlays/useOverlaySettings.ts",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-17"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-the-3d-tunnel-heavy-visualizer-mode-as-a-real-webgl-based-3d-tunnel-mode-not-a-coming-soon-text-stub-and-provide-a-clear-on-off-performance-safe-behavior-so-devices-can-switch-away-without-crashes-or-memory-leaks",
+      "featureTitle": "Implement the “3D Tunnel (Heavy)” visualizer mode as a real WebGL-based 3D tunnel mode (not a “coming soon” text stub), and provide a clear on/off performance-safe behavior so devices can switch away without crashes or memory leaks.",
+      "files": [
+        "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
+        "frontend/src/features/visualizer/VisualizerEngine.ts",
+        "frontend/src/features/visualizer/modes/Tunnel3DWebGL.ts",
+        "frontend/src/features/visualizer/useVisualizerEngine.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-18"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-replace-the-placeholder-export-panel-export-controls-coming-soon-with-functional-in-browser-mp4-export-ui-and-flow-consistent-with-the-existing-export-feature-set-ffmpeg-wasm-resolution-fps-bitrate-controls-time-size-estimates-progress-indicator-and-client-side-render-queue",
+      "featureTitle": "Replace the placeholder Export panel (“Export controls coming soon”) with functional in-browser MP4 export UI and flow consistent with the existing Export feature set (ffmpeg.wasm, resolution/FPS/bitrate controls, time+size estimates, progress indicator, and client-side render queue).",
+      "files": [
+        "frontend/src/features/export/ExportPanel.tsx",
+        "frontend/src/features/export/exportEstimator.ts",
+        "frontend/src/features/export/exportRenderer.ts",
+        "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
+        "frontend/src/features/export/useExportQueue.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-19"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-persist-all-newly-enabled-coming-soon-settings-background-settings-text-branding-settings-and-3d-tunnel-mode-selection-settings-where-applicable-in-projects-so-users-can-save-and-later-load-a-project-and-see-the-same-preview-configuration-restored",
+      "featureTitle": "Persist all newly-enabled “Coming Soon” settings (Background settings, Text & Branding settings, and 3D Tunnel mode selection/settings where applicable) in Projects so users can Save and later Load a project and see the same preview configuration restored.",
+      "files": [
+        "frontend/src/features/app-shell/TopBar.tsx",
+        "frontend/src/features/background/useBackgroundSettings.ts",
+        "frontend/src/features/overlays/useOverlaySettings.ts",
+        "frontend/src/features/persistence/applyLoadedProject.ts",
+        "frontend/src/features/persistence/projectSettingsCodec.ts",
+        "frontend/src/features/projects/ProjectsPanel.tsx",
+        "frontend/src/features/projects/useCurrentProject.ts",
+        "frontend/src/features/visualizer/useVisualizerEngine.ts",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-20"
       ],
       "confidence": "high"
     }

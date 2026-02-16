@@ -8,12 +8,44 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const _CaffeineStorageCreateCertificateResult = IDL.Record({
+  'method' : IDL.Text,
+  'blob_hash' : IDL.Text,
+});
+export const _CaffeineStorageRefillInformation = IDL.Record({
+  'proposed_top_up_amount' : IDL.Opt(IDL.Nat),
+});
+export const _CaffeineStorageRefillResult = IDL.Record({
+  'success' : IDL.Opt(IDL.Bool),
+  'topped_up_amount' : IDL.Opt(IDL.Nat),
+});
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
-export const UserProfile = IDL.Record({ 'name' : IDL.Text });
+export const BackgroundSettings = IDL.Record({
+  'color' : IDL.Text,
+  'brightness' : IDL.Float64,
+  'style' : IDL.Text,
+});
+export const BrandingSettings = IDL.Record({
+  'theme' : IDL.Text,
+  'font' : IDL.Text,
+  'logoUrl' : IDL.Text,
+});
+export const TunnelSettings = IDL.Record({
+  'complexity' : IDL.Int,
+  'rotation' : IDL.Bool,
+  'mode' : IDL.Text,
+  'speed' : IDL.Float64,
+  'depth' : IDL.Float64,
+});
+export const ExternalBlob = IDL.Vec(IDL.Nat8);
+export const UserProfile = IDL.Record({
+  'name' : IDL.Text,
+  'avatar' : IDL.Opt(ExternalBlob),
+});
 export const RefPoint = IDL.Record({
   'id' : IDL.Text,
   'startTime' : IDL.Float64,
@@ -29,18 +61,76 @@ export const RefPoint = IDL.Record({
 export const Project = IDL.Record({
   'id' : IDL.Text,
   'bpm' : IDL.Nat,
+  'backgroundSettings' : BackgroundSettings,
   'owner' : IDL.Principal,
   'refPoints' : IDL.Vec(RefPoint),
   'name' : IDL.Text,
   'polarity' : IDL.Bool,
+  'image' : IDL.Opt(ExternalBlob),
   'musicalKey' : IDL.Text,
+  'brandingSettings' : BrandingSettings,
+  'tunnelSettings' : TunnelSettings,
+});
+export const ProjectStatistics = IDL.Record({
+  'projectsPerUser' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
+  'totalProjects' : IDL.Nat,
+  'averageBpm' : IDL.Float64,
+  'mostCommonKey' : IDL.Text,
+  'polarityCount' : IDL.Nat,
+});
+export const ProjectFilters = IDL.Record({
+  'bpmRange' : IDL.Opt(IDL.Tuple(IDL.Nat, IDL.Nat)),
+  'owner' : IDL.Opt(IDL.Principal),
+  'keyword' : IDL.Opt(IDL.Text),
+});
+export const ProjectSummary = IDL.Record({
+  'id' : IDL.Text,
+  'bpm' : IDL.Nat,
+  'owner' : IDL.Principal,
+  'name' : IDL.Text,
+  'image' : IDL.Opt(ExternalBlob),
 });
 
 export const idlService = IDL.Service({
+  '_caffeineStorageBlobIsLive' : IDL.Func(
+      [IDL.Vec(IDL.Nat8)],
+      [IDL.Bool],
+      ['query'],
+    ),
+  '_caffeineStorageBlobsToDelete' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Vec(IDL.Nat8))],
+      ['query'],
+    ),
+  '_caffeineStorageConfirmBlobDeletion' : IDL.Func(
+      [IDL.Vec(IDL.Vec(IDL.Nat8))],
+      [],
+      [],
+    ),
+  '_caffeineStorageCreateCertificate' : IDL.Func(
+      [IDL.Text],
+      [_CaffeineStorageCreateCertificateResult],
+      [],
+    ),
+  '_caffeineStorageRefillCashier' : IDL.Func(
+      [IDL.Opt(_CaffeineStorageRefillInformation)],
+      [_CaffeineStorageRefillResult],
+      [],
+    ),
+  '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'createProject' : IDL.Func(
-      [IDL.Text, IDL.Bool, IDL.Nat, IDL.Text],
+      [
+        IDL.Text,
+        IDL.Bool,
+        IDL.Nat,
+        IDL.Text,
+        BackgroundSettings,
+        BrandingSettings,
+        TunnelSettings,
+        IDL.Opt(ExternalBlob),
+      ],
       [IDL.Text],
       [],
     ),
@@ -48,31 +138,82 @@ export const idlService = IDL.Service({
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getProject' : IDL.Func([IDL.Text], [Project], ['query']),
+  'getProjectStatistics' : IDL.Func([], [ProjectStatistics], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
       ['query'],
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
-  'listProjects' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+  'listProjects' : IDL.Func(
+      [ProjectFilters, IDL.Nat, IDL.Nat],
+      [IDL.Vec(ProjectSummary)],
+      ['query'],
+    ),
   'renameProject' : IDL.Func([IDL.Text, IDL.Text], [], []),
-  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'saveCallerUserProfile' : IDL.Func([IDL.Text, IDL.Opt(ExternalBlob)], [], []),
+  'updateBackgroundSettings' : IDL.Func([IDL.Text, BackgroundSettings], [], []),
+  'updateBrandingSettings' : IDL.Func([IDL.Text, BrandingSettings], [], []),
   'updateProject' : IDL.Func(
-      [IDL.Text, IDL.Text, IDL.Bool, IDL.Nat, IDL.Text, IDL.Vec(RefPoint)],
+      [
+        IDL.Text,
+        IDL.Text,
+        IDL.Bool,
+        IDL.Nat,
+        IDL.Text,
+        IDL.Vec(RefPoint),
+        BackgroundSettings,
+        BrandingSettings,
+        TunnelSettings,
+        IDL.Opt(ExternalBlob),
+      ],
       [],
       [],
     ),
+  'updateTunnelSettings' : IDL.Func([IDL.Text, TunnelSettings], [], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const _CaffeineStorageCreateCertificateResult = IDL.Record({
+    'method' : IDL.Text,
+    'blob_hash' : IDL.Text,
+  });
+  const _CaffeineStorageRefillInformation = IDL.Record({
+    'proposed_top_up_amount' : IDL.Opt(IDL.Nat),
+  });
+  const _CaffeineStorageRefillResult = IDL.Record({
+    'success' : IDL.Opt(IDL.Bool),
+    'topped_up_amount' : IDL.Opt(IDL.Nat),
+  });
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
-  const UserProfile = IDL.Record({ 'name' : IDL.Text });
+  const BackgroundSettings = IDL.Record({
+    'color' : IDL.Text,
+    'brightness' : IDL.Float64,
+    'style' : IDL.Text,
+  });
+  const BrandingSettings = IDL.Record({
+    'theme' : IDL.Text,
+    'font' : IDL.Text,
+    'logoUrl' : IDL.Text,
+  });
+  const TunnelSettings = IDL.Record({
+    'complexity' : IDL.Int,
+    'rotation' : IDL.Bool,
+    'mode' : IDL.Text,
+    'speed' : IDL.Float64,
+    'depth' : IDL.Float64,
+  });
+  const ExternalBlob = IDL.Vec(IDL.Nat8);
+  const UserProfile = IDL.Record({
+    'name' : IDL.Text,
+    'avatar' : IDL.Opt(ExternalBlob),
+  });
   const RefPoint = IDL.Record({
     'id' : IDL.Text,
     'startTime' : IDL.Float64,
@@ -88,18 +229,76 @@ export const idlFactory = ({ IDL }) => {
   const Project = IDL.Record({
     'id' : IDL.Text,
     'bpm' : IDL.Nat,
+    'backgroundSettings' : BackgroundSettings,
     'owner' : IDL.Principal,
     'refPoints' : IDL.Vec(RefPoint),
     'name' : IDL.Text,
     'polarity' : IDL.Bool,
+    'image' : IDL.Opt(ExternalBlob),
     'musicalKey' : IDL.Text,
+    'brandingSettings' : BrandingSettings,
+    'tunnelSettings' : TunnelSettings,
+  });
+  const ProjectStatistics = IDL.Record({
+    'projectsPerUser' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
+    'totalProjects' : IDL.Nat,
+    'averageBpm' : IDL.Float64,
+    'mostCommonKey' : IDL.Text,
+    'polarityCount' : IDL.Nat,
+  });
+  const ProjectFilters = IDL.Record({
+    'bpmRange' : IDL.Opt(IDL.Tuple(IDL.Nat, IDL.Nat)),
+    'owner' : IDL.Opt(IDL.Principal),
+    'keyword' : IDL.Opt(IDL.Text),
+  });
+  const ProjectSummary = IDL.Record({
+    'id' : IDL.Text,
+    'bpm' : IDL.Nat,
+    'owner' : IDL.Principal,
+    'name' : IDL.Text,
+    'image' : IDL.Opt(ExternalBlob),
   });
   
   return IDL.Service({
+    '_caffeineStorageBlobIsLive' : IDL.Func(
+        [IDL.Vec(IDL.Nat8)],
+        [IDL.Bool],
+        ['query'],
+      ),
+    '_caffeineStorageBlobsToDelete' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Vec(IDL.Nat8))],
+        ['query'],
+      ),
+    '_caffeineStorageConfirmBlobDeletion' : IDL.Func(
+        [IDL.Vec(IDL.Vec(IDL.Nat8))],
+        [],
+        [],
+      ),
+    '_caffeineStorageCreateCertificate' : IDL.Func(
+        [IDL.Text],
+        [_CaffeineStorageCreateCertificateResult],
+        [],
+      ),
+    '_caffeineStorageRefillCashier' : IDL.Func(
+        [IDL.Opt(_CaffeineStorageRefillInformation)],
+        [_CaffeineStorageRefillResult],
+        [],
+      ),
+    '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'createProject' : IDL.Func(
-        [IDL.Text, IDL.Bool, IDL.Nat, IDL.Text],
+        [
+          IDL.Text,
+          IDL.Bool,
+          IDL.Nat,
+          IDL.Text,
+          BackgroundSettings,
+          BrandingSettings,
+          TunnelSettings,
+          IDL.Opt(ExternalBlob),
+        ],
         [IDL.Text],
         [],
       ),
@@ -107,20 +306,47 @@ export const idlFactory = ({ IDL }) => {
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getProject' : IDL.Func([IDL.Text], [Project], ['query']),
+    'getProjectStatistics' : IDL.Func([], [ProjectStatistics], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
         ['query'],
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
-    'listProjects' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+    'listProjects' : IDL.Func(
+        [ProjectFilters, IDL.Nat, IDL.Nat],
+        [IDL.Vec(ProjectSummary)],
+        ['query'],
+      ),
     'renameProject' : IDL.Func([IDL.Text, IDL.Text], [], []),
-    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-    'updateProject' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Bool, IDL.Nat, IDL.Text, IDL.Vec(RefPoint)],
+    'saveCallerUserProfile' : IDL.Func(
+        [IDL.Text, IDL.Opt(ExternalBlob)],
         [],
         [],
       ),
+    'updateBackgroundSettings' : IDL.Func(
+        [IDL.Text, BackgroundSettings],
+        [],
+        [],
+      ),
+    'updateBrandingSettings' : IDL.Func([IDL.Text, BrandingSettings], [], []),
+    'updateProject' : IDL.Func(
+        [
+          IDL.Text,
+          IDL.Text,
+          IDL.Bool,
+          IDL.Nat,
+          IDL.Text,
+          IDL.Vec(RefPoint),
+          BackgroundSettings,
+          BrandingSettings,
+          TunnelSettings,
+          IDL.Opt(ExternalBlob),
+        ],
+        [],
+        [],
+      ),
+    'updateTunnelSettings' : IDL.Func([IDL.Text, TunnelSettings], [], []),
   });
 };
 

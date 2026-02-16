@@ -10,14 +10,48 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface BackgroundSettings {
+  'color' : string,
+  'brightness' : number,
+  'style' : string,
+}
+export interface BrandingSettings {
+  'theme' : string,
+  'font' : string,
+  'logoUrl' : string,
+}
+export type ExternalBlob = Uint8Array;
 export interface Project {
   'id' : string,
   'bpm' : bigint,
+  'backgroundSettings' : BackgroundSettings,
   'owner' : Principal,
   'refPoints' : Array<RefPoint>,
   'name' : string,
   'polarity' : boolean,
+  'image' : [] | [ExternalBlob],
   'musicalKey' : string,
+  'brandingSettings' : BrandingSettings,
+  'tunnelSettings' : TunnelSettings,
+}
+export interface ProjectFilters {
+  'bpmRange' : [] | [[bigint, bigint]],
+  'owner' : [] | [Principal],
+  'keyword' : [] | [string],
+}
+export interface ProjectStatistics {
+  'projectsPerUser' : Array<[Principal, bigint]>,
+  'totalProjects' : bigint,
+  'averageBpm' : number,
+  'mostCommonKey' : string,
+  'polarityCount' : bigint,
+}
+export interface ProjectSummary {
+  'id' : string,
+  'bpm' : bigint,
+  'owner' : Principal,
+  'name' : string,
+  'image' : [] | [ExternalBlob],
 }
 export interface RefPoint {
   'id' : string,
@@ -31,27 +65,96 @@ export interface RefPoint {
   'harmonicAnalysis' : string,
   'keySignature' : string,
 }
-export interface UserProfile { 'name' : string }
+export interface TunnelSettings {
+  'complexity' : bigint,
+  'rotation' : boolean,
+  'mode' : string,
+  'speed' : number,
+  'depth' : number,
+}
+export interface UserProfile { 'name' : string, 'avatar' : [] | [ExternalBlob] }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
+export interface _CaffeineStorageCreateCertificateResult {
+  'method' : string,
+  'blob_hash' : string,
+}
+export interface _CaffeineStorageRefillInformation {
+  'proposed_top_up_amount' : [] | [bigint],
+}
+export interface _CaffeineStorageRefillResult {
+  'success' : [] | [boolean],
+  'topped_up_amount' : [] | [bigint],
+}
 export interface _SERVICE {
+  '_caffeineStorageBlobIsLive' : ActorMethod<[Uint8Array], boolean>,
+  '_caffeineStorageBlobsToDelete' : ActorMethod<[], Array<Uint8Array>>,
+  '_caffeineStorageConfirmBlobDeletion' : ActorMethod<
+    [Array<Uint8Array>],
+    undefined
+  >,
+  '_caffeineStorageCreateCertificate' : ActorMethod<
+    [string],
+    _CaffeineStorageCreateCertificateResult
+  >,
+  '_caffeineStorageRefillCashier' : ActorMethod<
+    [[] | [_CaffeineStorageRefillInformation]],
+    _CaffeineStorageRefillResult
+  >,
+  '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'createProject' : ActorMethod<[string, boolean, bigint, string], string>,
+  'createProject' : ActorMethod<
+    [
+      string,
+      boolean,
+      bigint,
+      string,
+      BackgroundSettings,
+      BrandingSettings,
+      TunnelSettings,
+      [] | [ExternalBlob],
+    ],
+    string
+  >,
   'deleteProject' : ActorMethod<[string], undefined>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getProject' : ActorMethod<[string], Project>,
+  'getProjectStatistics' : ActorMethod<[], ProjectStatistics>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
-  'listProjects' : ActorMethod<[], Array<string>>,
+  'listProjects' : ActorMethod<
+    [ProjectFilters, bigint, bigint],
+    Array<ProjectSummary>
+  >,
   'renameProject' : ActorMethod<[string, string], undefined>,
-  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
-  'updateProject' : ActorMethod<
-    [string, string, boolean, bigint, string, Array<RefPoint>],
+  'saveCallerUserProfile' : ActorMethod<
+    [string, [] | [ExternalBlob]],
     undefined
   >,
+  'updateBackgroundSettings' : ActorMethod<
+    [string, BackgroundSettings],
+    undefined
+  >,
+  'updateBrandingSettings' : ActorMethod<[string, BrandingSettings], undefined>,
+  'updateProject' : ActorMethod<
+    [
+      string,
+      string,
+      boolean,
+      bigint,
+      string,
+      Array<RefPoint>,
+      BackgroundSettings,
+      BrandingSettings,
+      TunnelSettings,
+      [] | [ExternalBlob],
+    ],
+    undefined
+  >,
+  'updateTunnelSettings' : ActorMethod<[string, TunnelSettings], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

@@ -1,19 +1,81 @@
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
-import { useGetCallerUserProfile } from '../../hooks/useQueries';
+import { useGetCallerUserProfile, useGetProject } from '../../hooks/useQueries';
+import { useActor } from '../../hooks/useActor';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Save, Download, User, LogOut } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useCurrentProject } from '../projects/useCurrentProject';
+import { useBackgroundSettings } from '../background/useBackgroundSettings';
+import { useOverlaySettings } from '../overlays/useOverlaySettings';
+import { useVisualizerEngineStore } from '../visualizer/useVisualizerEngine';
+import { encodeBackgroundSettings, encodeBrandingSettings, encodeTunnelSettings } from '../persistence/projectSettingsCodec';
+import { applyLoadedProject } from '../persistence/applyLoadedProject';
+import { toast } from 'sonner';
+import { useEffect } from 'react';
 
 export function TopBar() {
   const { clear, identity } = useInternetIdentity();
   const { data: userProfile } = useGetCallerUserProfile();
+  const { actor } = useActor();
   const queryClient = useQueryClient();
+  const { currentProjectId } = useCurrentProject();
+  
+  // Fetch current project data
+  const { data: currentProject, refetch: refetchProject } = useGetProject(currentProjectId || '');
+
+  // Load project settings when project changes
+  useEffect(() => {
+    if (currentProject) {
+      applyLoadedProject(currentProject);
+    }
+  }, [currentProject]);
 
   const handleLogout = async () => {
     await clear();
     queryClient.clear();
+  };
+
+  const handleSave = async () => {
+    if (!currentProjectId || !currentProject) {
+      toast.error('No project selected');
+      return;
+    }
+
+    if (!actor) {
+      toast.error('Backend not available');
+      return;
+    }
+
+    try {
+      const bgSettings = useBackgroundSettings.getState();
+      const overlaySettings = useOverlaySettings.getState();
+      const vizSettings = useVisualizerEngineStore.getState();
+
+      const backgroundSettingsEncoded = encodeBackgroundSettings(bgSettings.serialize());
+      const brandingSettingsEncoded = encodeBrandingSettings(overlaySettings.serialize());
+      const tunnelSettingsEncoded = encodeTunnelSettings(vizSettings.serialize());
+
+      await actor.updateProject(
+        currentProjectId,
+        currentProject.name,
+        currentProject.polarity,
+        currentProject.bpm,
+        currentProject.musicalKey,
+        currentProject.refPoints,
+        backgroundSettingsEncoded,
+        brandingSettingsEncoded,
+        tunnelSettingsEncoded,
+        currentProject.image || null
+      );
+
+      await refetchProject();
+      toast.success('Project saved successfully');
+    } catch (error) {
+      console.error('Failed to save project:', error);
+      toast.error('Failed to save project');
+    }
   };
 
   const userInitials = userProfile?.name
@@ -37,7 +99,13 @@ export function TopBar() {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" className="hidden sm:flex">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="hidden sm:flex"
+          onClick={handleSave}
+          disabled={!currentProjectId || !actor}
+        >
           <Save className="h-4 w-4 mr-2" />
           Save
         </Button>

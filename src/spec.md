@@ -1,23 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Build “WaveCraft Pro,” a mobile-first, Android Chrome–optimized music visualizer video maker with an all-features-unlocked creator dashboard, real-time preview, project saving, and fully in-browser MP4 export.
+**Goal:** Enable and fully implement all previously “Coming Soon” options (Background, Text & Branding overlays, 3D Tunnel mode, and Export), and persist these settings in Projects.
 
 **Planned changes:**
-- Create a responsive creator-dashboard UI shell (top bar with Save/Export, left sidebar navigation, center live preview canvas, right-side controls) with touch-friendly interactions and no hover-only dependencies.
-- Remove/omit all monetization and plan-gating (no subscriptions, Stripe, paid plans, pro checks, or forced watermark); keep watermark as an optional toggle (default off).
-- Implement MP3/WAV upload + playback using a single reusable Web Audio API `AudioContext`, with efficient decoding and real-time analysis suitable for mid-range Android devices.
-- Build a lightweight visualizer engine using `requestAnimationFrame`, capped at 30fps by default, avoiding React re-renders during animation (use refs); stop/cleanup on pause/stop.
-- Add modular visualizer modes: circular spectrum, horizontal bar equalizer, vertical bar equalizer, waveform line, radial neon ring, particle-reactive, minimal lo‑fi soft glow, and optional heavier WebGL 3D tunnel mode that can be avoided on mobile.
-- Add audio analysis controls: FFT spectrum, bass/mid/treble separation, sensitivity slider, and best-effort BPM detection with safe fallback display.
-- Add audio timing edits: trim start/end and fade-in/fade-out with responsive preview updates.
-- Add background customization: solid color, multi-stop gradient builder, uploaded image backgrounds, and subtle animated particle overlay.
-- Add text/branding overlays: title and artist fields, bundled font selection, position/size controls, entrance animation presets, and logo upload overlay.
-- Implement in-browser MP4 export via `ffmpeg.wasm` (no server rendering) with resolution (720p/1080p/4K), fps (30/60), bitrate, estimated file size/render-time estimate, and export progress UI.
-- Add a client-side render queue to enqueue multiple export jobs, show status, cancel jobs, and run sequentially.
-- Add project persistence using a single Motoko backend actor: create/list/load/rename/delete projects that store audio reference metadata + visual settings.
-- Build a responsive landing/marketing page (hero, demo preview section, feature highlights, visualizer showcase, pricing section without payments, FAQ, CTA) including the Facebook link: https://www.facebook.com/share/14SsrwttdEB/
-- Apply a consistent premium dark theme across landing + app (dark charcoal base; avoid blue/purple as primary), with clear hierarchy and accessible interactive states.
-- Add reliability/performance safeguards: error boundaries, graceful export failure handling with retry, resource cleanup (audio nodes/object URLs/animation loops), and lazy-load heavy modules (ffmpeg.wasm and optional 3D) only when needed.
+- Replace the “Background controls coming soon” placeholder with functional background controls: solid color, multi-stop gradient builder, background image upload (replace/clear), and an optional subtle animated particles overlay with density/intensity control; update the live preview immediately and remain usable on mobile.
+- Replace the “Overlay controls coming soon” placeholder with Text & Branding (Overlays) controls: song title, artist name, bundled font selection, position and size controls, entrance animation presets, logo upload overlay (correct aspect ratio), and a watermark toggle (default off); render overlays in the live preview with readable styling across backgrounds.
+- Implement “3D Tunnel (Heavy)” as a real WebGL-based 3D tunnel visualizer mode with safe switching (no leaks) and a clear fallback behavior/message for unsupported devices.
+- Replace “Export controls coming soon” with a functional in-browser MP4 export panel using ffmpeg.wasm: resolution (720p/1080p/4K), FPS (30/60), bitrate, best-effort time/size estimates, progress UI, and a client-side sequential render queue with cancel and graceful error handling.
+- Persist all new Background, Text & Branding, and 3D Tunnel selection/settings in Projects: extend the backend Project model (and add a migration only if needed), and ensure Save/Load restores the same preview configuration.
 
-**User-visible outcome:** Users can create and preview audio-reactive visualizer videos on mobile, customize visuals/backgrounds/text/logo, edit audio timing, save/load projects, and export MP4s (including 4K) fully in-browser with progress and a client-side render queue—without any payment or feature restrictions.
+**User-visible outcome:** Users can customize backgrounds and overlays, switch to a working 3D Tunnel mode, export MP4 videos in-browser with queue/progress, and save/load projects with all these settings restored.

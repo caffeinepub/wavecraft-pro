@@ -22,7 +22,7 @@ export function ProfileSetupModal() {
     if (!name.trim()) return;
     
     try {
-      await saveProfile.mutateAsync({ name: name.trim() });
+      await saveProfile.mutateAsync({ name: name.trim(), avatar: null });
       setIsOpen(false);
     } catch (error) {
       console.error('Failed to save profile:', error);

@@ -2,7 +2,8 @@ import { useVisualizerEngine, type VisualizerMode } from './useVisualizerEngine'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Activity } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Activity, AlertTriangle } from 'lucide-react';
 
 const visualizerModes: Array<{ value: VisualizerMode; label: string; description: string }> = [
   { value: 'circular-spectrum', label: 'Circular Spectrum', description: 'Radial frequency bars' },
@@ -16,7 +17,18 @@ const visualizerModes: Array<{ value: VisualizerMode; label: string; description
 ];
 
 export function VisualizerControlsPanel() {
-  const { mode, setMode } = useVisualizerEngine();
+  const { mode, setMode, webglSupported } = useVisualizerEngine();
+
+  const handleModeChange = (newMode: string) => {
+    const selectedMode = newMode as VisualizerMode;
+    
+    if (selectedMode === '3d-tunnel' && !webglSupported) {
+      setMode('circular-spectrum');
+      return;
+    }
+    
+    setMode(selectedMode);
+  };
 
   return (
     <Card>
@@ -28,15 +40,28 @@ export function VisualizerControlsPanel() {
         <CardDescription>Choose your visualizer style</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {!webglSupported && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              3D Tunnel mode requires WebGL support. Your browser or device does not support WebGL.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <div className="space-y-2">
           <Label>Mode</Label>
-          <Select value={mode} onValueChange={(v) => setMode(v as VisualizerMode)}>
+          <Select value={mode} onValueChange={handleModeChange}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {visualizerModes.map((m) => (
-                <SelectItem key={m.value} value={m.value}>
+                <SelectItem 
+                  key={m.value} 
+                  value={m.value}
+                  disabled={m.value === '3d-tunnel' && !webglSupported}
+                >
                   <div>
                     <div className="font-medium">{m.label}</div>
                     <div className="text-xs text-muted-foreground">{m.description}</div>

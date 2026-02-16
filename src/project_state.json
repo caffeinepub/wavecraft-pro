@@ -1,11 +1,12 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 5,
   "summary": "Build a production-ready music visualizer video maker web app called “WaveCraft Pro” for a personal website, with full feature access/unlocked (premium features available to the owner) and a premium dark creator-dashboard UX.",
-  "architectural_notes": [],
+  "architectural_notes": [
+    "Treat any UI sections/options marked “Coming Soon” (per user screenshots) as required for full implementation now; remove “Coming Soon” placeholders and wire them to real functionality (background controls, text/branding controls, and any other options shown)."
+  ],
   "known_issues": [],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- WaveCraft Pro wordmark logo, dark-theme friendly, high contrast (wavecraft-pro-logo.dim_512x512.png)\n- Abstract waveform hero background, dark charcoal with neon accent streaks (hero-waveform-bg.dim_1920x1080.png)\n- Set of 6 minimal line icons for dashboard navigation (icons-dashboard-set.dim_512x512.png)",
   "existing_features": [
     {
       "id": "feature-build-the-wavecraft-pro-web-app-as-a-mobile-first-creator-tool-optimized-for-android-chrome-responsive-layouts-that-start-with-small-screens-touch-friendly-controls-and-a-creator-dashboard-ui-left-sidebar-navigation-center-live-preview-canvas-right-side-controls-panel-and-a-top-bar-with-save-and-export",
@@ -126,6 +127,46 @@
         "REQ-15"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-replace-the-placeholder-background-controls-coming-soon-ui-with-fully-functional-background-controls-including-solid-color-background-multi-stop-gradient-background-builder-image-upload-background-and-a-subtle-animated-particles-overlay-all-controls-must-update-the-live-preview-immediately-without-noticeable-lag-on-mobile",
+      "title": "Replace the placeholder “Background controls coming soon” UI with fully functional Background controls, including: solid color background, multi-stop gradient background builder, image upload background, and a subtle animated particles overlay; all controls must update the live preview immediately without noticeable lag on mobile.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-text-branding-overlays-controls-to-fully-replace-the-overlay-controls-coming-soon-placeholder-including-song-title-text-artist-name-text-font-selection-from-bundled-fonts-position-controls-size-controls-entrance-animation-preset-selection-logo-upload-overlay-and-an-optional-watermark-toggle-default-off-overlays-must-render-in-the-live-preview",
+      "title": "Implement the Text & Branding (Overlays) controls to fully replace the “Overlay controls coming soon” placeholder, including: song title text, artist name text, font selection from bundled fonts, position controls, size controls, entrance animation preset selection, logo upload overlay, and an optional watermark toggle (default off); overlays must render in the live preview.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-3d-tunnel-heavy-visualizer-mode-as-a-real-webgl-based-3d-tunnel-mode-not-a-coming-soon-text-stub-and-provide-a-clear-on-off-performance-safe-behavior-so-devices-can-switch-away-without-crashes-or-memory-leaks",
+      "title": "Implement the “3D Tunnel (Heavy)” visualizer mode as a real WebGL-based 3D tunnel mode (not a “coming soon” text stub), and provide a clear on/off performance-safe behavior so devices can switch away without crashes or memory leaks.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-placeholder-export-panel-export-controls-coming-soon-with-functional-in-browser-mp4-export-ui-and-flow-consistent-with-the-existing-export-feature-set-ffmpeg-wasm-resolution-fps-bitrate-controls-time-size-estimates-progress-indicator-and-client-side-render-queue",
+      "title": "Replace the placeholder Export panel (“Export controls coming soon”) with functional in-browser MP4 export UI and flow consistent with the existing Export feature set (ffmpeg.wasm, resolution/FPS/bitrate controls, time+size estimates, progress indicator, and client-side render queue).",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-persist-all-newly-enabled-coming-soon-settings-background-settings-text-branding-settings-and-3d-tunnel-mode-selection-settings-where-applicable-in-projects-so-users-can-save-and-later-load-a-project-and-see-the-same-preview-configuration-restored",
+      "title": "Persist all newly-enabled “Coming Soon” settings (Background settings, Text & Branding settings, and 3D Tunnel mode selection/settings where applicable) in Projects so users can Save and later Load a project and see the same preview configuration restored.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -194,6 +235,12 @@
       "summary": "Include link to Facebook page (https://www.facebook.com/share/14SsrwttdEB/) in the website",
       "reqIds": [],
       "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Enable and fully implement all options currently labeled “Coming Soon” in the provided screenshots (at minimum: Background controls + Text & Branding controls; plus any other missing options shown)",
+      "reqIds": [],
+      "status": "in_progress"
     }
   ],
   "projectName": "WaveCraft Pro",

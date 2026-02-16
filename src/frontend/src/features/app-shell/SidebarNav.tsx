@@ -43,7 +43,7 @@ export function SidebarNav({ activeSection, onSectionChange }: SidebarNavProps) 
                 : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
             )}
           >
-            <Icon className="h-5 w-5 flex-shrink-0" />
+            <Icon className="h-5 w-5 shrink-0" />
             <span>{item.label}</span>
           </button>
         );

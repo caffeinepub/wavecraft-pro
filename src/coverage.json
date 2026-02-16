@@ -1,416 +1,165 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-16T04:08:23.580Z",
+  "generatedAt": "2026-02-16T05:28:59.126Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 15,
-    "implemented": 15,
+    "total": 5,
+    "implemented": 5,
     "items": [
       {
-        "id": "REQ-1",
-        "summary": "Build the WaveCraft Pro web app as a mobile-first creator tool optimized for Android Chrome: responsive layouts that start with small screens, touch-friendly controls, and a creator-dashboard UI (left sidebar navigation, center live preview canvas, right-side controls panel, and a top bar with Save and Export).",
+        "id": "REQ-16",
+        "summary": "Replace the placeholder “Background controls coming soon” UI with fully functional Background controls, including: solid color background, multi-stop gradient background builder, image upload background, and a subtle animated particles overlay; all controls must update the live preview immediately without noticeable lag on mobile.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-          "frontend/src/features/app-shell/SidebarNav.tsx",
-          "frontend/src/features/app-shell/TopBar.tsx",
+          "frontend/src/features/background/BackgroundControlsPanel.tsx",
+          "frontend/src/features/background/useBackgroundSettings.ts",
+          "frontend/src/features/background/backgroundRenderers.ts",
+          "frontend/src/features/background/particlesOverlay.ts",
           "frontend/src/features/preview/PreviewCanvas.tsx",
-          "frontend/src/main.tsx"
+          "frontend/src/features/visualizer/VisualizerEngine.ts"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-          "frontend/src/features/app-shell/SidebarNav.tsx",
-          "frontend/src/features/app-shell/TopBar.tsx",
+          "frontend/src/features/background/BackgroundControlsPanel.tsx",
+          "frontend/src/features/background/useBackgroundSettings.ts",
+          "frontend/src/features/background/backgroundRenderers.ts",
+          "frontend/src/features/background/particlesOverlay.ts",
+          "frontend/src/features/visualizer/VisualizerEngine.ts"
+        ]
+      },
+      {
+        "id": "REQ-17",
+        "summary": "Implement the Text & Branding (Overlays) controls to fully replace the “Overlay controls coming soon” placeholder, including: song title text, artist name text, font selection from bundled fonts, position controls, size controls, entrance animation preset selection, logo upload overlay, and an optional watermark toggle (default off); overlays must render in the live preview.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
+          "frontend/src/features/overlays/useOverlaySettings.ts",
+          "frontend/src/features/overlays/overlayRenderers.ts",
           "frontend/src/features/preview/PreviewCanvas.tsx",
-          "frontend/src/main.tsx"
-        ]
-      },
-      {
-        "id": "REQ-10",
-        "summary": "Implement in-browser MP4 export using ffmpeg.wasm (no server-side rendering) with settings for 720p/1080p/4K, 30/60fps, bitrate selection, estimated file size and render-time estimate, and an export progress indicator.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/package.json",
-          "frontend/src/features/export/ffmpeg/loadFfmpeg.ts",
-          "frontend/src/features/export/renderToMp4.ts",
-          "frontend/src/features/export/estimates.ts",
-          "frontend/src/features/export/ExportPanel.tsx",
-          "frontend/src/features/app-shell/TopBar.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/export/ExportPanel.tsx",
-          "frontend/src/features/app-shell/TopBar.tsx"
-        ]
-      },
-      {
-        "id": "REQ-11",
-        "summary": "Implement an in-app render queue for exports that runs client-side (since server-side queues are not available): allow users to enqueue multiple export jobs, view job status, cancel a job, and run jobs sequentially.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/export/queue/types.ts",
-          "frontend/src/features/export/queue/useRenderQueue.ts",
-          "frontend/src/features/export/queue/RenderQueuePanel.tsx",
-          "frontend/src/features/export/ExportPanel.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/export/ExportPanel.tsx"
-        ]
-      },
-      {
-        "id": "REQ-12",
-        "summary": "Add project persistence so users can save/load “projects” (audio reference metadata + visual settings) using the Motoko backend; include basic CRUD: create, list, load, rename, delete.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/projects/projectSerialization.ts",
-          "frontend/src/features/projects/queries.ts",
-          "frontend/src/features/projects/ProjectsPanel.tsx",
-          "frontend/src/features/app-shell/TopBar.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-          "frontend/src/features/auth/AuthGate.tsx",
-          "frontend/src/features/auth/ProfileSetupModal.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/projects/ProjectsPanel.tsx",
-          "frontend/src/features/app-shell/TopBar.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-          "frontend/src/features/auth/AuthGate.tsx",
-          "frontend/src/features/auth/ProfileSetupModal.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-13",
-        "summary": "Create a landing/marketing page with a modern SaaS-style layout (hero, demo preview section, feature highlights, visualizer showcase, pricing section without payments, FAQ, and CTA), and include the user’s Facebook page link: https://www.facebook.com/share/14SsrwttdEB/",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/LandingPage.tsx",
-          "frontend/public/assets/generated/wavecraft-pro-logo.dim_512x512.png",
-          "frontend/public/assets/generated/hero-waveform-bg.dim_1920x1080.png",
-          "frontend/public/assets/generated/icons-dashboard-set.dim_512x512.png",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/LandingPage.tsx",
-          "frontend/public/assets/generated/wavecraft-pro-logo.dim_512x512.png",
-          "frontend/public/assets/generated/hero-waveform-bg.dim_1920x1080.png",
-          "frontend/public/assets/generated/icons-dashboard-set.dim_512x512.png",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-14",
-        "summary": "Apply a coherent premium dark visual theme consistently across landing + app (typography, spacing, components). Avoid blue/purple as the primary palette; use a dark charcoal base with high-contrast accent colors and clear visual hierarchy suitable for creator tools.",
-        "status": "implemented",
-        "plannedFiles": [
           "frontend/src/index.css",
-          "frontend/tailwind.config.js",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-          "frontend/src/pages/LandingPage.tsx"
+          "frontend/public/assets/fonts/README.md"
         ],
         "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/tailwind.config.js",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-          "frontend/src/pages/LandingPage.tsx"
+          "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
+          "frontend/src/features/overlays/useOverlaySettings.ts",
+          "frontend/src/features/overlays/overlayRenderers.ts",
+          "frontend/src/index.css"
         ]
       },
       {
-        "id": "REQ-15",
-        "summary": "Add production-level reliability and performance safeguards: error boundaries for key UI areas, graceful handling of export failures, memory/resource cleanup (AudioContext nodes, object URLs, animation loops), and lazy-load heavy modules (ffmpeg.wasm, optional 3D) only when needed.",
+        "id": "REQ-18",
+        "summary": "Implement the “3D Tunnel (Heavy)” visualizer mode as a real WebGL-based 3D tunnel mode (not a “coming soon” text stub), and provide a clear on/off performance-safe behavior so devices can switch away without crashes or memory leaks.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/errors/ErrorBoundary.tsx",
-          "frontend/src/features/export/ExportPanel.tsx",
-          "frontend/src/features/audio/useAudioEngine.ts",
+          "frontend/src/features/visualizer/modes/Tunnel3DWebGL.ts",
           "frontend/src/features/visualizer/VisualizerEngine.ts",
-          "frontend/src/features/visualizer/modes/ThreeDTunnel.lazy.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/errors/ErrorBoundary.tsx",
-          "frontend/src/features/export/ExportPanel.tsx",
-          "frontend/src/features/audio/useAudioEngine.ts",
-          "frontend/src/features/visualizer/VisualizerEngine.ts",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Remove/omit all monetization and plan-gating: no subscriptions, no Stripe, no paid plans, no pro feature gates, and ensure all features are available to the site owner with no restrictions.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/LandingPage.tsx",
-          "frontend/src/features/export/ExportPanel.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/LandingPage.tsx",
-          "frontend/src/features/export/ExportPanel.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Implement audio upload and playback using a single Web Audio API AudioContext instance with efficient decoding and analysis for MP3/WAV files, supporting real-time preview without lag.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/audio/useAudioEngine.ts",
-          "frontend/src/features/audio/AudioUploadPanel.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/audio/useAudioEngine.ts",
-          "frontend/src/features/audio/AudioUploadPanel.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
-        ]
-      },
-      {
-        "id": "REQ-4",
-        "summary": "Implement a lightweight visualizer engine that renders smoothly with a 30fps cap by default, uses requestAnimationFrame efficiently, and avoids React re-renders during animation (store animation state in refs, not React state).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/visualizer/VisualizerEngine.ts",
-          "frontend/src/features/preview/PreviewCanvas.tsx",
-          "frontend/src/features/export/exportConfig.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/visualizer/VisualizerEngine.ts",
+          "frontend/src/features/visualizer/useVisualizerEngine.ts",
+          "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
           "frontend/src/features/preview/PreviewCanvas.tsx"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Provide modular visualizer modes with configurable parameters, including: circular spectrum, horizontal bar equalizer, vertical bar equalizer, waveform line, radial neon ring, particle-reactive mode, minimal lo‑fi soft glow mode, and an optional WebGL 3D tunnel mode that can be disabled for performance.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/visualizer/modes/index.ts",
-          "frontend/src/features/visualizer/modes/CircularSpectrum.ts",
-          "frontend/src/features/visualizer/modes/BarEqualizerHorizontal.ts",
-          "frontend/src/features/visualizer/modes/BarEqualizerVertical.ts",
-          "frontend/src/features/visualizer/modes/WaveformLine.ts",
-          "frontend/src/features/visualizer/modes/RadialNeonRing.ts",
-          "frontend/src/features/visualizer/modes/ParticleReactive.ts",
-          "frontend/src/features/visualizer/modes/MinimalLofiGlow.ts",
-          "frontend/src/features/visualizer/modes/ThreeDTunnel.lazy.tsx",
-          "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/features/visualizer/modes/CircularSpectrum.ts",
-          "frontend/src/features/visualizer/modes/BarEqualizerHorizontal.ts",
-          "frontend/src/features/visualizer/modes/BarEqualizerVertical.ts",
-          "frontend/src/features/visualizer/modes/WaveformLine.ts",
-          "frontend/src/features/visualizer/modes/RadialNeonRing.ts",
-          "frontend/src/features/visualizer/modes/ParticleReactive.ts",
-          "frontend/src/features/visualizer/modes/MinimalLofiGlow.ts",
-          "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
+          "frontend/src/features/visualizer/modes/Tunnel3DWebGL.ts",
+          "frontend/src/features/visualizer/VisualizerEngine.ts",
+          "frontend/src/features/visualizer/useVisualizerEngine.ts",
+          "frontend/src/features/visualizer/VisualizerControlsPanel.tsx"
         ]
       },
       {
-        "id": "REQ-6",
-        "summary": "Implement audio analysis features needed for band-reactive visuals: FFT spectrum plus bass/mid/treble separation, a sensitivity slider, and (best-effort) BPM detection for display/use in animation timing.",
+        "id": "REQ-19",
+        "summary": "Replace the placeholder Export panel (“Export controls coming soon”) with functional in-browser MP4 export UI and flow consistent with the existing Export feature set (ffmpeg.wasm, resolution/FPS/bitrate controls, time+size estimates, progress indicator, and client-side render queue).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/audio/analysis/audioAnalysis.ts",
-          "frontend/src/features/audio/analysis/bpmDetection.ts",
-          "frontend/src/features/audio/AnalysisStatus.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
+          "frontend/src/features/export/ExportPanel.tsx",
+          "frontend/src/features/export/useExportQueue.ts",
+          "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
+          "frontend/src/features/export/exportEstimator.ts",
+          "frontend/src/features/export/exportRenderer.ts",
+          "frontend/src/features/preview/PreviewCanvas.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/features/audio/AnalysisStatus.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
+          "frontend/src/features/export/ExportPanel.tsx",
+          "frontend/src/features/export/useExportQueue.ts",
+          "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
+          "frontend/src/features/export/exportEstimator.ts",
+          "frontend/src/features/export/exportRenderer.ts"
         ]
       },
       {
-        "id": "REQ-7",
-        "summary": "Add editing controls for audio timing and transitions: trim audio range (start/end), fade in, and fade out, ensuring preview remains responsive.",
+        "id": "REQ-20",
+        "summary": "Persist all newly-enabled “Coming Soon” settings (Background settings, Text & Branding settings, and 3D Tunnel mode selection/settings where applicable) in Projects so users can Save and later Load a project and see the same preview configuration restored.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/audio/editing/audioEditing.ts",
-          "frontend/src/features/audio/AudioEditingPanel.tsx",
-          "frontend/src/features/audio/useAudioEngine.ts",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/audio/AudioEditingPanel.tsx",
-          "frontend/src/features/audio/useAudioEngine.ts",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
-        ]
-      },
-      {
-        "id": "REQ-8",
-        "summary": "Add background customization options for the video: solid color, multi-stop gradient builder, image upload background, and subtle animated particles overlay.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/background/BackgroundModel.ts",
-          "frontend/src/features/background/GradientBuilder.tsx",
-          "frontend/src/features/background/BackgroundControlsPanel.tsx",
-          "frontend/src/features/background/ParticlesOverlay.ts",
+          "frontend/src/features/projects/useCurrentProject.ts",
+          "frontend/src/features/projects/ProjectsPanel.tsx",
+          "frontend/src/features/app-shell/TopBar.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/features/background/useBackgroundSettings.ts",
+          "frontend/src/features/overlays/useOverlaySettings.ts",
+          "frontend/src/features/visualizer/useVisualizerEngine.ts",
           "frontend/src/features/preview/PreviewCanvas.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
+          "frontend/src/backend.d.ts",
+          "frontend/src/features/persistence/projectSettingsCodec.ts",
+          "frontend/src/features/persistence/applyLoadedProject.ts"
         ],
         "matchedFiles": [
-          "frontend/src/features/background/BackgroundControlsPanel.tsx",
-          "frontend/src/features/preview/PreviewCanvas.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
-        ]
-      },
-      {
-        "id": "REQ-9",
-        "summary": "Add text and branding overlays: song title, artist name, font selection (from bundled fonts), position/size controls, entrance animation presets, and a logo upload overlay. Keep a watermark overlay as an optional toggle only (default off) with no plan gating.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/overlays/OverlaysModel.ts",
-          "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
-          "frontend/src/features/overlays/OverlayRenderer.ts",
-          "frontend/src/features/preview/PreviewCanvas.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-          "frontend/src/assets/fonts/README.md"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
-          "frontend/src/features/preview/PreviewCanvas.tsx",
-          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
+          "frontend/src/features/projects/useCurrentProject.ts",
+          "frontend/src/features/projects/ProjectsPanel.tsx",
+          "frontend/src/features/app-shell/TopBar.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/features/background/useBackgroundSettings.ts",
+          "frontend/src/features/overlays/useOverlaySettings.ts",
+          "frontend/src/features/visualizer/useVisualizerEngine.ts",
+          "frontend/src/backend.d.ts",
+          "frontend/src/features/persistence/projectSettingsCodec.ts",
+          "frontend/src/features/persistence/applyLoadedProject.ts"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/authorization/MixinAuthorization.mo",
-    "backend/authorization/access-control.mo",
+    "backend/blob-storage/Mixin.mo",
+    "backend/blob-storage/Storage.mo",
     "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
-    "build-template/Dockerfile",
-    "build-template/LICENSE",
     "build-template/README.md",
-    "build-template/deploy.sh",
-    "build-template/icp.yaml",
-    "build-template/package.json",
-    "build-template/pnpm-lock.yaml",
-    "build-template/pnpm-workspace.yaml",
-    "build-template/scripts/prune-unused-images.js",
-    "build-template/scripts/resize-images.js",
-    "build-template/src/backend/canister.yaml",
-    "build-template/src/backend/system-idl/aaaaa-aa.did",
-    "build-template/src/frontend/canister.yaml",
-    "build-template/src/frontend/components.json",
-    "build-template/src/frontend/env.json",
-    "build-template/src/frontend/eslint-rules/no-bigint-in-query-keys.js",
-    "build-template/src/frontend/eslint-rules/require-internet-identity-provider.js",
-    "build-template/src/frontend/eslint.config.js",
-    "build-template/src/frontend/package.json",
-    "build-template/src/frontend/postcss.config.js",
-    "build-template/src/frontend/src/components/ui/accordion.tsx",
-    "build-template/src/frontend/src/components/ui/alert-dialog.tsx",
-    "build-template/src/frontend/src/components/ui/alert.tsx",
-    "build-template/src/frontend/src/components/ui/aspect-ratio.tsx",
-    "build-template/src/frontend/src/components/ui/avatar.tsx",
-    "build-template/src/frontend/src/components/ui/badge.tsx",
-    "build-template/src/frontend/src/components/ui/breadcrumb.tsx",
-    "build-template/src/frontend/src/components/ui/button.tsx",
-    "build-template/src/frontend/src/components/ui/calendar.tsx",
-    "build-template/src/frontend/src/components/ui/card.tsx",
-    "build-template/src/frontend/src/components/ui/carousel.tsx",
-    "build-template/src/frontend/src/components/ui/chart.tsx",
-    "build-template/src/frontend/src/components/ui/checkbox.tsx",
-    "build-template/src/frontend/src/components/ui/collapsible.tsx",
-    "build-template/src/frontend/src/components/ui/command.tsx",
-    "build-template/src/frontend/src/components/ui/context-menu.tsx",
-    "build-template/src/frontend/src/components/ui/dialog.tsx",
-    "build-template/src/frontend/src/components/ui/drawer.tsx",
-    "build-template/src/frontend/src/components/ui/dropdown-menu.tsx",
-    "build-template/src/frontend/src/components/ui/form.tsx",
-    "build-template/src/frontend/src/components/ui/hover-card.tsx",
-    "build-template/src/frontend/src/components/ui/input-otp.tsx",
-    "build-template/src/frontend/src/components/ui/input.tsx",
-    "build-template/src/frontend/src/components/ui/label.tsx",
-    "build-template/src/frontend/src/components/ui/menubar.tsx",
-    "build-template/src/frontend/src/components/ui/navigation-menu.tsx",
-    "build-template/src/frontend/src/components/ui/pagination.tsx",
-    "build-template/src/frontend/src/components/ui/popover.tsx",
-    "build-template/src/frontend/src/components/ui/progress.tsx",
-    "build-template/src/frontend/src/components/ui/radio-group.tsx",
-    "build-template/src/frontend/src/components/ui/resizable.tsx",
-    "build-template/src/frontend/src/components/ui/scroll-area.tsx",
-    "build-template/src/frontend/src/components/ui/select.tsx",
-    "build-template/src/frontend/src/components/ui/separator.tsx",
-    "build-template/src/frontend/src/components/ui/sheet.tsx",
-    "build-template/src/frontend/src/components/ui/sidebar.tsx",
-    "build-template/src/frontend/src/components/ui/skeleton.tsx",
-    "build-template/src/frontend/src/components/ui/slider.tsx",
-    "build-template/src/frontend/src/components/ui/sonner.tsx",
-    "build-template/src/frontend/src/components/ui/switch.tsx",
-    "build-template/src/frontend/src/components/ui/table.tsx",
-    "build-template/src/frontend/src/components/ui/tabs.tsx",
-    "build-template/src/frontend/src/components/ui/textarea.tsx",
-    "build-template/src/frontend/src/components/ui/toggle-group.tsx",
-    "build-template/src/frontend/src/components/ui/toggle.tsx",
-    "build-template/src/frontend/src/components/ui/tooltip.tsx",
-    "build-template/src/frontend/src/hooks/use-mobile.tsx",
-    "build-template/src/frontend/src/lib/utils.ts",
-    "build-template/src/frontend/tsconfig.json",
-    "build-template/src/frontend/vite.config.js",
-    "build-template/tsconfig.json",
     "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/index.css",
-    "frontend/index.html",
-    "frontend/public/assets/generated/hero-waveform-bg.dim_1920x1080.png",
-    "frontend/public/assets/generated/icons-dashboard-set.dim_512x512.png",
-    "frontend/public/assets/generated/wavecraft-pro-logo.dim_512x512.png",
     "frontend/src/App.tsx",
     "frontend/src/backend.d.ts",
     "frontend/src/backend.ts",
-    "frontend/src/config.ts",
     "frontend/src/declarations/backend.did.d.ts",
     "frontend/src/declarations/backend.did.js",
-    "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
     "frontend/src/features/app-shell/SidebarNav.tsx",
     "frontend/src/features/app-shell/TopBar.tsx",
-    "frontend/src/features/audio/AnalysisStatus.tsx",
-    "frontend/src/features/audio/AudioEditingPanel.tsx",
-    "frontend/src/features/audio/AudioUploadPanel.tsx",
-    "frontend/src/features/audio/useAudioEngine.ts",
-    "frontend/src/features/auth/AuthGate.tsx",
     "frontend/src/features/auth/ProfileSetupModal.tsx",
     "frontend/src/features/background/BackgroundControlsPanel.tsx",
-    "frontend/src/features/errors/ErrorBoundary.tsx",
+    "frontend/src/features/background/backgroundRenderers.ts",
+    "frontend/src/features/background/particlesOverlay.ts",
+    "frontend/src/features/background/useBackgroundSettings.ts",
     "frontend/src/features/export/ExportPanel.tsx",
+    "frontend/src/features/export/exportEstimator.ts",
+    "frontend/src/features/export/exportRenderer.ts",
+    "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
+    "frontend/src/features/export/useExportQueue.ts",
     "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
-    "frontend/src/features/preview/PreviewCanvas.tsx",
+    "frontend/src/features/overlays/overlayRenderers.ts",
+    "frontend/src/features/overlays/useOverlaySettings.ts",
+    "frontend/src/features/persistence/applyLoadedProject.ts",
+    "frontend/src/features/persistence/projectSettingsCodec.ts",
     "frontend/src/features/projects/ProjectsPanel.tsx",
+    "frontend/src/features/projects/useCurrentProject.ts",
     "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
     "frontend/src/features/visualizer/VisualizerEngine.ts",
-    "frontend/src/features/visualizer/modes/BarEqualizerHorizontal.ts",
-    "frontend/src/features/visualizer/modes/BarEqualizerVertical.ts",
-    "frontend/src/features/visualizer/modes/CircularSpectrum.ts",
-    "frontend/src/features/visualizer/modes/MinimalLofiGlow.ts",
-    "frontend/src/features/visualizer/modes/ParticleReactive.ts",
-    "frontend/src/features/visualizer/modes/RadialNeonRing.ts",
-    "frontend/src/features/visualizer/modes/WaveformLine.ts",
+    "frontend/src/features/visualizer/modes/Tunnel3DWebGL.ts",
     "frontend/src/features/visualizer/useVisualizerEngine.ts",
-    "frontend/src/hooks/useActor.ts",
-    "frontend/src/hooks/useInternetIdentity.ts",
     "frontend/src/hooks/useQueries.ts",
     "frontend/src/index.css",
-    "frontend/src/lib/utils.ts",
-    "frontend/src/main.tsx",
-    "frontend/src/pages/CreatorDashboard.tsx",
-    "frontend/src/pages/LandingPage.tsx",
-    "frontend/src/ui-summary.json",
-    "frontend/src/utils/StorageClient.ts",
-    "frontend/src/utils/urlParams.ts",
-    "frontend/tailwind.config.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
