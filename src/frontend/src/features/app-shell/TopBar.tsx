@@ -67,7 +67,9 @@ export function TopBar() {
         backgroundSettingsEncoded,
         brandingSettingsEncoded,
         tunnelSettingsEncoded,
-        currentProject.image || null
+        currentProject.image || null,
+        currentProject.published,
+        currentProject.isShared
       );
 
       await refetchProject();

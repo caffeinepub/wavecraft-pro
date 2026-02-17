@@ -1,237 +1,143 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Enable Background, Text & Branding, 3D Tunnel, and Export; persist settings in Projects",
+  "title": "Creations/Templates gallery in creator dashboard",
   "requirements": [
     {
-      "id": "REQ-16",
-      "summary": "Replace Background placeholder with solid/gradient/image/particles controls that update the preview instantly and work well on mobile",
+      "id": "REQ-21",
+      "summary": "Add a new sidebar section labeled \"Creations/Templates\" that switches the dashboard controls panel to a dedicated gallery view.",
       "acceptanceCriteria": [
-        "In the Background section, the placeholder text is removed and interactive controls are displayed for: solid color, multi-stop gradient, image upload, and particles overlay.",
-        "Changing any Background control updates the PreviewCanvas immediately (no page reload).",
-        "Uploaded background images are previewed correctly and can be replaced/cleared.",
-        "Particles overlay can be enabled/disabled and its intensity/density can be adjusted.",
-        "The Background controls are usable on small screens (Android Chrome), with touch-friendly inputs and no horizontal overflow."
+        "Sidebar shows a new item labeled \"Creations/Templates\" alongside existing sections.",
+        "Selecting \"Creations/Templates\" renders a new gallery panel in the right controls area (desktop) and bottom sheet (mobile/tablet), consistent with the current section-switching behavior.",
+        "All user-facing text for this section is in English."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/background/BackgroundControlsPanel.tsx",
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
           "operation": "modify",
-          "description": "Replace the placeholder UI with functional Background controls: solid color picker, multi-stop gradient builder (add/remove/reorder stops), background image upload/replace/clear, and particles overlay toggle + density/intensity controls. Use existing shadcn/ui inputs/components for touch-friendly mobile UX; ensure no horizontal overflow. Verify the component's usage instructions before implementing."
+          "description": "Extend NavSection to include the new Creations/Templates section and wire it into the existing section-switching renderControlsPanel flow so it appears in the right controls area and the mobile/tablet bottom panel."
         },
         {
-          "path": "frontend/src/features/background/useBackgroundSettings.ts",
-          "operation": "create",
-          "description": "Create a Zustand store for background state (solid/gradient/image/particles) optimized for immediate preview updates (debounced only where needed) and mobile performance."
-        },
-        {
-          "path": "frontend/src/features/background/backgroundRenderers.ts",
-          "operation": "create",
-          "description": "Add pure rendering helpers for solid color, multi-stop gradients, and background image draw logic (including safe object-URL lifecycle handling) to keep PreviewCanvas/engine lightweight."
-        },
-        {
-          "path": "frontend/src/features/background/particlesOverlay.ts",
-          "operation": "create",
-          "description": "Implement a subtle, performance-safe 2D particles overlay renderer with adjustable density/intensity and deterministic cleanup (no leaking RAF loops)."
-        },
-        {
-          "path": "frontend/src/features/preview/PreviewCanvas.tsx",
+          "path": "frontend/src/features/app-shell/SidebarNav.tsx",
           "operation": "modify",
-          "description": "Update PreviewCanvas to apply the background settings in the live preview (including background image and particles overlay layering) with immediate visual updates and mobile-safe sizing."
+          "description": "Add a new sidebar nav item labeled \"Creations/Templates\" that maps to the new NavSection id and behaves like existing items (active styling, click-to-switch)."
         },
         {
-          "path": "frontend/src/features/visualizer/VisualizerEngine.ts",
-          "operation": "modify",
-          "description": "Refactor the 2D render pipeline to support compositing: background (solid/gradient/image), then visualizer, then optional particles overlay, without adding noticeable lag on mobile."
+          "path": "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "operation": "create",
+          "description": "Create the dedicated Creations/Templates gallery panel component to be rendered by CreatorDashboardLayout when the new section is active."
         }
       ]
     },
     {
-      "id": "REQ-17",
-      "summary": "Replace Overlays placeholder with Text & Branding controls (title/artist/font/position/size/animation/logo/watermark) and render overlays in the preview",
+      "id": "REQ-22",
+      "summary": "Implement the Creations/Templates gallery UI with separate Templates and Creations lists, including loading and empty states.",
       "acceptanceCriteria": [
-        "In the Text & Branding section, the placeholder text is removed and controls exist for title, artist, font selection, position, size, entrance animation preset, logo upload, and watermark toggle (default off).",
-        "Edits to title/artist/logo immediately appear in the PreviewCanvas.",
-        "Logo upload supports common image formats and renders with correct aspect ratio (no stretching).",
-        "Watermark is off by default and can be toggled on/off without any plan gating or paywalls.",
-        "Overlays remain readable across backgrounds (e.g., via subtle shadow/outline or contrast-aware styling)."
+        "Gallery view contains two clearly separated lists (e.g., tabs): \"Templates\" and \"Creations\" (published projects).",
+        "Templates list renders built-in templates with at minimum: name and a short description, and provides a primary action to use the template.",
+        "Creations list renders published projects with at minimum: name, owner identifier (e.g., truncated principal), and BPM.",
+        "Loading states and empty states are handled (e.g., \"No templates available\" / \"No published creations yet\")."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
+          "path": "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
           "operation": "modify",
-          "description": "Replace the placeholder with full overlay controls: song title, artist, bundled font selection, position controls, size controls, entrance animation preset selection, logo upload, and watermark toggle (default off). Use shadcn/ui controls for consistent touch-friendly UX. Verify the component's usage instructions before implementing."
+          "description": "Implement the UI with two separated views (e.g., tabs) for \"Templates\" and \"Creations\", render template cards (name, description, primary \"Use template\" action) and published project cards (name, truncated owner identifier, BPM), and include loading + empty states in English."
         },
         {
-          "path": "frontend/src/features/overlays/useOverlaySettings.ts",
+          "path": "frontend/src/features/gallery/formatters.ts",
           "operation": "create",
-          "description": "Create a Zustand store for overlay state (title/artist/font/position/size/animation/logo/watermark) designed for immediate preview updates and predictable defaults (including watermark off)."
-        },
-        {
-          "path": "frontend/src/features/overlays/overlayRenderers.ts",
-          "operation": "create",
-          "description": "Add canvas overlay render helpers (text with shadow/outline for readability, logo render with aspect-ratio preservation, entrance animation presets driven by time) to keep engine code modular."
-        },
-        {
-          "path": "frontend/src/features/preview/PreviewCanvas.tsx",
-          "operation": "modify",
-          "description": "Wire overlay settings into the live preview so title/artist/logo/watermark render above the visualizer and remain readable across varied backgrounds."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Register bundled fonts (via @font-face declarations and font-family tokens) and ensure overlay text uses the selected font with safe fallbacks; keep user-facing text in English."
-        },
-        {
-          "path": "frontend/public/assets/fonts/README.md",
-          "operation": "create",
-          "description": "Document where bundled font files should live and what names the font selector expects, so the app can ship with local font assets (no external fetch)."
+          "description": "Add small UI helpers for the gallery such as truncating principals/identifiers for display and formatting BPM values consistently."
         }
       ]
     },
     {
-      "id": "REQ-18",
-      "summary": "Implement a real WebGL-based 3D Tunnel visualizer mode with safe toggling and fallback behavior",
+      "id": "REQ-23",
+      "summary": "Wire the gallery Templates list to backend template listing and support creating a new project from a selected template.",
       "acceptanceCriteria": [
-        "Selecting “3D Tunnel (Heavy)” produces an actual animated 3D tunnel visual rather than a “coming soon” message.",
-        "Switching into and out of 3D Tunnel mode does not leak resources (no accumulating RAF loops, contexts, or GPU resources), and the preview continues to work after multiple toggles.",
-        "3D Tunnel mode can be disabled gracefully on unsupported devices/browsers with a clear fallback message and automatic switch to a 2D mode."
+        "Backend exposes an API to list built-in templates (returning stable IDs and metadata needed by the gallery).",
+        "Backend exposes an API to create a new project from a template ID (resulting project is owned by the caller and appears in the Projects list).",
+        "Frontend calls the list-templates API to render the Templates list and calls the create-from-template API when the user selects \"Use template\".",
+        "Using a template results in a newly created project that becomes selectable/active in the app (same behavior as creating a new project)."
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/features/visualizer/modes/Tunnel3DWebGL.ts",
-          "operation": "create",
-          "description": "Add a WebGL-based 3D tunnel renderer (3D game-style effect) with explicit init/render/dispose APIs for performance-safe toggling, including feature detection for WebGL support."
-        },
-        {
-          "path": "frontend/src/features/visualizer/VisualizerEngine.ts",
-          "operation": "modify",
-          "description": "Replace the 3D Tunnel “coming soon” stub with integration that switches to the WebGL tunnel renderer when selected, and ensures proper cleanup (RAF, GPU resources) when switching away."
-        },
-        {
-          "path": "frontend/src/features/visualizer/useVisualizerEngine.ts",
-          "operation": "modify",
-          "description": "Extend the visualizer engine hook to manage mode transitions safely (including creating/disposing WebGL resources) and expose a capability/fallback state for the UI."
-        },
-        {
-          "path": "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
-          "operation": "modify",
-          "description": "Update the mode selection UX to show a clear fallback message when 3D Tunnel is unsupported and automatically switch to a 2D mode without breaking the preview. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/features/preview/PreviewCanvas.tsx",
-          "operation": "modify",
-          "description": "Adjust PreviewCanvas to support safe rendering surface management for both 2D canvas visuals and the WebGL 3D Tunnel mode (including resizing behavior and cleanup on unmount)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-19",
-      "summary": "Replace Export placeholder with a functional in-browser MP4 export flow (ffmpeg.wasm) including controls, estimates, progress, and a sequential client-side queue",
-      "acceptanceCriteria": [
-        "The Export panel shows real export controls (no placeholder text) and allows selecting resolution (720p/1080p/4K), FPS (30/60), and bitrate.",
-        "Export shows estimated file size and render time before running (best-effort estimate).",
-        "Export runs fully in-browser and displays progress throughout.",
-        "Users can enqueue multiple export jobs, see job statuses, cancel a job, and jobs run sequentially client-side.",
-        "Export failures are handled gracefully with an actionable error message and the app remains usable afterward."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/export/ExportPanel.tsx",
-          "operation": "modify",
-          "description": "Replace the placeholder with export controls (resolution/FPS/bitrate), best-effort time+size estimates, queue UI (enqueue/cancel/status), and a robust progress indicator; keep all features unlocked (no gating). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/features/export/useExportQueue.ts",
-          "operation": "create",
-          "description": "Create a client-side sequential render queue store (enqueue, run sequentially, cancel, retry, status/progress) that keeps the app usable after failures."
-        },
-        {
-          "path": "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
-          "operation": "create",
-          "description": "Implement an ffmpeg.wasm wrapper for lazy-loading, progress reporting, error normalization, and safe teardown between jobs."
-        },
-        {
-          "path": "frontend/src/features/export/exportEstimator.ts",
-          "operation": "create",
-          "description": "Add best-effort estimation utilities for expected file size and render time based on duration, resolution, FPS, and bitrate."
-        },
-        {
-          "path": "frontend/src/features/export/exportRenderer.ts",
-          "operation": "create",
-          "description": "Add client-side frame capture/render orchestration from the live PreviewCanvas (or an offscreen render surface) into ffmpeg.wasm to produce MP4, reporting incremental progress and supporting cancellation."
-        },
-        {
-          "path": "frontend/src/features/preview/PreviewCanvas.tsx",
-          "operation": "modify",
-          "description": "Expose a safe way for the export system to access the current render surface(s) for capture without interfering with live playback (e.g., via refs or a capture API)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-20",
-      "summary": "Persist Background, Text & Branding, and 3D Tunnel selections in Projects so Save/Load restores the same preview configuration",
-      "acceptanceCriteria": [
-        "Backend Project model is extended to store background settings and overlay settings (and any necessary visualizer mode/settings) and returns them on getProject.",
-        "A state migration is added only if required to preserve existing stored projects; existing projects continue to load successfully after upgrade.",
-        "Frontend Save updates the current project with the new settings; Load applies those settings back into the UI and PreviewCanvas.",
-        "No plan gating or subscription logic is introduced as part of persistence changes."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/projects/useCurrentProject.ts",
-          "operation": "create",
-          "description": "Create a small store for current project selection (currentProjectId) and load/save orchestration state so Save/Load can consistently apply settings back into the UI and preview."
-        },
-        {
-          "path": "frontend/src/features/projects/ProjectsPanel.tsx",
-          "operation": "modify",
-          "description": "Upgrade Projects UI from listing IDs to allowing selection and Load of a project; on selection, fetch project details and apply persisted background/overlay/tunnel settings to the corresponding Zustand stores and the visualizer mode."
-        },
-        {
-          "path": "frontend/src/features/app-shell/TopBar.tsx",
-          "operation": "modify",
-          "description": "Wire the Save button to persist the current background/overlay/tunnel settings into the selected project, and provide clear success/error feedback without any gating. Verify the component's usage instructions before implementing."
-        },
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Align React Query hooks with the actual backend interface signatures and add mutations/queries needed for persistence: getProject, updateProject and/or targeted updateBackgroundSettings/updateBrandingSettings/updateTunnelSettings; ensure cache invalidation keeps UI/preview in sync."
+          "description": "Add React Query hooks for template listing and a create-from-template mutation that calls the corresponding backend capability; on success, invalidate the Projects list query and return the new project id."
         },
         {
-          "path": "frontend/src/features/background/useBackgroundSettings.ts",
+          "path": "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
           "operation": "modify",
-          "description": "Add serialize/deserialize helpers to map the newly enabled background controls into persisted project fields (using a backward-compatible encoding as needed) and apply on Load."
+          "description": "Use the new templates listing hook to render Templates and call the create-from-template mutation from the \"Use template\" action; on success set the newly created project as current/active (same behavior as selecting a project) and show English success/error toasts."
         },
         {
-          "path": "frontend/src/features/overlays/useOverlaySettings.ts",
+          "path": "frontend/src/features/projects/useCurrentProject.ts",
           "operation": "modify",
-          "description": "Add serialize/deserialize helpers to map overlay controls (title/artist/font/position/size/animation/logo/watermark) into persisted project fields (using a backward-compatible encoding as needed) and apply on Load."
-        },
-        {
-          "path": "frontend/src/features/visualizer/useVisualizerEngine.ts",
-          "operation": "modify",
-          "description": "Persist and restore the visualizer mode selection (including 3D Tunnel selection and any relevant settings) as part of project Save/Load, ensuring fallback logic still applies on unsupported devices."
-        },
-        {
-          "path": "frontend/src/features/preview/PreviewCanvas.tsx",
-          "operation": "modify",
-          "description": "Ensure that when a project is loaded and stores are hydrated, the preview immediately reflects the restored background/overlays/visualizer mode without requiring a refresh."
+          "description": "Ensure the current project store API supports setting the active project id from non-Projects panels (used after creating from a template), without introducing new routes."
         },
         {
           "path": "frontend/src/backend.d.ts",
           "operation": "modify",
-          "description": "Update/verify frontend type definitions used by the UI so persisted settings for background/branding/tunnel are represented correctly in TypeScript and match the actor methods used by hooks."
+          "description": "Update the frontend backend interface typings to include the template-listing and create-from-template backend capabilities used by the new hooks (keep types aligned with existing Template/ProjectSummary shapes)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "summary": "Add UI controls to publish/unpublish projects and ensure the Creations list shows only published projects and updates after changes.",
+      "acceptanceCriteria": [
+        "Backend stores a per-project published/shared flag (default: not published).",
+        "Backend exposes APIs to publish and unpublish a project, enforcing that only the project owner (or admin) can change publish state.",
+        "Backend exposes an API to list published projects for the gallery (only returns projects that are published).",
+        "Frontend provides a clear UI control to publish/unpublish the currently selected project (or within the Projects panel), and the Creations list updates after changes (via React Query invalidation/refetch)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add hooks for listing published projects for the gallery, plus publish and unpublish mutations calling the corresponding backend capabilities; on success invalidate both the published-creations query and the Projects list query."
         },
         {
-          "path": "frontend/src/features/persistence/projectSettingsCodec.ts",
-          "operation": "create",
-          "description": "Add a small codec layer to version/encode/decode the newly enabled settings into the existing project settings fields in a migration-friendly way (so older projects can still load)."
+          "path": "frontend/src/features/projects/ProjectsPanel.tsx",
+          "operation": "modify",
+          "description": "Add a publish/unpublish control per project (or for the currently selected project) that calls the new publish/unpublish mutations, displays user-friendly English toast messages on success/failure, and preserves existing project selection behavior."
         },
         {
-          "path": "frontend/src/features/persistence/applyLoadedProject.ts",
-          "operation": "create",
-          "description": "Centralize Load behavior: given a fetched project, apply background/overlay/tunnel settings into the respective stores in a single place to avoid partial updates and keep preview consistent."
+          "path": "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "operation": "modify",
+          "description": "Render the Creations list using the published-projects listing hook so only published projects appear; ensure the list reflects publish state changes via React Query invalidation/refetch."
+        },
+        {
+          "path": "frontend/src/backend.d.ts",
+          "operation": "modify",
+          "description": "Update the frontend backend interface typings to include backend capabilities for listing published projects and for publish/unpublish mutations used by the new hooks."
+        }
+      ]
+    },
+    {
+      "id": "REQ-26",
+      "summary": "Add React Query hooks and cache invalidation for templates, published creations, and publish/unpublish mutations with user-friendly error handling.",
+      "acceptanceCriteria": [
+        "New hooks exist for: listing templates, listing published creations, publishing a project, unpublishing a project.",
+        "After publish/unpublish, the Creations/Templates gallery reflects the new state without a full page reload.",
+        "Errors from backend calls show a user-friendly English toast/message and do not break the dashboard."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Centralize the new React Query hooks (list templates, list published creations, publish, unpublish) with consistent query keys and invalidation, and ensure errors propagate cleanly for UI toast handling."
+        },
+        {
+          "path": "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "operation": "modify",
+          "description": "Add robust loading/empty/error UI states for both tabs and show English toast/messages for recoverable backend errors without breaking the dashboard layout."
+        },
+        {
+          "path": "frontend/src/features/projects/ProjectsPanel.tsx",
+          "operation": "modify",
+          "description": "Ensure publish/unpublish UI uses the new hooks and provides user-friendly English error messages (toast) when backend calls fail, while keeping the panel interactive."
         }
       ]
     }

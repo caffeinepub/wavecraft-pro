@@ -1,5 +1,5 @@
 import { type NavSection } from './CreatorDashboardLayout';
-import { Music, Activity, Palette, Type, Download, FolderOpen } from 'lucide-react';
+import { Music, Activity, Palette, Type, Download, FolderOpen, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarNavProps {
@@ -14,6 +14,7 @@ const navItems: Array<{ id: NavSection; label: string; icon: typeof Music }> = [
   { id: 'overlays', label: 'Text & Branding', icon: Type },
   { id: 'export', label: 'Export', icon: Download },
   { id: 'projects', label: 'Projects', icon: FolderOpen },
+  { id: 'creations', label: 'Creations/Templates', icon: Sparkles },
 ];
 
 export function SidebarNav({ activeSection, onSectionChange }: SidebarNavProps) {

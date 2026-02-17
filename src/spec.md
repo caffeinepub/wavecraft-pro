@@ -1,13 +1,14 @@
 # Specification
 
 ## Summary
-**Goal:** Enable and fully implement all previously “Coming Soon” options (Background, Text & Branding overlays, 3D Tunnel mode, and Export), and persist these settings in Projects.
+**Goal:** Add a Creations/Templates gallery to the creator dashboard to browse built-in templates and published user projects, and support publishing projects.
 
 **Planned changes:**
-- Replace the “Background controls coming soon” placeholder with functional background controls: solid color, multi-stop gradient builder, background image upload (replace/clear), and an optional subtle animated particles overlay with density/intensity control; update the live preview immediately and remain usable on mobile.
-- Replace the “Overlay controls coming soon” placeholder with Text & Branding (Overlays) controls: song title, artist name, bundled font selection, position and size controls, entrance animation presets, logo upload overlay (correct aspect ratio), and a watermark toggle (default off); render overlays in the live preview with readable styling across backgrounds.
-- Implement “3D Tunnel (Heavy)” as a real WebGL-based 3D tunnel visualizer mode with safe switching (no leaks) and a clear fallback behavior/message for unsupported devices.
-- Replace “Export controls coming soon” with a functional in-browser MP4 export panel using ffmpeg.wasm: resolution (720p/1080p/4K), FPS (30/60), bitrate, best-effort time/size estimates, progress UI, and a client-side sequential render queue with cancel and graceful error handling.
-- Persist all new Background, Text & Branding, and 3D Tunnel selection/settings in Projects: extend the backend Project model (and add a migration only if needed), and ensure Save/Load restores the same preview configuration.
+- Add a new left-sidebar item labeled “Creations/Templates” that opens a dedicated gallery view within the existing dashboard layout (right panel on desktop, bottom sheet on mobile/tablet).
+- Implement the gallery UI with two separated lists (e.g., tabs): “Templates” (built-in starter templates) and “Creations” (published user projects), including loading and empty states.
+- Add backend APIs to list built-in templates and create a new user project from a selected template.
+- Add backend support and APIs for per-project publish/unpublish, plus an API to list published projects for the gallery; restrict publish-state changes to the owner (or admin).
+- Update backend persistence/migration so existing saved projects safely gain the new publish/shared field defaulting to not published.
+- Add React Query hooks for listing templates, listing published creations, and publish/unpublish mutations, including cache invalidation/refetch and user-friendly error messaging.
 
-**User-visible outcome:** Users can customize backgrounds and overlays, switch to a working 3D Tunnel mode, export MP4 videos in-browser with queue/progress, and save/load projects with all these settings restored.
+**User-visible outcome:** Users can open “Creations/Templates” to browse templates and published creations, create a new project from a template, and publish/unpublish their projects so published ones appear in the Creations list.

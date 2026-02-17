@@ -1,165 +1,120 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-16T05:28:59.126Z",
+  "generatedAt": "2026-02-17T04:56:57.978Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 5,
+    "total": 6,
     "implemented": 5,
     "items": [
       {
-        "id": "REQ-16",
-        "summary": "Replace the placeholder “Background controls coming soon” UI with fully functional Background controls, including: solid color background, multi-stop gradient background builder, image upload background, and a subtle animated particles overlay; all controls must update the live preview immediately without noticeable lag on mobile.",
+        "id": "REQ-21",
+        "summary": "Add a new left-sidebar navigation section labeled \"Creations/Templates\" that opens a dedicated gallery view inside the existing creator dashboard layout.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/background/BackgroundControlsPanel.tsx",
-          "frontend/src/features/background/useBackgroundSettings.ts",
-          "frontend/src/features/background/backgroundRenderers.ts",
-          "frontend/src/features/background/particlesOverlay.ts",
-          "frontend/src/features/preview/PreviewCanvas.tsx",
-          "frontend/src/features/visualizer/VisualizerEngine.ts"
+          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "frontend/src/features/app-shell/SidebarNav.tsx",
+          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/features/background/BackgroundControlsPanel.tsx",
-          "frontend/src/features/background/useBackgroundSettings.ts",
-          "frontend/src/features/background/backgroundRenderers.ts",
-          "frontend/src/features/background/particlesOverlay.ts",
-          "frontend/src/features/visualizer/VisualizerEngine.ts"
+          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "frontend/src/features/app-shell/SidebarNav.tsx",
+          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx"
         ]
       },
       {
-        "id": "REQ-17",
-        "summary": "Implement the Text & Branding (Overlays) controls to fully replace the “Overlay controls coming soon” placeholder, including: song title text, artist name text, font selection from bundled fonts, position controls, size controls, entrance animation preset selection, logo upload overlay, and an optional watermark toggle (default off); overlays must render in the live preview.",
+        "id": "REQ-22",
+        "summary": "Implement a Creations/Templates gallery UI that displays (1) built-in starter templates and (2) user-generated projects that are published/shared.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
-          "frontend/src/features/overlays/useOverlaySettings.ts",
-          "frontend/src/features/overlays/overlayRenderers.ts",
-          "frontend/src/features/preview/PreviewCanvas.tsx",
-          "frontend/src/index.css",
-          "frontend/public/assets/fonts/README.md"
+          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "frontend/src/features/gallery/formatters.ts"
         ],
         "matchedFiles": [
-          "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
-          "frontend/src/features/overlays/useOverlaySettings.ts",
-          "frontend/src/features/overlays/overlayRenderers.ts",
-          "frontend/src/index.css"
+          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "frontend/src/features/gallery/formatters.ts"
         ]
       },
       {
-        "id": "REQ-18",
-        "summary": "Implement the “3D Tunnel (Heavy)” visualizer mode as a real WebGL-based 3D tunnel mode (not a “coming soon” text stub), and provide a clear on/off performance-safe behavior so devices can switch away without crashes or memory leaks.",
+        "id": "REQ-23",
+        "summary": "Add backend support for built-in starter templates that can be listed by the frontend and used to create a new user project from a selected template.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/features/visualizer/modes/Tunnel3DWebGL.ts",
-          "frontend/src/features/visualizer/VisualizerEngine.ts",
-          "frontend/src/features/visualizer/useVisualizerEngine.ts",
-          "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
-          "frontend/src/features/preview/PreviewCanvas.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/visualizer/modes/Tunnel3DWebGL.ts",
-          "frontend/src/features/visualizer/VisualizerEngine.ts",
-          "frontend/src/features/visualizer/useVisualizerEngine.ts",
-          "frontend/src/features/visualizer/VisualizerControlsPanel.tsx"
-        ]
-      },
-      {
-        "id": "REQ-19",
-        "summary": "Replace the placeholder Export panel (“Export controls coming soon”) with functional in-browser MP4 export UI and flow consistent with the existing Export feature set (ffmpeg.wasm, resolution/FPS/bitrate controls, time+size estimates, progress indicator, and client-side render queue).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/export/ExportPanel.tsx",
-          "frontend/src/features/export/useExportQueue.ts",
-          "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
-          "frontend/src/features/export/exportEstimator.ts",
-          "frontend/src/features/export/exportRenderer.ts",
-          "frontend/src/features/preview/PreviewCanvas.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/export/ExportPanel.tsx",
-          "frontend/src/features/export/useExportQueue.ts",
-          "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
-          "frontend/src/features/export/exportEstimator.ts",
-          "frontend/src/features/export/exportRenderer.ts"
-        ]
-      },
-      {
-        "id": "REQ-20",
-        "summary": "Persist all newly-enabled “Coming Soon” settings (Background settings, Text & Branding settings, and 3D Tunnel mode selection/settings where applicable) in Projects so users can Save and later Load a project and see the same preview configuration restored.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/projects/useCurrentProject.ts",
-          "frontend/src/features/projects/ProjectsPanel.tsx",
-          "frontend/src/features/app-shell/TopBar.tsx",
           "frontend/src/hooks/useQueries.ts",
-          "frontend/src/features/background/useBackgroundSettings.ts",
-          "frontend/src/features/overlays/useOverlaySettings.ts",
-          "frontend/src/features/visualizer/useVisualizerEngine.ts",
-          "frontend/src/features/preview/PreviewCanvas.tsx",
-          "frontend/src/backend.d.ts",
-          "frontend/src/features/persistence/projectSettingsCodec.ts",
-          "frontend/src/features/persistence/applyLoadedProject.ts"
+          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "frontend/src/features/projects/useCurrentProject.ts",
+          "frontend/src/backend.d.ts"
         ],
         "matchedFiles": [
-          "frontend/src/features/projects/useCurrentProject.ts",
-          "frontend/src/features/projects/ProjectsPanel.tsx",
-          "frontend/src/features/app-shell/TopBar.tsx",
           "frontend/src/hooks/useQueries.ts",
-          "frontend/src/features/background/useBackgroundSettings.ts",
-          "frontend/src/features/overlays/useOverlaySettings.ts",
-          "frontend/src/features/visualizer/useVisualizerEngine.ts",
-          "frontend/src/backend.d.ts",
-          "frontend/src/features/persistence/projectSettingsCodec.ts",
-          "frontend/src/features/persistence/applyLoadedProject.ts"
+          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "frontend/src/backend.d.ts"
+        ]
+      },
+      {
+        "id": "REQ-24",
+        "summary": "Add a publish/unpublish capability for projects, and ensure only published projects appear in the Creations/Templates gallery under user-generated creations.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/features/projects/ProjectsPanel.tsx",
+          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "frontend/src/backend.d.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/features/projects/ProjectsPanel.tsx",
+          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "frontend/src/backend.d.ts"
+        ]
+      },
+      {
+        "id": "REQ-25",
+        "summary": "Update persistence/migration so existing saved projects upgrade safely with the new publish/shared field defaulting to not published.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-26",
+        "summary": "Add React Query hooks and cache invalidation for templates listing, published creations listing, and publish/unpublish mutations.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "frontend/src/features/projects/ProjectsPanel.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+          "frontend/src/features/projects/ProjectsPanel.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/blob-storage/Mixin.mo",
-    "backend/blob-storage/Storage.mo",
     "backend/main.mo",
     "backend/migration.mo",
     "build-request.json",
-    "build-template/README.md",
     "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
     "frontend/src/backend.d.ts",
     "frontend/src/backend.ts",
+    "frontend/src/config.ts",
     "frontend/src/declarations/backend.did.d.ts",
     "frontend/src/declarations/backend.did.js",
+    "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
     "frontend/src/features/app-shell/SidebarNav.tsx",
     "frontend/src/features/app-shell/TopBar.tsx",
-    "frontend/src/features/auth/ProfileSetupModal.tsx",
-    "frontend/src/features/background/BackgroundControlsPanel.tsx",
-    "frontend/src/features/background/backgroundRenderers.ts",
-    "frontend/src/features/background/particlesOverlay.ts",
-    "frontend/src/features/background/useBackgroundSettings.ts",
-    "frontend/src/features/export/ExportPanel.tsx",
-    "frontend/src/features/export/exportEstimator.ts",
-    "frontend/src/features/export/exportRenderer.ts",
-    "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
-    "frontend/src/features/export/useExportQueue.ts",
-    "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
-    "frontend/src/features/overlays/overlayRenderers.ts",
-    "frontend/src/features/overlays/useOverlaySettings.ts",
-    "frontend/src/features/persistence/applyLoadedProject.ts",
-    "frontend/src/features/persistence/projectSettingsCodec.ts",
+    "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+    "frontend/src/features/gallery/formatters.ts",
     "frontend/src/features/projects/ProjectsPanel.tsx",
-    "frontend/src/features/projects/useCurrentProject.ts",
-    "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
-    "frontend/src/features/visualizer/VisualizerEngine.ts",
-    "frontend/src/features/visualizer/modes/Tunnel3DWebGL.ts",
-    "frontend/src/features/visualizer/useVisualizerEngine.ts",
     "frontend/src/hooks/useQueries.ts",
-    "frontend/src/index.css",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -19,11 +19,6 @@ export const _CaffeineStorageRefillResult = IDL.Record({
   'success' : IDL.Opt(IDL.Bool),
   'topped_up_amount' : IDL.Opt(IDL.Nat),
 });
-export const UserRole = IDL.Variant({
-  'admin' : IDL.Null,
-  'user' : IDL.Null,
-  'guest' : IDL.Null,
-});
 export const BackgroundSettings = IDL.Record({
   'color' : IDL.Text,
   'brightness' : IDL.Float64,
@@ -42,6 +37,11 @@ export const TunnelSettings = IDL.Record({
   'depth' : IDL.Float64,
 });
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
+export const UserRole = IDL.Variant({
+  'admin' : IDL.Null,
+  'user' : IDL.Null,
+  'guest' : IDL.Null,
+});
 export const UserProfile = IDL.Record({
   'name' : IDL.Text,
   'avatar' : IDL.Opt(ExternalBlob),
@@ -64,8 +64,10 @@ export const Project = IDL.Record({
   'backgroundSettings' : BackgroundSettings,
   'owner' : IDL.Principal,
   'refPoints' : IDL.Vec(RefPoint),
+  'published' : IDL.Bool,
   'name' : IDL.Text,
   'polarity' : IDL.Bool,
+  'isShared' : IDL.Bool,
   'image' : IDL.Opt(ExternalBlob),
   'musicalKey' : IDL.Text,
   'brandingSettings' : BrandingSettings,
@@ -78,17 +80,32 @@ export const ProjectStatistics = IDL.Record({
   'mostCommonKey' : IDL.Text,
   'polarityCount' : IDL.Nat,
 });
-export const ProjectFilters = IDL.Record({
-  'bpmRange' : IDL.Opt(IDL.Tuple(IDL.Nat, IDL.Nat)),
-  'owner' : IDL.Opt(IDL.Principal),
-  'keyword' : IDL.Opt(IDL.Text),
-});
 export const ProjectSummary = IDL.Record({
   'id' : IDL.Text,
   'bpm' : IDL.Nat,
   'owner' : IDL.Principal,
+  'published' : IDL.Bool,
   'name' : IDL.Text,
+  'isShared' : IDL.Bool,
   'image' : IDL.Opt(ExternalBlob),
+});
+export const Template = IDL.Record({
+  'id' : IDL.Text,
+  'bpm' : IDL.Nat,
+  'backgroundSettings' : BackgroundSettings,
+  'refPoints' : IDL.Vec(RefPoint),
+  'name' : IDL.Text,
+  'description' : IDL.Text,
+  'polarity' : IDL.Bool,
+  'image' : IDL.Opt(ExternalBlob),
+  'musicalKey' : IDL.Text,
+  'brandingSettings' : BrandingSettings,
+  'tunnelSettings' : TunnelSettings,
+});
+export const ProjectFilters = IDL.Record({
+  'bpmRange' : IDL.Opt(IDL.Tuple(IDL.Nat, IDL.Nat)),
+  'owner' : IDL.Opt(IDL.Principal),
+  'keyword' : IDL.Opt(IDL.Text),
 });
 
 export const idlService = IDL.Service({
@@ -119,9 +136,9 @@ export const idlService = IDL.Service({
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-  'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'createProject' : IDL.Func(
+  'addTemplate' : IDL.Func(
       [
+        IDL.Text,
         IDL.Text,
         IDL.Bool,
         IDL.Nat,
@@ -134,11 +151,39 @@ export const idlService = IDL.Service({
       [IDL.Text],
       [],
     ),
+  'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'createProject' : IDL.Func(
+      [
+        IDL.Text,
+        IDL.Bool,
+        IDL.Nat,
+        IDL.Text,
+        BackgroundSettings,
+        BrandingSettings,
+        TunnelSettings,
+        IDL.Opt(ExternalBlob),
+        IDL.Bool,
+        IDL.Bool,
+      ],
+      [IDL.Text],
+      [],
+    ),
   'deleteProject' : IDL.Func([IDL.Text], [], []),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getProject' : IDL.Func([IDL.Text], [Project], ['query']),
   'getProjectStatistics' : IDL.Func([], [ProjectStatistics], ['query']),
+  'getPublishedProjects' : IDL.Func(
+      [IDL.Nat, IDL.Nat],
+      [IDL.Vec(ProjectSummary)],
+      ['query'],
+    ),
+  'getSharedProjects' : IDL.Func(
+      [IDL.Nat, IDL.Nat],
+      [IDL.Vec(ProjectSummary)],
+      ['query'],
+    ),
+  'getTemplates' : IDL.Func([IDL.Nat, IDL.Nat], [IDL.Vec(Template)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -166,6 +211,8 @@ export const idlService = IDL.Service({
         BrandingSettings,
         TunnelSettings,
         IDL.Opt(ExternalBlob),
+        IDL.Bool,
+        IDL.Bool,
       ],
       [],
       [],
@@ -187,11 +234,6 @@ export const idlFactory = ({ IDL }) => {
     'success' : IDL.Opt(IDL.Bool),
     'topped_up_amount' : IDL.Opt(IDL.Nat),
   });
-  const UserRole = IDL.Variant({
-    'admin' : IDL.Null,
-    'user' : IDL.Null,
-    'guest' : IDL.Null,
-  });
   const BackgroundSettings = IDL.Record({
     'color' : IDL.Text,
     'brightness' : IDL.Float64,
@@ -210,6 +252,11 @@ export const idlFactory = ({ IDL }) => {
     'depth' : IDL.Float64,
   });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
+  const UserRole = IDL.Variant({
+    'admin' : IDL.Null,
+    'user' : IDL.Null,
+    'guest' : IDL.Null,
+  });
   const UserProfile = IDL.Record({
     'name' : IDL.Text,
     'avatar' : IDL.Opt(ExternalBlob),
@@ -232,8 +279,10 @@ export const idlFactory = ({ IDL }) => {
     'backgroundSettings' : BackgroundSettings,
     'owner' : IDL.Principal,
     'refPoints' : IDL.Vec(RefPoint),
+    'published' : IDL.Bool,
     'name' : IDL.Text,
     'polarity' : IDL.Bool,
+    'isShared' : IDL.Bool,
     'image' : IDL.Opt(ExternalBlob),
     'musicalKey' : IDL.Text,
     'brandingSettings' : BrandingSettings,
@@ -246,17 +295,32 @@ export const idlFactory = ({ IDL }) => {
     'mostCommonKey' : IDL.Text,
     'polarityCount' : IDL.Nat,
   });
-  const ProjectFilters = IDL.Record({
-    'bpmRange' : IDL.Opt(IDL.Tuple(IDL.Nat, IDL.Nat)),
-    'owner' : IDL.Opt(IDL.Principal),
-    'keyword' : IDL.Opt(IDL.Text),
-  });
   const ProjectSummary = IDL.Record({
     'id' : IDL.Text,
     'bpm' : IDL.Nat,
     'owner' : IDL.Principal,
+    'published' : IDL.Bool,
     'name' : IDL.Text,
+    'isShared' : IDL.Bool,
     'image' : IDL.Opt(ExternalBlob),
+  });
+  const Template = IDL.Record({
+    'id' : IDL.Text,
+    'bpm' : IDL.Nat,
+    'backgroundSettings' : BackgroundSettings,
+    'refPoints' : IDL.Vec(RefPoint),
+    'name' : IDL.Text,
+    'description' : IDL.Text,
+    'polarity' : IDL.Bool,
+    'image' : IDL.Opt(ExternalBlob),
+    'musicalKey' : IDL.Text,
+    'brandingSettings' : BrandingSettings,
+    'tunnelSettings' : TunnelSettings,
+  });
+  const ProjectFilters = IDL.Record({
+    'bpmRange' : IDL.Opt(IDL.Tuple(IDL.Nat, IDL.Nat)),
+    'owner' : IDL.Opt(IDL.Principal),
+    'keyword' : IDL.Opt(IDL.Text),
   });
   
   return IDL.Service({
@@ -287,9 +351,9 @@ export const idlFactory = ({ IDL }) => {
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-    'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'createProject' : IDL.Func(
+    'addTemplate' : IDL.Func(
         [
+          IDL.Text,
           IDL.Text,
           IDL.Bool,
           IDL.Nat,
@@ -302,11 +366,43 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Text],
         [],
       ),
+    'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'createProject' : IDL.Func(
+        [
+          IDL.Text,
+          IDL.Bool,
+          IDL.Nat,
+          IDL.Text,
+          BackgroundSettings,
+          BrandingSettings,
+          TunnelSettings,
+          IDL.Opt(ExternalBlob),
+          IDL.Bool,
+          IDL.Bool,
+        ],
+        [IDL.Text],
+        [],
+      ),
     'deleteProject' : IDL.Func([IDL.Text], [], []),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getProject' : IDL.Func([IDL.Text], [Project], ['query']),
     'getProjectStatistics' : IDL.Func([], [ProjectStatistics], ['query']),
+    'getPublishedProjects' : IDL.Func(
+        [IDL.Nat, IDL.Nat],
+        [IDL.Vec(ProjectSummary)],
+        ['query'],
+      ),
+    'getSharedProjects' : IDL.Func(
+        [IDL.Nat, IDL.Nat],
+        [IDL.Vec(ProjectSummary)],
+        ['query'],
+      ),
+    'getTemplates' : IDL.Func(
+        [IDL.Nat, IDL.Nat],
+        [IDL.Vec(Template)],
+        ['query'],
+      ),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
@@ -342,6 +438,8 @@ export const idlFactory = ({ IDL }) => {
           BrandingSettings,
           TunnelSettings,
           IDL.Opt(ExternalBlob),
+          IDL.Bool,
+          IDL.Bool,
         ],
         [],
         [],

@@ -1,9 +1,10 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 5,
+  "projectStateVersion": 7,
   "summary": "Build a production-ready music visualizer video maker web app called “WaveCraft Pro” for a personal website, with full feature access/unlocked (premium features available to the owner) and a premium dark creator-dashboard UX.",
   "architectural_notes": [
-    "Treat any UI sections/options marked “Coming Soon” (per user screenshots) as required for full implementation now; remove “Coming Soon” placeholders and wire them to real functionality (background controls, text/branding controls, and any other options shown)."
+    "Treat any UI sections/options marked “Coming Soon” (per user screenshots) as required for full implementation now; remove “Coming Soon” placeholders and wire them to real functionality (background controls, text/branding controls, and any other options shown).",
+    "Add a new left-sidebar section for Creations/Templates: gallery view includes built-in templates + user-generated projects; define a publish/share flag to control inclusion in the public/creations gallery."
   ],
   "known_issues": [],
   "isFixRequest": false,
@@ -167,6 +168,46 @@
         "REQ-20"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-new-left-sidebar-navigation-section-labeled-creations-templates-that-opens-a-dedicated-gallery-view-inside-the-existing-creator-dashboard-layout",
+      "title": "Add a new left-sidebar navigation section labeled \"Creations/Templates\" that opens a dedicated gallery view inside the existing creator dashboard layout.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-creations-templates-gallery-ui-that-displays-1-built-in-starter-templates-and-2-user-generated-projects-that-are-published-shared",
+      "title": "Implement a Creations/Templates gallery UI that displays (1) built-in starter templates and (2) user-generated projects that are published/shared.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-backend-support-for-built-in-starter-templates-that-can-be-listed-by-the-frontend-and-used-to-create-a-new-user-project-from-a-selected-template",
+      "title": "Add backend support for built-in starter templates that can be listed by the frontend and used to create a new user project from a selected template.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-publish-unpublish-capability-for-projects-and-ensure-only-published-projects-appear-in-the-creations-templates-gallery-under-user-generated-creations",
+      "title": "Add a publish/unpublish capability for projects, and ensure only published projects appear in the Creations/Templates gallery under user-generated creations.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-react-query-hooks-and-cache-invalidation-for-templates-listing-published-creations-listing-and-publish-unpublish-mutations",
+      "title": "Add React Query hooks and cache invalidation for templates listing, published creations listing, and publish/unpublish mutations.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -241,6 +282,20 @@
       "summary": "Enable and fully implement all options currently labeled “Coming Soon” in the provided screenshots (at minimum: Background controls + Text & Branding controls; plus any other missing options shown)",
       "reqIds": [],
       "status": "in_progress"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Add a Creations/Templates gallery (like vizzy.io/creations) as a new left-sidebar section, showing both built-in starter templates and user-generated projects (auto-included when published/shared)",
+      "reqIds": [],
+      "status": "in_progress"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Update persistence/migration so existing saved projects upgrade safely with the new publish/shared field defaulting to not published.",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "status": "pending"
     }
   ],
   "projectName": "WaveCraft Pro",

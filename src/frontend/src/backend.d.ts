@@ -19,6 +19,10 @@ export interface BrandingSettings {
     font: string;
     logoUrl: string;
 }
+export interface UserProfile {
+    name: string;
+    avatar?: ExternalBlob;
+}
 export interface RefPoint {
     id: string;
     startTime: number;
@@ -30,6 +34,19 @@ export interface RefPoint {
     chords: string;
     harmonicAnalysis: string;
     keySignature: string;
+}
+export interface Template {
+    id: string;
+    bpm: bigint;
+    backgroundSettings: BackgroundSettings;
+    refPoints: Array<RefPoint>;
+    name: string;
+    description: string;
+    polarity: boolean;
+    image?: ExternalBlob;
+    musicalKey: string;
+    brandingSettings: BrandingSettings;
+    tunnelSettings: TunnelSettings;
 }
 export interface ProjectStatistics {
     projectsPerUser: Array<[Principal, bigint]>;
@@ -61,22 +78,22 @@ export interface Project {
     backgroundSettings: BackgroundSettings;
     owner: Principal;
     refPoints: Array<RefPoint>;
+    published: boolean;
     name: string;
     polarity: boolean;
+    isShared: boolean;
     image?: ExternalBlob;
     musicalKey: string;
     brandingSettings: BrandingSettings;
     tunnelSettings: TunnelSettings;
 }
-export interface UserProfile {
-    name: string;
-    avatar?: ExternalBlob;
-}
 export interface ProjectSummary {
     id: string;
     bpm: bigint;
     owner: Principal;
+    published: boolean;
     name: string;
+    isShared: boolean;
     image?: ExternalBlob;
 }
 export enum UserRole {
@@ -85,13 +102,17 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
+    addTemplate(name: string, description: string, polarity: boolean, bpm: bigint, musicalKey: string, backgroundSettings: BackgroundSettings, brandingSettings: BrandingSettings, tunnelSettings: TunnelSettings, image: ExternalBlob | null): Promise<string>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    createProject(name: string, polarity: boolean, bpm: bigint, musicalKey: string, backgroundSettings: BackgroundSettings, brandingSettings: BrandingSettings, tunnelSettings: TunnelSettings, image: ExternalBlob | null): Promise<string>;
+    createProject(name: string, polarity: boolean, bpm: bigint, musicalKey: string, backgroundSettings: BackgroundSettings, brandingSettings: BrandingSettings, tunnelSettings: TunnelSettings, image: ExternalBlob | null, published: boolean, isShared: boolean): Promise<string>;
     deleteProject(id: string): Promise<void>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getProject(id: string): Promise<Project>;
     getProjectStatistics(): Promise<ProjectStatistics>;
+    getPublishedProjects(limit: bigint, offset: bigint): Promise<Array<ProjectSummary>>;
+    getSharedProjects(limit: bigint, offset: bigint): Promise<Array<ProjectSummary>>;
+    getTemplates(limit: bigint, offset: bigint): Promise<Array<Template>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     listProjects(filters: ProjectFilters, limit: bigint, offset: bigint): Promise<Array<ProjectSummary>>;
@@ -99,6 +120,6 @@ export interface backendInterface {
     saveCallerUserProfile(name: string, avatar: ExternalBlob | null): Promise<void>;
     updateBackgroundSettings(projectId: string, newSettings: BackgroundSettings): Promise<void>;
     updateBrandingSettings(projectId: string, newSettings: BrandingSettings): Promise<void>;
-    updateProject(id: string, name: string, polarity: boolean, bpm: bigint, musicalKey: string, refPoints: Array<RefPoint>, backgroundSettings: BackgroundSettings, brandingSettings: BrandingSettings, tunnelSettings: TunnelSettings, image: ExternalBlob | null): Promise<void>;
+    updateProject(id: string, name: string, polarity: boolean, bpm: bigint, musicalKey: string, refPoints: Array<RefPoint>, backgroundSettings: BackgroundSettings, brandingSettings: BrandingSettings, tunnelSettings: TunnelSettings, image: ExternalBlob | null, published: boolean, isShared: boolean): Promise<void>;
     updateTunnelSettings(projectId: string, newSettings: TunnelSettings): Promise<void>;
 }

@@ -1,90 +1,68 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-16T05:28:59.122Z",
-  "summary": "REQ-16/17/18 appear largely implemented (new Background and Text & Branding control panels, overlay/background renderers, and a WebGL 3D tunnel mode with WebGL support fallback + cleanup hooks). REQ-19 (in-browser MP4 export via ffmpeg.wasm with queue/progress) is not implemented; Export UI still shows a “coming soon” flow and the ffmpeg client throws an error. REQ-20 persistence is only partially implemented: backend types/migration were added, but the frontend encoding/loading logic does not appear to correctly round-trip the new settings (it passes non-JSON fields into deserializers and does not persist most background/overlay details like gradient stops, particles settings, or uploaded images/logos).",
+  "generatedAt": "2026-02-17T04:56:57.972Z",
+  "summary": "Diff adds a new \"Creations/Templates\" navigation section and panel in the creator dashboard, introduces a gallery UI with Templates/Creations tabs, and adds backend state fields (published/isShared) plus a migration to backfill defaults. React Query hooks appear to be added/used for templates, published projects, and publish/unpublish, but backend API implementations for listing templates/creating from template/publish workflows are not fully verifiable from the truncated backend diff.",
   "missing_requirements": [
     {
-      "id": "REQ-19",
-      "requirement": "Replace the placeholder Export panel with functional in-browser MP4 export (ffmpeg.wasm), including resolution/FPS/bitrate controls, time+size estimates, progress indicator, and a client-side sequential render queue with cancel/status/error handling.",
-      "reason": "ExportPanel still displays an in-development message and handleExport only shows a toast; ffmpeg client is explicitly a placeholder that throws an error stating FFmpeg.wasm is not available; queue store exists but is not wired into UI/flow.",
+      "id": "REQ-23",
+      "requirement": "Backend exposes an API to list built-in templates and an API to create a new project from a template ID; frontend uses them so a created project appears and becomes selectable/active.",
+      "reason": "While backend types/stores for Template are present and the frontend calls hooks like useGetTemplates/useCreateProjectFromTemplate, the diff summary for backend/main.mo is truncated before any concrete template API methods are shown, and no template initialization is evidenced.",
       "evidence": [
-        "frontend/src/features/export/ExportPanel.tsx",
-        "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
-        "frontend/src/features/export/useExportQueue.ts",
-        "frontend/src/features/export/exportRenderer.ts"
+        "backend/main.mo (truncated)",
+        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx"
       ]
     },
     {
-      "id": "REQ-20",
-      "requirement": "Persist all newly-enabled settings (Background, Text & Branding, and 3D Tunnel mode/settings) in Projects so Save/Load restores the same preview configuration.",
-      "reason": "Although backend Project model adds backgroundSettings/brandingSettings/tunnelSettings and a migration exists, the frontend load/apply logic appears incorrect: it calls background deserialize with project.backgroundSettings.style (a style/type string, not serialized JSON), overlay deserialize with project.brandingSettings.font (a font string), and visualizer deserialize with project.tunnelSettings.mode (a mode string). Additionally, encoding functions only map a subset of settings and do not include key Background/Overlay details such as multi-stop gradient stops/angle, particles parameters, image background URL/file, or logo file/url.",
+      "id": "REQ-24",
+      "requirement": "Backend exposes publish/unpublish APIs with owner/admin enforcement and an API to list published projects; only published projects appear in the gallery creations list.",
+      "reason": "Project types include published/isShared and the frontend uses publish/unpublish hooks, but the backend/main.mo diff is truncated before any publish/unpublish/listPublishedProjects methods (and their authorization filtering) are shown.",
       "evidence": [
-        "backend/main.mo",
-        "backend/migration.mo",
-        "frontend/src/features/persistence/applyLoadedProject.ts",
-        "frontend/src/features/persistence/projectSettingsCodec.ts",
-        "frontend/src/features/background/useBackgroundSettings.ts",
-        "frontend/src/features/overlays/useOverlaySettings.ts",
-        "frontend/src/features/app-shell/TopBar.tsx"
+        "backend/main.mo (truncated)",
+        "frontend/src/features/projects/ProjectsPanel.tsx",
+        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx"
+      ]
+    },
+    {
+      "id": "REQ-26",
+      "requirement": "Add React Query hooks and cache invalidation for templates listing, published creations listing, and publish/unpublish mutations; gallery updates after changes without reload; errors show user-friendly message.",
+      "reason": "Components import and use the expected hooks, but the diff summary for frontend/src/hooks/useQueries.ts is truncated before the relevant hook implementations and any invalidateQueries/refetch behavior for published creations can be confirmed from evidence.",
+      "evidence": [
+        "frontend/src/hooks/useQueries.ts (truncated)",
+        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+        "frontend/src/features/projects/ProjectsPanel.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Profile setup modal prompting for user name after login (new onboarding/profile flow).",
-      "reason": "Not requested by REQ-16..REQ-20; BuildRequest focuses on enabling Coming Soon options and persistence for background/overlays/tunnel/export.",
-      "evidence": [
-        "frontend/src/features/auth/ProfileSetupModal.tsx",
-        "frontend-file-summaries.txt"
-      ]
-    },
-    {
-      "description": "Added/expanded marketing Landing Page content (hero/features/pricing/FAQ/CTA) unrelated to the Coming Soon feature unlock work.",
-      "reason": "Not requested by REQ-16..REQ-20.",
+      "description": "Landing page changes including a pricing section and a Facebook link in the footer.",
+      "reason": "Not requested by the BuildRequest (which focuses on an authenticated creator-dashboard gallery feature set).",
       "evidence": [
         "frontend-file-summaries.txt (frontend/src/pages/LandingPage.tsx summary)"
       ]
     },
     {
-      "description": "Imported multiple Google Fonts via CSS (@import) rather than strictly using bundled fonts.",
-      "reason": "REQ-17 asks for font selection from bundled fonts; the diff shows loading fonts from Google Fonts which is an unrequested change and may contradict the “bundled fonts” intent.",
+      "description": "Broad visualizer engine and mode enhancements (e.g., WebGL support detection, new rendering integrations/refactors) unrelated to the gallery/templates/publishing scope.",
+      "reason": "Not requested by the BuildRequest and outside the specified gallery/templates/publish feature additions.",
       "evidence": [
-        "frontend/src/index.css"
+        "frontend-file-summaries.txt (frontend/src/features/visualizer/useVisualizerEngine.ts summary)",
+        "frontend-file-summaries.txt (frontend/src/features/visualizer/VisualizerEngine.ts summary)"
       ]
     }
   ],
-  "confidence": 0.78,
+  "confidence": 0.58,
   "changed_files": [
     "backend/main.mo",
     "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/App.tsx",
+    "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
     "frontend/src/features/app-shell/SidebarNav.tsx",
     "frontend/src/features/app-shell/TopBar.tsx",
-    "frontend/src/features/auth/ProfileSetupModal.tsx",
-    "frontend/src/features/background/BackgroundControlsPanel.tsx",
-    "frontend/src/features/background/backgroundRenderers.ts",
-    "frontend/src/features/background/particlesOverlay.ts",
-    "frontend/src/features/background/useBackgroundSettings.ts",
-    "frontend/src/features/export/ExportPanel.tsx",
-    "frontend/src/features/export/exportEstimator.ts",
-    "frontend/src/features/export/exportRenderer.ts",
-    "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
-    "frontend/src/features/export/useExportQueue.ts",
-    "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
-    "frontend/src/features/overlays/overlayRenderers.ts",
-    "frontend/src/features/overlays/useOverlaySettings.ts",
-    "frontend/src/features/persistence/applyLoadedProject.ts",
-    "frontend/src/features/persistence/projectSettingsCodec.ts",
+    "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+    "frontend/src/features/gallery/formatters.ts",
     "frontend/src/features/projects/ProjectsPanel.tsx",
-    "frontend/src/features/projects/useCurrentProject.ts",
-    "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
-    "frontend/src/features/visualizer/VisualizerEngine.ts",
-    "frontend/src/features/visualizer/modes/Tunnel3DWebGL.ts",
-    "frontend/src/features/visualizer/useVisualizerEngine.ts",
     "frontend/src/hooks/useQueries.ts",
-    "frontend/src/index.css",
     "project_state.json"
   ]
 }

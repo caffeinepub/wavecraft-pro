@@ -10,11 +10,12 @@ import { BackgroundControlsPanel } from '../background/BackgroundControlsPanel';
 import { OverlaysControlsPanel } from '../overlays/OverlaysControlsPanel';
 import { ExportPanel } from '../export/ExportPanel';
 import { ProjectsPanel } from '../projects/ProjectsPanel';
+import { CreationsTemplatesPanel } from '../gallery/CreationsTemplatesPanel';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export type NavSection = 'audio' | 'visualizer' | 'background' | 'overlays' | 'export' | 'projects';
+export type NavSection = 'audio' | 'visualizer' | 'background' | 'overlays' | 'export' | 'projects' | 'creations';
 
 export function CreatorDashboardLayout() {
   const [activeSection, setActiveSection] = useState<NavSection>('audio');
@@ -40,6 +41,8 @@ export function CreatorDashboardLayout() {
         return <ExportPanel />;
       case 'projects':
         return <ProjectsPanel />;
+      case 'creations':
+        return <CreationsTemplatesPanel />;
       default:
         return null;
     }

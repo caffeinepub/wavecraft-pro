@@ -27,8 +27,10 @@ export interface Project {
   'backgroundSettings' : BackgroundSettings,
   'owner' : Principal,
   'refPoints' : Array<RefPoint>,
+  'published' : boolean,
   'name' : string,
   'polarity' : boolean,
+  'isShared' : boolean,
   'image' : [] | [ExternalBlob],
   'musicalKey' : string,
   'brandingSettings' : BrandingSettings,
@@ -50,7 +52,9 @@ export interface ProjectSummary {
   'id' : string,
   'bpm' : bigint,
   'owner' : Principal,
+  'published' : boolean,
   'name' : string,
+  'isShared' : boolean,
   'image' : [] | [ExternalBlob],
 }
 export interface RefPoint {
@@ -64,6 +68,19 @@ export interface RefPoint {
   'chords' : string,
   'harmonicAnalysis' : string,
   'keySignature' : string,
+}
+export interface Template {
+  'id' : string,
+  'bpm' : bigint,
+  'backgroundSettings' : BackgroundSettings,
+  'refPoints' : Array<RefPoint>,
+  'name' : string,
+  'description' : string,
+  'polarity' : boolean,
+  'image' : [] | [ExternalBlob],
+  'musicalKey' : string,
+  'brandingSettings' : BrandingSettings,
+  'tunnelSettings' : TunnelSettings,
 }
 export interface TunnelSettings {
   'complexity' : bigint,
@@ -104,9 +121,9 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
-  'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'createProject' : ActorMethod<
+  'addTemplate' : ActorMethod<
     [
+      string,
       string,
       boolean,
       bigint,
@@ -118,11 +135,30 @@ export interface _SERVICE {
     ],
     string
   >,
+  'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'createProject' : ActorMethod<
+    [
+      string,
+      boolean,
+      bigint,
+      string,
+      BackgroundSettings,
+      BrandingSettings,
+      TunnelSettings,
+      [] | [ExternalBlob],
+      boolean,
+      boolean,
+    ],
+    string
+  >,
   'deleteProject' : ActorMethod<[string], undefined>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getProject' : ActorMethod<[string], Project>,
   'getProjectStatistics' : ActorMethod<[], ProjectStatistics>,
+  'getPublishedProjects' : ActorMethod<[bigint, bigint], Array<ProjectSummary>>,
+  'getSharedProjects' : ActorMethod<[bigint, bigint], Array<ProjectSummary>>,
+  'getTemplates' : ActorMethod<[bigint, bigint], Array<Template>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'listProjects' : ActorMethod<
@@ -151,6 +187,8 @@ export interface _SERVICE {
       BrandingSettings,
       TunnelSettings,
       [] | [ExternalBlob],
+      boolean,
+      boolean,
     ],
     undefined
   >,

@@ -2,14 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-replace-the-placeholder-background-controls-coming-soon-ui-with-fully-functional-background-controls-including-solid-color-background-multi-stop-gradient-background-builder-image-upload-background-and-a-subtle-animated-particles-overlay-all-controls-must-update-the-live-preview-immediately-without-noticeable-lag-on-mobile",
-      "featureTitle": "Replace the placeholder “Background controls coming soon” UI with fully functional Background controls, including: solid color background, multi-stop gradient background builder, image upload background, and a subtle animated particles overlay; all controls must update the live preview immediately without noticeable lag on mobile.",
+      "featureId": "feature-add-a-new-left-sidebar-navigation-section-labeled-creations-templates-that-opens-a-dedicated-gallery-view-inside-the-existing-creator-dashboard-layout",
+      "featureTitle": "Add a new left-sidebar navigation section labeled \"Creations/Templates\" that opens a dedicated gallery view inside the existing creator dashboard layout.",
       "files": [
-        "frontend/src/features/background/BackgroundControlsPanel.tsx",
-        "frontend/src/features/background/backgroundRenderers.ts",
-        "frontend/src/features/background/particlesOverlay.ts",
-        "frontend/src/features/background/useBackgroundSettings.ts",
-        "frontend/src/features/visualizer/VisualizerEngine.ts"
+        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+        "frontend/src/features/app-shell/SidebarNav.tsx",
+        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -21,18 +19,16 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-16"
+        "REQ-21"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-the-text-branding-overlays-controls-to-fully-replace-the-overlay-controls-coming-soon-placeholder-including-song-title-text-artist-name-text-font-selection-from-bundled-fonts-position-controls-size-controls-entrance-animation-preset-selection-logo-upload-overlay-and-an-optional-watermark-toggle-default-off-overlays-must-render-in-the-live-preview",
-      "featureTitle": "Implement the Text & Branding (Overlays) controls to fully replace the “Overlay controls coming soon” placeholder, including: song title text, artist name text, font selection from bundled fonts, position controls, size controls, entrance animation preset selection, logo upload overlay, and an optional watermark toggle (default off); overlays must render in the live preview.",
+      "featureId": "feature-implement-a-creations-templates-gallery-ui-that-displays-1-built-in-starter-templates-and-2-user-generated-projects-that-are-published-shared",
+      "featureTitle": "Implement a Creations/Templates gallery UI that displays (1) built-in starter templates and (2) user-generated projects that are published/shared.",
       "files": [
-        "frontend/src/features/overlays/OverlaysControlsPanel.tsx",
-        "frontend/src/features/overlays/overlayRenderers.ts",
-        "frontend/src/features/overlays/useOverlaySettings.ts",
-        "frontend/src/index.css"
+        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+        "frontend/src/features/gallery/formatters.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -44,69 +40,15 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-17"
+        "REQ-22"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-the-3d-tunnel-heavy-visualizer-mode-as-a-real-webgl-based-3d-tunnel-mode-not-a-coming-soon-text-stub-and-provide-a-clear-on-off-performance-safe-behavior-so-devices-can-switch-away-without-crashes-or-memory-leaks",
-      "featureTitle": "Implement the “3D Tunnel (Heavy)” visualizer mode as a real WebGL-based 3D tunnel mode (not a “coming soon” text stub), and provide a clear on/off performance-safe behavior so devices can switch away without crashes or memory leaks.",
+      "featureId": "feature-add-backend-support-for-built-in-starter-templates-that-can-be-listed-by-the-frontend-and-used-to-create-a-new-user-project-from-a-selected-template",
+      "featureTitle": "Add backend support for built-in starter templates that can be listed by the frontend and used to create a new user project from a selected template.",
       "files": [
-        "frontend/src/features/visualizer/VisualizerControlsPanel.tsx",
-        "frontend/src/features/visualizer/VisualizerEngine.ts",
-        "frontend/src/features/visualizer/modes/Tunnel3DWebGL.ts",
-        "frontend/src/features/visualizer/useVisualizerEngine.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-18"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-replace-the-placeholder-export-panel-export-controls-coming-soon-with-functional-in-browser-mp4-export-ui-and-flow-consistent-with-the-existing-export-feature-set-ffmpeg-wasm-resolution-fps-bitrate-controls-time-size-estimates-progress-indicator-and-client-side-render-queue",
-      "featureTitle": "Replace the placeholder Export panel (“Export controls coming soon”) with functional in-browser MP4 export UI and flow consistent with the existing Export feature set (ffmpeg.wasm, resolution/FPS/bitrate controls, time+size estimates, progress indicator, and client-side render queue).",
-      "files": [
-        "frontend/src/features/export/ExportPanel.tsx",
-        "frontend/src/features/export/exportEstimator.ts",
-        "frontend/src/features/export/exportRenderer.ts",
-        "frontend/src/features/export/ffmpeg/ffmpegClient.ts",
-        "frontend/src/features/export/useExportQueue.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-19"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-persist-all-newly-enabled-coming-soon-settings-background-settings-text-branding-settings-and-3d-tunnel-mode-selection-settings-where-applicable-in-projects-so-users-can-save-and-later-load-a-project-and-see-the-same-preview-configuration-restored",
-      "featureTitle": "Persist all newly-enabled “Coming Soon” settings (Background settings, Text & Branding settings, and 3D Tunnel mode selection/settings where applicable) in Projects so users can Save and later Load a project and see the same preview configuration restored.",
-      "files": [
-        "frontend/src/features/app-shell/TopBar.tsx",
-        "frontend/src/features/background/useBackgroundSettings.ts",
-        "frontend/src/features/overlays/useOverlaySettings.ts",
-        "frontend/src/features/persistence/applyLoadedProject.ts",
-        "frontend/src/features/persistence/projectSettingsCodec.ts",
-        "frontend/src/features/projects/ProjectsPanel.tsx",
-        "frontend/src/features/projects/useCurrentProject.ts",
-        "frontend/src/features/visualizer/useVisualizerEngine.ts",
+        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
         "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
@@ -119,7 +61,51 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-20"
+        "REQ-23"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-publish-unpublish-capability-for-projects-and-ensure-only-published-projects-appear-in-the-creations-templates-gallery-under-user-generated-creations",
+      "featureTitle": "Add a publish/unpublish capability for projects, and ensure only published projects appear in the Creations/Templates gallery under user-generated creations.",
+      "files": [
+        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+        "frontend/src/features/projects/ProjectsPanel.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-24"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-react-query-hooks-and-cache-invalidation-for-templates-listing-published-creations-listing-and-publish-unpublish-mutations",
+      "featureTitle": "Add React Query hooks and cache invalidation for templates listing, published creations listing, and publish/unpublish mutations.",
+      "files": [
+        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+        "frontend/src/features/projects/ProjectsPanel.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-26"
       ],
       "confidence": "high"
     }

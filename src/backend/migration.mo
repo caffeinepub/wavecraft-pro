@@ -1,5 +1,4 @@
 import Map "mo:core/Map";
-import Nat "mo:core/Nat";
 import Principal "mo:core/Principal";
 import Storage "blob-storage/Storage";
 
@@ -7,11 +6,35 @@ module {
   type OldProject = {
     id : Text;
     name : Text;
-    owner : Principal.Principal;
+    owner : Principal;
     polarity : Bool;
     bpm : Nat;
     musicalKey : Text;
     refPoints : [OldRefPoint];
+    backgroundSettings : OldBackgroundSettings;
+    brandingSettings : OldBrandingSettings;
+    tunnelSettings : OldTunnelSettings;
+    image : ?Storage.ExternalBlob;
+  };
+
+  type OldBackgroundSettings = {
+    color : Text;
+    style : Text;
+    brightness : Float;
+  };
+
+  type OldBrandingSettings = {
+    logoUrl : Text;
+    font : Text;
+    theme : Text;
+  };
+
+  type OldTunnelSettings = {
+    mode : Text;
+    speed : Float;
+    complexity : Int;
+    depth : Float;
+    rotation : Bool;
   };
 
   type OldRefPoint = {
@@ -29,99 +52,44 @@ module {
 
   type OldActor = {
     projectStore : Map.Map<Text, OldProject>;
-    userProfiles : Map.Map<Principal.Principal, { name : Text }>;
+    userProfiles : Map.Map<Principal, OldUserProfile>;
   };
 
-  type NewRefPoint = OldRefPoint;
-
-  type BackgroundSettings = {
-    color : Text;
-    style : Text;
-    brightness : Float;
-  };
-
-  type BrandingSettings = {
-    logoUrl : Text;
-    font : Text;
-    theme : Text;
-  };
-
-  type TunnelSettings = {
-    mode : Text;
-    speed : Float;
-    complexity : Int;
-    depth : Float;
-    rotation : Bool;
+  type OldUserProfile = {
+    name : Text;
+    avatar : ?Storage.ExternalBlob;
   };
 
   type NewProject = {
     id : Text;
     name : Text;
-    owner : Principal.Principal;
+    owner : Principal;
     polarity : Bool;
     bpm : Nat;
     musicalKey : Text;
-    refPoints : [NewRefPoint];
-    backgroundSettings : BackgroundSettings;
-    brandingSettings : BrandingSettings;
-    tunnelSettings : TunnelSettings;
+    refPoints : [OldRefPoint];
+    backgroundSettings : OldBackgroundSettings;
+    brandingSettings : OldBrandingSettings;
+    tunnelSettings : OldTunnelSettings;
     image : ?Storage.ExternalBlob;
-  };
-
-  type NewUserProfile = {
-    name : Text;
-    avatar : ?Storage.ExternalBlob;
+    published : Bool;
+    isShared : Bool;
   };
 
   type NewActor = {
     projectStore : Map.Map<Text, NewProject>;
-    userProfiles : Map.Map<Principal.Principal, NewUserProfile>;
-  };
-
-  type DefaultImage = {
-    url : Text;
-    description : Text;
+    userProfiles : Map.Map<Principal, OldUserProfile>;
   };
 
   public func run(old : OldActor) : NewActor {
-    let newProjects = old.projectStore.map<Text, OldProject, NewProject>(
-      func(_, oldProject) {
-        {
-          oldProject with
-          backgroundSettings = {
-            color = "default";
-            style = "standard";
-            brightness = 1.0;
-          };
-          brandingSettings = {
-            logoUrl = "default/logo.png";
-            font = "standard";
-            theme = "light";
-          };
-          tunnelSettings = {
-            mode = "classic";
-            speed = 1.0;
-            complexity = 5;
-            depth = 10.0;
-            rotation = false;
-          };
-          image = null;
-        };
-      }
-    );
-
-    let newUserProfiles = old.userProfiles.map<Principal, { name : Text }, NewUserProfile>(
-      func(_, oldProfile) {
-        {
-          oldProfile with
-          avatar = null;
-        };
+    let projectStore = old.projectStore.map<Text, OldProject, NewProject>(
+      func(_id, project) {
+        { project with published = false; isShared = false };
       }
     );
 
     {
-      projectStore = newProjects;
-      userProfiles = newUserProfiles;
+      old with projectStore;
     };
   };
 };

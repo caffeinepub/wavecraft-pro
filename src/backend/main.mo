@@ -1,12 +1,12 @@
 import Text "mo:core/Text";
 import Nat "mo:core/Nat";
+import Array "mo:core/Array";
 import Float "mo:core/Float";
 import Int "mo:core/Int";
-import Runtime "mo:core/Runtime";
-import Array "mo:core/Array";
 import Map "mo:core/Map";
-import Iter "mo:core/Iter";
 import Principal "mo:core/Principal";
+import Iter "mo:core/Iter";
+import Runtime "mo:core/Runtime";
 import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
@@ -51,6 +51,22 @@ actor {
     brandingSettings : BrandingSettings;
     tunnelSettings : TunnelSettings;
     image : ?Storage.ExternalBlob;
+    published : Bool;
+    isShared : Bool;
+  };
+
+  public type Template = {
+    id : Text;
+    name : Text;
+    description : Text;
+    polarity : Bool;
+    bpm : Nat;
+    musicalKey : Text;
+    refPoints : [RefPoint];
+    backgroundSettings : BackgroundSettings;
+    brandingSettings : BrandingSettings;
+    tunnelSettings : TunnelSettings;
+    image : ?Storage.ExternalBlob;
   };
 
   public type RefPoint = {
@@ -83,6 +99,8 @@ actor {
     owner : Principal;
     bpm : Nat;
     image : ?Storage.ExternalBlob;
+    published : Bool;
+    isShared : Bool;
   };
 
   public type ProjectStatistics = {
@@ -94,6 +112,7 @@ actor {
   };
 
   let projectStore = Map.empty<Text, Project>();
+  let templateStore = Map.empty<Text, Template>();
   let userProfiles = Map.empty<Principal, UserProfile>();
 
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
@@ -151,6 +170,40 @@ actor {
 
     let paginated = filteredProjects.sliceToArray(offset, end);
 
+    let result = paginated.map(
+      func(project) {
+        {
+          id = project.id;
+          name = project.name;
+          owner = project.owner;
+          bpm = project.bpm;
+          image = project.image;
+          published = project.published;
+          isShared = project.isShared;
+        };
+      }
+    );
+
+    result;
+  };
+
+  public query ({ caller }) func getPublishedProjects(limit : Nat, offset : Nat) : async [ProjectSummary] {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can list projects");
+    };
+
+    let allProjects = projectStore.values().toArray();
+    let publishedProjects = allProjects.filter(
+      func(project) {
+        project.published;
+      }
+    );
+
+    let end = Nat.min(offset + limit, publishedProjects.size());
+    if (offset >= publishedProjects.size()) { return [] };
+
+    let paginated = publishedProjects.sliceToArray(offset, end);
+
     paginated.map(
       func(project) {
         {
@@ -159,6 +212,40 @@ actor {
           owner = project.owner;
           bpm = project.bpm;
           image = project.image;
+          published = project.published;
+          isShared = project.isShared;
+        };
+      }
+    );
+  };
+
+  public query ({ caller }) func getSharedProjects(limit : Nat, offset : Nat) : async [ProjectSummary] {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can list projects");
+    };
+
+    let allProjects = projectStore.values().toArray();
+    let sharedProjects = allProjects.filter(
+      func(project) {
+        project.isShared;
+      }
+    );
+
+    let end = Nat.min(offset + limit, sharedProjects.size());
+    if (offset >= sharedProjects.size()) { return [] };
+
+    let paginated = sharedProjects.sliceToArray(offset, end);
+
+    paginated.map(
+      func(project) {
+        {
+          id = project.id;
+          name = project.name;
+          owner = project.owner;
+          bpm = project.bpm;
+          image = project.image;
+          published = project.published;
+          isShared = project.isShared;
         };
       }
     );
@@ -227,6 +314,8 @@ actor {
     brandingSettings : BrandingSettings,
     tunnelSettings : TunnelSettings,
     image : ?Storage.ExternalBlob,
+    published : Bool,
+    isShared : Bool,
   ) : async Text {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can create projects");
@@ -245,6 +334,8 @@ actor {
       brandingSettings;
       tunnelSettings;
       image;
+      published;
+      isShared;
     };
     projectStore.add(projectId, project);
     projectId;
@@ -261,6 +352,8 @@ actor {
     brandingSettings : BrandingSettings,
     tunnelSettings : TunnelSettings,
     image : ?Storage.ExternalBlob,
+    published : Bool,
+    isShared : Bool,
   ) : async () {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can update projects");
@@ -286,6 +379,8 @@ actor {
           brandingSettings;
           tunnelSettings;
           image;
+          published;
+          isShared;
         };
         projectStore.add(id, updated);
       };
@@ -336,12 +431,61 @@ actor {
       case (null) { Runtime.trap("Project does not exist") };
       case (?project) {
         let isAdmin = AccessControl.isAdmin(accessControlState, caller);
-        if (not isAdmin and not Principal.equal(project.owner, caller)) {
-          Runtime.trap("Unauthorized: Can only view your own projects");
+        let isOwner = Principal.equal(project.owner, caller);
+        let isPublished = project.published;
+
+        if (not isAdmin and not isOwner and not isPublished) {
+          Runtime.trap("Unauthorized: Can only view your own projects or published projects");
         };
         project;
       };
     };
+  };
+
+  public query ({ caller }) func getTemplates(limit : Nat, offset : Nat) : async [Template] {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can get templates");
+    };
+
+    let allTemplates = templateStore.values().toArray();
+
+    let end = Nat.min(offset + limit, allTemplates.size());
+    if (offset >= allTemplates.size()) { return [] };
+
+    allTemplates.sliceToArray(offset, end);
+  };
+
+  public shared ({ caller }) func addTemplate(
+    name : Text,
+    description : Text,
+    polarity : Bool,
+    bpm : Nat,
+    musicalKey : Text,
+    backgroundSettings : BackgroundSettings,
+    brandingSettings : BrandingSettings,
+    tunnelSettings : TunnelSettings,
+    image : ?Storage.ExternalBlob,
+  ) : async Text {
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can add templates");
+    };
+
+    let templateId = "template-" # name # "-" # templateStore.size().toText();
+    let template : Template = {
+      id = templateId;
+      name;
+      description;
+      polarity;
+      bpm;
+      musicalKey;
+      refPoints = [];
+      backgroundSettings;
+      brandingSettings;
+      tunnelSettings;
+      image;
+    };
+    templateStore.add(templateId, template);
+    templateId;
   };
 
   public shared ({ caller }) func updateBackgroundSettings(
@@ -410,4 +554,3 @@ actor {
     };
   };
 };
-

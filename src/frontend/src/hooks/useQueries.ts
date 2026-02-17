@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { UserProfile, ProjectSummary, Project, ProjectFilters, BackgroundSettings, BrandingSettings, TunnelSettings } from '../backend';
+import type { UserProfile, ProjectSummary, Project, ProjectFilters, BackgroundSettings, BrandingSettings, TunnelSettings, Template } from '../backend';
 
 // User Profile Queries
 export function useGetCallerUserProfile() {
@@ -80,6 +80,8 @@ export function useCreateProject() {
       brandingSettings: BrandingSettings;
       tunnelSettings: TunnelSettings;
       image: any;
+      published?: boolean;
+      isShared?: boolean;
     }) => {
       if (!actor) throw new Error('Actor not available');
       return actor.createProject(
@@ -90,7 +92,9 @@ export function useCreateProject() {
         params.backgroundSettings,
         params.brandingSettings,
         params.tunnelSettings,
-        params.image
+        params.image,
+        params.published ?? false,
+        params.isShared ?? false
       );
     },
     onSuccess: () => {
@@ -115,6 +119,8 @@ export function useUpdateProject() {
       brandingSettings: BrandingSettings;
       tunnelSettings: TunnelSettings;
       image: any;
+      published: boolean;
+      isShared: boolean;
     }) => {
       if (!actor) throw new Error('Actor not available');
       return actor.updateProject(
@@ -127,12 +133,15 @@ export function useUpdateProject() {
         params.backgroundSettings,
         params.brandingSettings,
         params.tunnelSettings,
-        params.image
+        params.image,
+        params.published,
+        params.isShared
       );
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       queryClient.invalidateQueries({ queryKey: ['project', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ['publishedProjects'] });
     },
   });
 }
@@ -148,6 +157,7 @@ export function useDeleteProject() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['publishedProjects'] });
     },
   });
 }
@@ -209,6 +219,140 @@ export function useUpdateTunnelSettings() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['project', variables.projectId] });
+    },
+  });
+}
+
+// Template Queries
+export function useGetTemplates() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<Template[]>({
+    queryKey: ['templates'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getTemplates(BigInt(100), BigInt(0));
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useCreateProjectFromTemplate() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (templateId: string) => {
+      if (!actor) throw new Error('Actor not available');
+      
+      // Fetch the template
+      const templates = await actor.getTemplates(BigInt(100), BigInt(0));
+      const template = templates.find((t) => t.id === templateId);
+      
+      if (!template) {
+        throw new Error('Template not found');
+      }
+
+      // Create a new project from the template
+      return actor.createProject(
+        `${template.name} - Copy`,
+        template.polarity,
+        template.bpm,
+        template.musicalKey,
+        template.backgroundSettings,
+        template.brandingSettings,
+        template.tunnelSettings,
+        template.image ?? null,
+        false,
+        false
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
+}
+
+// Published Projects Queries
+export function useGetPublishedProjects() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<ProjectSummary[]>({
+    queryKey: ['publishedProjects'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getPublishedProjects(BigInt(100), BigInt(0));
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function usePublishProject() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (projectId: string) => {
+      if (!actor) throw new Error('Actor not available');
+      
+      // Fetch the project
+      const project = await actor.getProject(projectId);
+      
+      // Update with published flag set to true
+      return actor.updateProject(
+        project.id,
+        project.name,
+        project.polarity,
+        project.bpm,
+        project.musicalKey,
+        project.refPoints,
+        project.backgroundSettings,
+        project.brandingSettings,
+        project.tunnelSettings,
+        project.image ?? null,
+        true, // published
+        project.isShared
+      );
+    },
+    onSuccess: (_, projectId) => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['publishedProjects'] });
+    },
+  });
+}
+
+export function useUnpublishProject() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (projectId: string) => {
+      if (!actor) throw new Error('Actor not available');
+      
+      // Fetch the project
+      const project = await actor.getProject(projectId);
+      
+      // Update with published flag set to false
+      return actor.updateProject(
+        project.id,
+        project.name,
+        project.polarity,
+        project.bpm,
+        project.musicalKey,
+        project.refPoints,
+        project.backgroundSettings,
+        project.brandingSettings,
+        project.tunnelSettings,
+        project.image ?? null,
+        false, // published
+        project.isShared
+      );
+    },
+    onSuccess: (_, projectId) => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['publishedProjects'] });
     },
   });
 }

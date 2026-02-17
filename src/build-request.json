@@ -1,127 +1,141 @@
 {
   "kind": "build_request",
-  "title": "Enable all “Coming Soon” options (Background, Text & Branding, 3D Tunnel, Export) and persist settings",
+  "title": "Add Creations/Templates gallery with built-in templates and published user projects",
+  "projectName": "WaveCraft Pro",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-16",
-      "text": "Replace the placeholder “Background controls coming soon” UI with fully functional Background controls, including: solid color background, multi-stop gradient background builder, image upload background, and a subtle animated particles overlay; all controls must update the live preview immediately without noticeable lag on mobile.",
+      "id": "REQ-21",
+      "text": "Add a new left-sidebar navigation section labeled \"Creations/Templates\" that opens a dedicated gallery view inside the existing creator dashboard layout.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-latest",
-          "msg-user-all"
+          "msg-10",
+          "msg-12",
+          "msg-14"
         ],
         "quotes": [
-          "start building  99.99 pursent accurate",
-          "All",
-          "Background controls coming soon"
+          "Yes",
+          "Both",
+          "All of them implant now"
         ]
       },
       "acceptanceCriteria": [
-        "In the Background section, the placeholder text is removed and interactive controls are displayed for: solid color, multi-stop gradient, image upload, and particles overlay.",
-        "Changing any Background control updates the PreviewCanvas immediately (no page reload).",
-        "Uploaded background images are previewed correctly and can be replaced/cleared.",
-        "Particles overlay can be enabled/disabled and its intensity/density can be adjusted.",
-        "The Background controls are usable on small screens (Android Chrome), with touch-friendly inputs and no horizontal overflow."
+        "Sidebar shows a new item labeled \"Creations/Templates\" alongside existing sections.",
+        "Selecting \"Creations/Templates\" renders a new gallery panel in the right controls area (desktop) and bottom sheet (mobile/tablet), consistent with the current section-switching behavior.",
+        "All user-facing text for this section is in English."
       ]
     },
     {
-      "id": "REQ-17",
-      "text": "Implement the Text & Branding (Overlays) controls to fully replace the “Overlay controls coming soon” placeholder, including: song title text, artist name text, font selection from bundled fonts, position controls, size controls, entrance animation preset selection, logo upload overlay, and an optional watermark toggle (default off); overlays must render in the live preview.",
+      "id": "REQ-22",
+      "text": "Implement a Creations/Templates gallery UI that displays (1) built-in starter templates and (2) user-generated projects that are published/shared.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-latest",
-          "msg-user-all"
+          "msg-8",
+          "msg-10"
         ],
         "quotes": [
-          "All",
-          "Overlay controls coming soon"
+          "Yes",
+          "Both"
         ]
       },
       "acceptanceCriteria": [
-        "In the Text & Branding section, the placeholder text is removed and controls exist for title, artist, font selection, position, size, entrance animation preset, logo upload, and watermark toggle (default off).",
-        "Edits to title/artist/logo immediately appear in the PreviewCanvas.",
-        "Logo upload supports common image formats and renders with correct aspect ratio (no stretching).",
-        "Watermark is off by default and can be toggled on/off without any plan gating or paywalls.",
-        "Overlays remain readable across backgrounds (e.g., via subtle shadow/outline or contrast-aware styling)."
+        "Gallery view contains two clearly separated lists (e.g., tabs): \"Templates\" and \"Creations\" (published projects).",
+        "Templates list renders built-in templates with at minimum: name and a short description, and provides a primary action to use the template.",
+        "Creations list renders published projects with at minimum: name, owner identifier (e.g., truncated principal), and BPM.",
+        "Loading states and empty states are handled (e.g., \"No templates available\" / \"No published creations yet\")."
       ]
     },
     {
-      "id": "REQ-18",
-      "text": "Implement the “3D Tunnel (Heavy)” visualizer mode as a real WebGL-based 3D tunnel mode (not a “coming soon” text stub), and provide a clear on/off performance-safe behavior so devices can switch away without crashes or memory leaks.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-latest",
-          "msg-user-all"
-        ],
-        "quotes": [
-          "All",
-          "3D Tunnel (Heavy)",
-          "3D Tunnel mode (WebGL) - Coming soon"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Selecting “3D Tunnel (Heavy)” produces an actual animated 3D tunnel visual rather than a “coming soon” message.",
-        "Switching into and out of 3D Tunnel mode does not leak resources (no accumulating RAF loops, contexts, or GPU resources), and the preview continues to work after multiple toggles.",
-        "3D Tunnel mode can be disabled gracefully on unsupported devices/browsers with a clear fallback message and automatic switch to a 2D mode."
-      ]
-    },
-    {
-      "id": "REQ-19",
-      "text": "Replace the placeholder Export panel (“Export controls coming soon”) with functional in-browser MP4 export UI and flow consistent with the existing Export feature set (ffmpeg.wasm, resolution/FPS/bitrate controls, time+size estimates, progress indicator, and client-side render queue).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-latest"
-        ],
-        "quotes": [
-          "start building  99.99 pursent accurate",
-          "Export controls coming soon"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The Export panel shows real export controls (no placeholder text) and allows selecting resolution (720p/1080p/4K), FPS (30/60), and bitrate.",
-        "Export shows estimated file size and render time before running (best-effort estimate).",
-        "Export runs fully in-browser and displays progress throughout.",
-        "Users can enqueue multiple export jobs, see job statuses, cancel a job, and jobs run sequentially client-side.",
-        "Export failures are handled gracefully with an actionable error message and the app remains usable afterward."
-      ]
-    },
-    {
-      "id": "REQ-20",
-      "text": "Persist all newly-enabled “Coming Soon” settings (Background settings, Text & Branding settings, and 3D Tunnel mode selection/settings where applicable) in Projects so users can Save and later Load a project and see the same preview configuration restored.",
+      "id": "REQ-23",
+      "text": "Add backend support for built-in starter templates that can be listed by the frontend and used to create a new user project from a selected template.",
       "target": "both",
       "source": {
         "messageIds": [
-          "msg-user-latest",
-          "msg-user-all"
+          "msg-8",
+          "msg-10"
         ],
         "quotes": [
-          "Add other options thats are in coming soon",
-          "All"
+          "Yes",
+          "Both"
         ]
       },
       "acceptanceCriteria": [
-        "Backend Project model is extended to store background settings and overlay settings (and any necessary visualizer mode/settings) and returns them on getProject.",
-        "A state migration is added only if required to preserve existing stored projects; existing projects continue to load successfully after upgrade.",
-        "Frontend Save updates the current project with the new settings; Load applies those settings back into the UI and PreviewCanvas.",
-        "No plan gating or subscription logic is introduced as part of persistence changes."
+        "Backend exposes an API to list built-in templates (returning stable IDs and metadata needed by the gallery).",
+        "Backend exposes an API to create a new project from a template ID (resulting project is owned by the caller and appears in the Projects list).",
+        "Frontend calls the list-templates API to render the Templates list and calls the create-from-template API when the user selects \"Use template\".",
+        "Using a template results in a newly created project that becomes selectable/active in the app (same behavior as creating a new project)."
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "text": "Add a publish/unpublish capability for projects, and ensure only published projects appear in the Creations/Templates gallery under user-generated creations.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-14"
+        ],
+        "quotes": [
+          "All of them implant now"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend stores a per-project published/shared flag (default: not published).",
+        "Backend exposes APIs to publish and unpublish a project, enforcing that only the project owner (or admin) can change publish state.",
+        "Backend exposes an API to list published projects for the gallery (only returns projects that are published).",
+        "Frontend provides a clear UI control to publish/unpublish the currently selected project (or within the Projects panel), and the Creations list updates after changes (via React Query invalidation/refetch)."
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "text": "Update persistence/migration so existing saved projects upgrade safely with the new publish/shared field defaulting to not published.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-14"
+        ],
+        "quotes": [
+          "All of them implant now"
+        ]
+      },
+      "acceptanceCriteria": [
+        "If existing stable state is present, upgrading does not trap and all existing projects gain the publish/shared field with a safe default (not published).",
+        "After upgrade, listProjects and getProject continue to work for existing users/projects.",
+        "No published projects appear unless explicitly published via the new API."
+      ]
+    },
+    {
+      "id": "REQ-26",
+      "text": "Add React Query hooks and cache invalidation for templates listing, published creations listing, and publish/unpublish mutations.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-14",
+          "msg-15"
+        ],
+        "quotes": [
+          "start the build",
+          "Starting the build now."
+        ]
+      },
+      "acceptanceCriteria": [
+        "New hooks exist for: listing templates, listing published creations, publishing a project, unpublishing a project.",
+        "After publish/unpublish, the Creations/Templates gallery reflects the new state without a full page reload.",
+        "Errors from backend calls show a user-friendly English toast/message and do not break the dashboard."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; generate backend/migration.mo only if a state upgrade is required to preserve existing data.",
-    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything in frontend/src/components/ui; compose these components instead.",
-    "Use English for any user-facing text.",
-    "Keep all features unlocked; do not add subscriptions, Stripe, or any plan gating."
+    "Backend must remain a single Motoko actor in backend/main.mo; do not introduce additional backend services.",
+    "Only create/update backend/migration.mo if needed for an upgrade of existing state; migration must be conditional and safe.",
+    "Do not edit any frontend files under frontend/src/components/ui (shadcn components) or any other immutable paths listed in SYSTEM_CONTEXT.",
+    "No monetization, subscriptions, Stripe, or plan-gating may be introduced."
   ],
   "nonGoals": [
-    "Adding third-party authentication providers beyond Internet Identity.",
-    "Adding external databases or non-Motoko backend services.",
-    "Implementing real-time features (WebSockets/chat/push)."
+    "Implementing a public anonymous gallery accessible without authentication.",
+    "Social features (likes, comments, follows), external sharing links, or moderation workflows.",
+    "Real-time updates (WebSockets) for the gallery."
   ],
   "imageRequirements": {
     "required": [],
