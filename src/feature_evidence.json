@@ -2,12 +2,14 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-new-left-sidebar-navigation-section-labeled-creations-templates-that-opens-a-dedicated-gallery-view-inside-the-existing-creator-dashboard-layout",
-      "featureTitle": "Add a new left-sidebar navigation section labeled \"Creations/Templates\" that opens a dedicated gallery view inside the existing creator dashboard layout.",
+      "featureId": "feature-add-a-canvas-aspect-ratio-system-to-the-live-preview-and-export-settings-with-selectable-presets-16-9-1280x720-9-16-1080x1920-and-1-1-1080x1080-the-preview-must-scale-responsively-to-available-space-while-preserving-the-selected-aspect-ratio-and-the-selected-aspect-ratio-must-be-persisted-in-saved-projects-and-restored-on-load",
+      "featureTitle": "Add a canvas aspect-ratio system to the live preview and export settings with selectable presets: 16:9 (1280x720), 9:16 (1080x1920), and 1:1 (1080x1080). The preview must scale responsively to available space while preserving the selected aspect ratio, and the selected aspect ratio must be persisted in saved projects and restored on load.",
       "files": [
         "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-        "frontend/src/features/app-shell/SidebarNav.tsx",
-        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx"
+        "frontend/src/features/canvas/useCanvasSettings.ts",
+        "frontend/src/features/persistence/applyLoadedProject.ts",
+        "frontend/src/features/persistence/projectSettingsCodec.ts",
+        "frontend/src/features/preview/PreviewCanvas.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -19,16 +21,18 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-21"
+        "REQ-38"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-a-creations-templates-gallery-ui-that-displays-1-built-in-starter-templates-and-2-user-generated-projects-that-are-published-shared",
-      "featureTitle": "Implement a Creations/Templates gallery UI that displays (1) built-in starter templates and (2) user-generated projects that are published/shared.",
+      "featureId": "feature-implement-an-animation-smoothing-control-that-reduces-jitter-in-audio-reactive-visuals-by-smoothing-the-analysis-derived-amplitude-signals-used-by-the-visualizer-engine-the-smoothing-value-must-update-the-live-preview-immediately-and-be-persisted-in-projects",
+      "featureTitle": "Implement an \"Animation smoothing\" control that reduces jitter in audio-reactive visuals by smoothing the analysis/derived amplitude signals used by the visualizer engine. The smoothing value must update the live preview immediately and be persisted in projects.",
       "files": [
-        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-        "frontend/src/features/gallery/formatters.ts"
+        "frontend/src/features/audio/AnalysisStatus.tsx",
+        "frontend/src/features/persistence/applyLoadedProject.ts",
+        "frontend/src/features/visualizer/VisualizerEngine.ts",
+        "frontend/src/features/visualizer/useVisualizerEngine.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -40,16 +44,18 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-22"
+        "REQ-39"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-backend-support-for-built-in-starter-templates-that-can-be-listed-by-the-frontend-and-used-to-create-a-new-user-project-from-a-selected-template",
-      "featureTitle": "Add backend support for built-in starter templates that can be listed by the frontend and used to create a new user project from a selected template.",
+      "featureId": "feature-add-best-effort-beat-detection-output-to-the-audio-engine-and-expose-beat-events-timestamps-for-ui-and-visualizer-use-without-degrading-mobile-performance",
+      "featureTitle": "Add best-effort beat detection output to the audio engine and expose beat events (timestamps) for UI and visualizer use, without degrading mobile performance.",
       "files": [
-        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/features/audio/AnalysisStatus.tsx",
+        "frontend/src/features/audio/useAudioEngine.ts",
+        "frontend/src/features/persistence/applyLoadedProject.ts",
+        "frontend/src/features/persistence/projectSettingsCodec.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -61,17 +67,83 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-23"
+        "REQ-40"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-a-publish-unpublish-capability-for-projects-and-ensure-only-published-projects-appear-in-the-creations-templates-gallery-under-user-generated-creations",
-      "featureTitle": "Add a publish/unpublish capability for projects, and ensure only published projects appear in the Creations/Templates gallery under user-generated creations.",
+      "featureId": "feature-add-a-bottom-timeline-area-in-the-creator-ui-that-visualizes-the-loaded-audio-duration-and-current-trim-range-and-can-display-beat-markers-derived-from-beat-detection-the-timeline-must-not-block-or-overlap-existing-control-panels-on-small-screens",
+      "featureTitle": "Add a bottom timeline area in the creator UI that visualizes the loaded audio duration and current trim range, and can display beat markers derived from beat detection. The timeline must not block or overlap existing control panels on small screens.",
       "files": [
-        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
+        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+        "frontend/src/features/timeline/TimelineStrip.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-41"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-upgrade-the-audio-upload-experience-to-include-drag-and-drop-upload-support-a-max-file-size-limit-of-50mb-with-a-clear-validation-error-and-a-basic-waveform-or-amplitude-preview-after-upload-lightweight-and-mobile-safe",
+      "featureTitle": "Upgrade the Audio Upload experience to include: drag-and-drop upload support, a max file size limit of 50MB with a clear validation error, and a basic waveform or amplitude preview after upload (lightweight and mobile-safe).",
+      "files": [
+        "frontend/src/features/audio/AudioUploadPanel.tsx",
+        "frontend/src/features/audio/WaveformPreview.tsx",
+        "frontend/src/features/audio/useAudioEngine.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-42"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-project-autosave-every-30-seconds-for-authenticated-users-when-a-project-is-loaded-active-and-there-are-unsaved-changes-autosave-must-be-network-efficient-avoid-repeated-saves-when-nothing-changed-and-provide-clear-ui-feedback-e-g-saving-saved",
+      "featureTitle": "Implement project autosave every 30 seconds for authenticated users when a project is loaded/active and there are unsaved changes. Autosave must be network-efficient (avoid repeated saves when nothing changed) and provide clear UI feedback (e.g., \"Saving…\" / \"Saved\").",
+      "files": [
+        "frontend/src/features/app-shell/TopBar.tsx",
+        "frontend/src/features/persistence/projectSettingsCodec.ts",
+        "frontend/src/features/projects/useProjectAutosave.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-43"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-share-link-capability-for-projects-that-generates-a-url-a-user-can-copy-the-share-link-must-open-a-view-that-can-load-the-shared-published-project-configuration-for-viewing-read-only-is-acceptable-and-access-must-respect-the-existing-published-shared-flags-on-the-backend",
+      "featureTitle": "Add a share-link capability for projects that generates a URL a user can copy. The share link must open a view that can load the shared/published project configuration for viewing (read-only is acceptable), and access must respect the existing published/shared flags on the backend.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/features/app-shell/TopBar.tsx",
         "frontend/src/features/projects/ProjectsPanel.tsx",
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/pages/SharedProjectView.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -83,17 +155,16 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-24"
+        "REQ-44"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-react-query-hooks-and-cache-invalidation-for-templates-listing-published-creations-listing-and-publish-unpublish-mutations",
-      "featureTitle": "Add React Query hooks and cache invalidation for templates listing, published creations listing, and publish/unpublish mutations.",
+      "featureId": "feature-add-a-one-click-youtube-ready-export-preset-that-preconfigures-export-settings-to-1280x720-16-9-with-sensible-default-fps-bitrate-while-keeping-the-existing-export-flow-and-estimates-consistent",
+      "featureTitle": "Add a one-click \"YouTube-ready\" export preset that preconfigures export settings to 1280x720 (16:9) with sensible default FPS/bitrate, while keeping the existing export flow and estimates consistent.",
       "files": [
-        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-        "frontend/src/features/projects/ProjectsPanel.tsx",
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/features/canvas/useCanvasSettings.ts",
+        "frontend/src/features/export/ExportPanel.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -105,7 +176,28 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-26"
+        "REQ-45"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-mobile-ui-to-support-a-collapsible-settings-controls-area-while-keeping-the-existing-stacked-layout-ensuring-touch-friendly-interaction-and-that-the-preview-remains-visible-and-usable-without-controls-overlapping-it",
+      "featureTitle": "Update the mobile UI to support a collapsible settings/controls area (while keeping the existing stacked layout), ensuring touch-friendly interaction and that the preview remains visible and usable without controls overlapping it.",
+      "files": [
+        "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-46"
       ],
       "confidence": "high"
     }

@@ -49,8 +49,12 @@ export class ParticlesOverlay {
   }
 
   render() {
+    // Save canvas state to ensure we don't affect other rendering
+    this.ctx.save();
+    
     const intensityFactor = this.intensity / 100;
     
+    // Render particles with transparency - no background fill
     this.particles.forEach(particle => {
       particle.x += particle.vx;
       particle.y += particle.vy;
@@ -63,6 +67,9 @@ export class ParticlesOverlay {
       this.ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity * intensityFactor})`;
       this.ctx.fill();
     });
+    
+    // Restore canvas state
+    this.ctx.restore();
   }
 
   dispose() {

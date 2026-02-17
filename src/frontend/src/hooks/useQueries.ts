@@ -142,6 +142,7 @@ export function useUpdateProject() {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       queryClient.invalidateQueries({ queryKey: ['project', variables.id] });
       queryClient.invalidateQueries({ queryKey: ['publishedProjects'] });
+      queryClient.invalidateQueries({ queryKey: ['sharedProjects'] });
     },
   });
 }
@@ -282,6 +283,19 @@ export function useGetPublishedProjects() {
     queryFn: async () => {
       if (!actor) throw new Error('Actor not available');
       return actor.getPublishedProjects(BigInt(100), BigInt(0));
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useGetSharedProjects() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<ProjectSummary[]>({
+    queryKey: ['sharedProjects'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getSharedProjects(BigInt(100), BigInt(0));
     },
     enabled: !!actor && !actorFetching,
   });

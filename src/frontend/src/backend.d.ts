@@ -111,6 +111,8 @@ export interface backendInterface {
     getProject(id: string): Promise<Project>;
     getProjectStatistics(): Promise<ProjectStatistics>;
     getPublishedProjects(limit: bigint, offset: bigint): Promise<Array<ProjectSummary>>;
+    getShareToken(projectId: string): Promise<string | null>;
+    getSharedProjectIfPublished(projectId: string): Promise<Project>;
     getSharedProjects(limit: bigint, offset: bigint): Promise<Array<ProjectSummary>>;
     getTemplates(limit: bigint, offset: bigint): Promise<Array<Template>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;

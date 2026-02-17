@@ -204,6 +204,8 @@ export interface backendInterface {
     getProject(id: string): Promise<Project>;
     getProjectStatistics(): Promise<ProjectStatistics>;
     getPublishedProjects(limit: bigint, offset: bigint): Promise<Array<ProjectSummary>>;
+    getShareToken(projectId: string): Promise<string | null>;
+    getSharedProjectIfPublished(projectId: string): Promise<Project>;
     getSharedProjects(limit: bigint, offset: bigint): Promise<Array<ProjectSummary>>;
     getTemplates(limit: bigint, offset: bigint): Promise<Array<Template>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
@@ -443,6 +445,34 @@ export class Backend implements backendInterface {
             return from_candid_vec_n21(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getShareToken(arg0: string): Promise<string | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getShareToken(arg0);
+                return from_candid_opt_n24(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getShareToken(arg0);
+            return from_candid_opt_n24(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getSharedProjectIfPublished(arg0: string): Promise<Project> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getSharedProjectIfPublished(arg0);
+                return from_candid_Project_n19(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getSharedProjectIfPublished(arg0);
+            return from_candid_Project_n19(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getSharedProjects(arg0: bigint, arg1: bigint): Promise<Array<ProjectSummary>> {
         if (this.processError) {
             try {
@@ -461,14 +491,14 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.getTemplates(arg0, arg1);
-                return from_candid_vec_n24(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getTemplates(arg0, arg1);
-            return from_candid_vec_n24(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
         }
     }
     async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
@@ -502,14 +532,14 @@ export class Backend implements backendInterface {
     async listProjects(arg0: ProjectFilters, arg1: bigint, arg2: bigint): Promise<Array<ProjectSummary>> {
         if (this.processError) {
             try {
-                const result = await this.actor.listProjects(to_candid_ProjectFilters_n27(this._uploadFile, this._downloadFile, arg0), arg1, arg2);
+                const result = await this.actor.listProjects(to_candid_ProjectFilters_n28(this._uploadFile, this._downloadFile, arg0), arg1, arg2);
                 return from_candid_vec_n21(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.listProjects(to_candid_ProjectFilters_n27(this._uploadFile, this._downloadFile, arg0), arg1, arg2);
+            const result = await this.actor.listProjects(to_candid_ProjectFilters_n28(this._uploadFile, this._downloadFile, arg0), arg1, arg2);
             return from_candid_vec_n21(this._uploadFile, this._downloadFile, result);
         }
     }
@@ -607,8 +637,8 @@ async function from_candid_ProjectSummary_n22(_uploadFile: (file: ExternalBlob) 
 async function from_candid_Project_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Project): Promise<Project> {
     return await from_candid_record_n20(_uploadFile, _downloadFile, value);
 }
-async function from_candid_Template_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Template): Promise<Template> {
-    return await from_candid_record_n26(_uploadFile, _downloadFile, value);
+async function from_candid_Template_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Template): Promise<Template> {
+    return await from_candid_record_n27(_uploadFile, _downloadFile, value);
 }
 async function from_candid_UserProfile_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserProfile): Promise<UserProfile> {
     return await from_candid_record_n14(_uploadFile, _downloadFile, value);
@@ -624,6 +654,9 @@ async function from_candid_opt_n12(_uploadFile: (file: ExternalBlob) => Promise<
 }
 async function from_candid_opt_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_ExternalBlob]): Promise<ExternalBlob | null> {
     return value.length === 0 ? null : await from_candid_ExternalBlob_n16(_uploadFile, _downloadFile, value[0]);
+}
+function from_candid_opt_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+    return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
     return value.length === 0 ? null : value[0];
@@ -715,7 +748,7 @@ async function from_candid_record_n23(_uploadFile: (file: ExternalBlob) => Promi
         image: record_opt_to_undefined(await from_candid_opt_n15(_uploadFile, _downloadFile, value.image))
     };
 }
-async function from_candid_record_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+async function from_candid_record_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: string;
     bpm: bigint;
     backgroundSettings: _BackgroundSettings;
@@ -778,14 +811,14 @@ function from_candid_variant_n18(_uploadFile: (file: ExternalBlob) => Promise<Ui
 async function from_candid_vec_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_ProjectSummary>): Promise<Array<ProjectSummary>> {
     return await Promise.all(value.map(async (x)=>await from_candid_ProjectSummary_n22(_uploadFile, _downloadFile, x)));
 }
-async function from_candid_vec_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Template>): Promise<Array<Template>> {
-    return await Promise.all(value.map(async (x)=>await from_candid_Template_n25(_uploadFile, _downloadFile, x)));
+async function from_candid_vec_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Template>): Promise<Array<Template>> {
+    return await Promise.all(value.map(async (x)=>await from_candid_Template_n26(_uploadFile, _downloadFile, x)));
 }
 async function to_candid_ExternalBlob_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {
     return await _uploadFile(value);
 }
-function to_candid_ProjectFilters_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ProjectFilters): _ProjectFilters {
-    return to_candid_record_n28(_uploadFile, _downloadFile, value);
+function to_candid_ProjectFilters_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ProjectFilters): _ProjectFilters {
+    return to_candid_record_n29(_uploadFile, _downloadFile, value);
 }
 function to_candid_UserRole_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
     return to_candid_variant_n11(_uploadFile, _downloadFile, value);
@@ -799,7 +832,7 @@ function to_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Arra
 async function to_candid_opt_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob | null): Promise<[] | [_ExternalBlob]> {
     return value === null ? candid_none() : candid_some(await to_candid_ExternalBlob_n9(_uploadFile, _downloadFile, value));
 }
-function to_candid_record_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function to_candid_record_n29(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     bpmRange?: [bigint, bigint];
     owner?: Principal;
     keyword?: string;

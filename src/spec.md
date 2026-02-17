@@ -1,14 +1,17 @@
 # Specification
 
 ## Summary
-**Goal:** Add a Creations/Templates gallery to the creator dashboard to browse built-in templates and published user projects, and support publishing projects.
+**Goal:** Enhance the WaveCraft Pro creator with aspect-ratio presets, smoothing and beat-aware timeline visuals, improved audio upload UX, autosave, sharing, export preset, and mobile-friendly collapsible controls.
 
 **Planned changes:**
-- Add a new left-sidebar item labeled “Creations/Templates” that opens a dedicated gallery view within the existing dashboard layout (right panel on desktop, bottom sheet on mobile/tablet).
-- Implement the gallery UI with two separated lists (e.g., tabs): “Templates” (built-in starter templates) and “Creations” (published user projects), including loading and empty states.
-- Add backend APIs to list built-in templates and create a new user project from a selected template.
-- Add backend support and APIs for per-project publish/unpublish, plus an API to list published projects for the gallery; restrict publish-state changes to the owner (or admin).
-- Update backend persistence/migration so existing saved projects safely gain the new publish/shared field defaulting to not published.
-- Add React Query hooks for listing templates, listing published creations, and publish/unpublish mutations, including cache invalidation/refetch and user-friendly error messaging.
+- Add selectable canvas aspect-ratio presets (16:9 1280x720, 9:16 1080x1920, 1:1 1080x1080) that resize the live preview responsively without stretching, and persist with projects.
+- Add an “Animation Smoothing” slider that smooths audio-reactive amplitude signals, updates the preview live, and persists with projects.
+- Implement best-effort beat detection in the audio engine with an enable/disable or lightweight mode, exposing beat events for UI/visualizer usage.
+- Add a bottom timeline strip that visualizes audio duration and current trim range and can display beat markers; ensure it doesn’t overlap controls on small screens.
+- Upgrade Audio Upload with drag-and-drop support, a 50MB max file size validation error, and a lightweight waveform/amplitude preview after upload.
+- Implement autosave (every ~30s) for authenticated users when a project is active and has unsaved changes, with clear “Saving…” / “Saved” UI feedback and network-efficient behavior.
+- Add project share links: generate a copyable URL and a read-only viewing route that loads shared/published projects and fails gracefully for non-shared/non-published projects.
+- Add a one-click “YouTube-ready” export preset that sets 1280x720 (16:9) with sensible default FPS/bitrate while keeping other export settings available.
+- Update mobile UI with a collapsible settings/controls area, touch-friendly controls, and no overlap between preview and controls in any state.
 
-**User-visible outcome:** Users can open “Creations/Templates” to browse templates and published creations, create a new project from a template, and publish/unpublish their projects so published ones appear in the Creations list.
+**User-visible outcome:** Users can choose preview/export aspect ratios, reduce jitter with smoothing, see beat markers on a bottom timeline, upload audio via drag-and-drop with size checks and waveform preview, rely on autosave with status feedback, share projects via copyable links, quickly export with a YouTube-ready preset, and use a mobile UI where controls can collapse to keep the preview visible.

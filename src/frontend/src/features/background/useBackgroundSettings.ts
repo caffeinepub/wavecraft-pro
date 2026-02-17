@@ -7,7 +7,7 @@ export interface GradientStop {
 }
 
 export interface BackgroundSettings {
-  type: 'solid' | 'gradient' | 'image' | 'particles';
+  type: 'solid' | 'gradient' | 'image';
   solidColor: string;
   gradientStops: GradientStop[];
   gradientAngle: number;
@@ -114,8 +114,24 @@ export const useBackgroundSettings = create<BackgroundSettingsState>((set, get) 
   deserialize: (data) => {
     try {
       const parsed = JSON.parse(data);
+      
+      // Handle legacy "particles" type by falling back to solid
+      let backgroundType = parsed.type || 'solid';
+      if (backgroundType === 'particles') {
+        backgroundType = 'solid';
+        // If legacy type was particles, enable particles overlay
+        if (!parsed.particlesEnabled) {
+          parsed.particlesEnabled = true;
+        }
+      }
+      
+      // Validate type is one of the allowed values
+      if (!['solid', 'gradient', 'image'].includes(backgroundType)) {
+        backgroundType = 'solid';
+      }
+      
       set({
-        type: parsed.type || 'solid',
+        type: backgroundType,
         solidColor: parsed.solidColor || '#0a0a0f',
         gradientStops: parsed.gradientStops || defaultGradientStops,
         gradientAngle: parsed.gradientAngle || 135,
@@ -125,6 +141,16 @@ export const useBackgroundSettings = create<BackgroundSettingsState>((set, get) 
       });
     } catch (error) {
       console.error('Failed to deserialize background settings:', error);
+      // On error, reset to defaults
+      set({
+        type: 'solid',
+        solidColor: '#0a0a0f',
+        gradientStops: defaultGradientStops,
+        gradientAngle: 135,
+        particlesEnabled: false,
+        particlesDensity: 50,
+        particlesIntensity: 50,
+      });
     }
   },
 }));

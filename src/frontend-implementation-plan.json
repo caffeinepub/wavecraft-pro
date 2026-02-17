@@ -1,143 +1,258 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Creations/Templates gallery in creator dashboard",
+  "title": "WaveCraft Pro – Vizzy-spec creator enhancements (aspect ratios, timeline, smoothing, autosave, sharing)",
   "requirements": [
     {
-      "id": "REQ-21",
-      "summary": "Add a new sidebar section labeled \"Creations/Templates\" that switches the dashboard controls panel to a dedicated gallery view.",
+      "id": "REQ-38",
+      "summary": "Add selectable canvas aspect-ratio presets that drive responsive preview sizing and are persisted/restored with projects.",
       "acceptanceCriteria": [
-        "Sidebar shows a new item labeled \"Creations/Templates\" alongside existing sections.",
-        "Selecting \"Creations/Templates\" renders a new gallery panel in the right controls area (desktop) and bottom sheet (mobile/tablet), consistent with the current section-switching behavior.",
-        "All user-facing text for this section is in English."
+        "In the creator UI, users can switch between 16:9, 9:16, and 1:1 and see the preview immediately resize without stretching.",
+        "The preview maintains correct aspect ratio across mobile/tablet/desktop layouts without overlapping controls.",
+        "Saving a project and then loading it restores the selected aspect ratio."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/canvas/useCanvasSettings.ts",
+          "operation": "create",
+          "description": "Create a small Zustand store for canvas/export aspect presets (16:9 1280x720 default, 9:16 1080x1920, 1:1 1080x1080) with serialize/deserialize helpers to support project persistence."
+        },
+        {
+          "path": "frontend/src/features/preview/PreviewCanvas.tsx",
+          "operation": "modify",
+          "description": "Wrap the preview canvas in an aspect-ratio preserving container that responsively fits available space (letterboxing as needed) while keeping canvas rendering crisp; read selected preset from useCanvasSettings."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "modify",
+          "description": "Ensure the preview area layout cooperates with the aspect-ratio container on mobile/tablet/desktop so the preview never overlaps control panels (adjust preview region sizing and stacking as needed)."
+        },
+        {
+          "path": "frontend/src/features/persistence/projectSettingsCodec.ts",
+          "operation": "modify",
+          "description": "Extend the frontend serialization strategy so the selected canvas aspect preset is included in the persisted project configuration (packed into the existing serialized settings payload used during save/load)."
+        },
+        {
+          "path": "frontend/src/features/persistence/applyLoadedProject.ts",
+          "operation": "modify",
+          "description": "On project load, restore the selected canvas aspect preset into useCanvasSettings from the persisted settings payload, using safe fallbacks when missing/invalid."
+        }
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "summary": "Add an Animation Smoothing slider that smooths audio-reactive signals for the visualizer, updates live, and persists in projects.",
+      "acceptanceCriteria": [
+        "A new slider labeled \"Animation Smoothing\" is available in an appropriate existing control panel (e.g., Audio Analysis / Visualizer controls).",
+        "Increasing smoothing visibly reduces jittery motion; decreasing smoothing increases responsiveness.",
+        "The value is saved with the project and restored on load."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/visualizer/useVisualizerEngine.ts",
+          "operation": "modify",
+          "description": "Add smoothing state to the visualizer settings store (including serialize/deserialize) and expose setters so the value can be applied live and persisted with projects."
+        },
+        {
+          "path": "frontend/src/features/visualizer/VisualizerEngine.ts",
+          "operation": "modify",
+          "description": "Apply smoothing (e.g., EMA/low-pass) to the derived analysis values used for rendering so motion becomes less jittery at higher smoothing without breaking responsiveness at lower values."
+        },
+        {
+          "path": "frontend/src/features/audio/AnalysisStatus.tsx",
+          "operation": "modify",
+          "description": "Add an \"Animation Smoothing\" slider to the existing Audio Analysis panel, wired to the visualizer smoothing state for immediate live preview updates."
+        },
+        {
+          "path": "frontend/src/features/persistence/applyLoadedProject.ts",
+          "operation": "modify",
+          "description": "Ensure smoothing is restored on project load via the visualizer settings deserialize path (including backwards-compatible defaults)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "summary": "Add lightweight/best-effort beat detection in the audio engine with accessible beat timestamps and an enable/disable (or lightweight mode) control for mobile performance.",
+      "acceptanceCriteria": [
+        "When audio is loaded and played, the system computes beat events at best-effort quality and makes them available to the UI/visualizer engine.",
+        "Beat detection can be enabled/disabled or has a lightweight mode so mid-range Android devices remain responsive."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/audio/useAudioEngine.ts",
+          "operation": "modify",
+          "description": "Extend the audio engine store to compute and expose beat event timestamps (best-effort) after audio decode, including a beat detection enabled toggle (or lightweight mode) and guardrails to limit CPU use on mobile."
+        },
+        {
+          "path": "frontend/src/features/audio/AnalysisStatus.tsx",
+          "operation": "modify",
+          "description": "Add simple controls in the Audio Analysis panel to enable/disable (or switch mode of) beat detection, wired to the audio engine state."
+        },
+        {
+          "path": "frontend/src/features/persistence/projectSettingsCodec.ts",
+          "operation": "modify",
+          "description": "Include beat detection user preference (enabled/mode) in the persisted project configuration payload so it round-trips on save/load."
+        },
+        {
+          "path": "frontend/src/features/persistence/applyLoadedProject.ts",
+          "operation": "modify",
+          "description": "Restore beat detection preference (enabled/mode) on project load with safe defaults for older projects."
+        }
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "summary": "Add a bottom timeline strip that shows audio duration, trim range, and beat markers without overlapping controls on small screens.",
+      "acceptanceCriteria": [
+        "A timeline strip is visible at the bottom of the creator experience when audio is loaded.",
+        "The timeline shows the full duration and indicates trim start/end (read-only visualization is acceptable if editing remains in existing trim controls).",
+        "Beat markers appear on the timeline when beat detection is available.",
+        "On mobile/tablet, the timeline remains usable and does not overlap the Audio Upload/Editing panels."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/timeline/TimelineStrip.tsx",
+          "operation": "create",
+          "description": "Implement a lightweight timeline component that reads duration/current time/trim range from useAudioEngine and beat timestamps when available, rendering beat markers and trim visualization (read-only)."
+        },
+        {
+          "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "operation": "modify",
+          "description": "Wire TimelineStrip into the creator UI at the bottom of the preview area (mobile/tablet stacked and desktop center column) and ensure it does not overlap existing control panels on small screens."
+        }
+      ]
+    },
+    {
+      "id": "REQ-42",
+      "summary": "Upgrade Audio Upload with drag-and-drop, 50MB size validation with clear errors, and a lightweight waveform preview after upload.",
+      "acceptanceCriteria": [
+        "Users can drag-and-drop an MP3/WAV onto the Audio Upload panel to load it.",
+        "Files larger than 50MB are rejected with a clear English error message and no crash.",
+        "After a successful upload, a waveform/amplitude preview is shown in the Audio Upload area (or immediately below it) without noticeable lag on mobile."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/audio/useAudioEngine.ts",
+          "operation": "modify",
+          "description": "Add precomputed waveform/amplitude summary data (e.g., peaks array) during/after decode in a mobile-safe way so the UI can render a fast waveform preview without heavy per-render processing."
+        },
+        {
+          "path": "frontend/src/features/audio/WaveformPreview.tsx",
+          "operation": "create",
+          "description": "Create a small waveform preview component that renders the precomputed peaks efficiently (e.g., canvas or simple div bars) and adapts to available width."
+        },
+        {
+          "path": "frontend/src/features/audio/AudioUploadPanel.tsx",
+          "operation": "modify",
+          "description": "Add drag-and-drop handling, enforce a 50MB max file size with a clear English validation error, and render WaveformPreview after successful upload; keep behavior mobile-safe and responsive."
+        }
+      ]
+    },
+    {
+      "id": "REQ-43",
+      "summary": "Implement 30-second project autosave for authenticated users with dirty-checking and clear UI save status feedback.",
+      "acceptanceCriteria": [
+        "When logged in and a project is active, the app autosaves at ~30s intervals only if settings have changed since the last save.",
+        "Autosave does not interrupt playback/preview rendering and does not spam the backend when idle.",
+        "The UI indicates autosave status in English (e.g., in the top bar)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/projects/useProjectAutosave.ts",
+          "operation": "create",
+          "description": "Create a hook that (1) detects authentication state using the authorization component conventions, (2) tracks whether the loaded project settings are dirty vs last successful save snapshot, and (3) performs best-effort autosave every ~30s only when dirty. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/features/app-shell/TopBar.tsx",
+          "operation": "modify",
+          "description": "Integrate useProjectAutosave and display clear autosave status text (e.g., \"Saving…\" / \"Saved\") in the top bar; ensure manual Save updates the autosave snapshot and autosave does not disrupt playback."
+        },
+        {
+          "path": "frontend/src/features/persistence/projectSettingsCodec.ts",
+          "operation": "modify",
+          "description": "Centralize/standardize a single serialized project-settings payload used for both manual save and autosave dirty-check hashing to avoid repeated network saves when nothing changed."
+        }
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "summary": "Add project share-link generation and a read-only share view that loads shared/published projects and fails gracefully otherwise.",
+      "acceptanceCriteria": [
+        "Users can click a \"Share\" action for a project and copy a URL.",
+        "Opening the URL in a new browser session loads the project configuration for viewing when the project is published/shared as intended.",
+        "Attempting to open a share link for a non-shared/non-published project fails gracefully with a clear message (no sensitive data leak)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/SharedProjectView.tsx",
+          "operation": "create",
+          "description": "Create a read-only shared project view that loads the shared/published project configuration using the anonymous-capable actor, applies settings to the preview via applyLoadedProject, and shows a clear error message when access is not allowed."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add minimal URL-based view switching (without introducing new routing infrastructure) to render SharedProjectView when a share query parameter is present, otherwise keep existing authenticated CreatorDashboard vs LandingPage behavior."
+        },
+        {
+          "path": "frontend/src/features/projects/ProjectsPanel.tsx",
+          "operation": "modify",
+          "description": "Add a \"Share\" action to projects that requests a share token and builds a copyable URL (using current origin + query params) and provides a copy-to-clipboard interaction; handle failures gracefully (e.g., project not shared/published)."
+        },
+        {
+          "path": "frontend/src/utils/urlParams.ts",
+          "operation": "modify",
+          "description": "Extend URL param helpers as needed to support reading the share project identifier/token cleanly for SharedProjectView."
+        },
+        {
+          "path": "frontend/src/features/app-shell/TopBar.tsx",
+          "operation": "modify",
+          "description": "Optionally surface a convenient \"Share\" button for the currently selected project (in addition to ProjectsPanel) and ensure errors are shown in clear English."
+        }
+      ]
+    },
+    {
+      "id": "REQ-45",
+      "summary": "Add a one-click YouTube-ready export preset that sets 1280x720 (16:9) with sensible FPS/bitrate defaults without removing existing controls.",
+      "acceptanceCriteria": [
+        "Export UI provides a \"YouTube-ready\" preset option that sets resolution to 720p (1280x720) and updates estimates immediately.",
+        "The preset does not remove access to other export settings; it is just a quick configuration option."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/export/exportEstimator.ts",
+          "operation": "modify",
+          "description": "Update export estimation utilities to support the new aspect-ratio-driven resolution presets (including 1280x720, 1080x1920, 1080x1080) while keeping estimates consistent."
+        },
+        {
+          "path": "frontend/src/features/export/ExportPanel.tsx",
+          "operation": "modify",
+          "description": "Add a \"YouTube-ready\" one-click preset that sets export resolution to 1280x720 (16:9) and applies sensible FPS/bitrate defaults while keeping existing manual export setting controls available and updating estimates immediately."
+        },
+        {
+          "path": "frontend/src/features/canvas/useCanvasSettings.ts",
+          "operation": "modify",
+          "description": "Expose a helper to apply the YouTube-ready preset in a single call (and keep it aligned with the 16:9 1280x720 canvas/export preset)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-46",
+      "summary": "Update mobile UI to support a collapsible controls area with touch-friendly interaction and no overlap with preview.",
+      "acceptanceCriteria": [
+        "On mobile/tablet, users can collapse/expand the controls area to prioritize preview space.",
+        "Controls remain scrollable and usable with touch; sliders have adequate touch targets.",
+        "No overlap occurs between preview and controls in any collapsed/expanded state."
       ],
       "file_operations": [
         {
           "path": "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
           "operation": "modify",
-          "description": "Extend NavSection to include the new Creations/Templates section and wire it into the existing section-switching renderControlsPanel flow so it appears in the right controls area and the mobile/tablet bottom panel."
+          "description": "Add a collapsible controls/setting area for mobile/tablet while preserving the stacked layout: provide a clear toggle, keep controls scrollable when expanded, and reallocate space so the preview remains visible and usable without overlap (including with the bottom timeline)."
         },
         {
-          "path": "frontend/src/features/app-shell/SidebarNav.tsx",
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Add a new sidebar nav item labeled \"Creations/Templates\" that maps to the new NavSection id and behaves like existing items (active styling, click-to-switch)."
-        },
-        {
-          "path": "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "operation": "create",
-          "description": "Create the dedicated Creations/Templates gallery panel component to be rendered by CreatorDashboardLayout when the new section is active."
-        }
-      ]
-    },
-    {
-      "id": "REQ-22",
-      "summary": "Implement the Creations/Templates gallery UI with separate Templates and Creations lists, including loading and empty states.",
-      "acceptanceCriteria": [
-        "Gallery view contains two clearly separated lists (e.g., tabs): \"Templates\" and \"Creations\" (published projects).",
-        "Templates list renders built-in templates with at minimum: name and a short description, and provides a primary action to use the template.",
-        "Creations list renders published projects with at minimum: name, owner identifier (e.g., truncated principal), and BPM.",
-        "Loading states and empty states are handled (e.g., \"No templates available\" / \"No published creations yet\")."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "operation": "modify",
-          "description": "Implement the UI with two separated views (e.g., tabs) for \"Templates\" and \"Creations\", render template cards (name, description, primary \"Use template\" action) and published project cards (name, truncated owner identifier, BPM), and include loading + empty states in English."
-        },
-        {
-          "path": "frontend/src/features/gallery/formatters.ts",
-          "operation": "create",
-          "description": "Add small UI helpers for the gallery such as truncating principals/identifiers for display and formatting BPM values consistently."
-        }
-      ]
-    },
-    {
-      "id": "REQ-23",
-      "summary": "Wire the gallery Templates list to backend template listing and support creating a new project from a selected template.",
-      "acceptanceCriteria": [
-        "Backend exposes an API to list built-in templates (returning stable IDs and metadata needed by the gallery).",
-        "Backend exposes an API to create a new project from a template ID (resulting project is owned by the caller and appears in the Projects list).",
-        "Frontend calls the list-templates API to render the Templates list and calls the create-from-template API when the user selects \"Use template\".",
-        "Using a template results in a newly created project that becomes selectable/active in the app (same behavior as creating a new project)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add React Query hooks for template listing and a create-from-template mutation that calls the corresponding backend capability; on success, invalidate the Projects list query and return the new project id."
-        },
-        {
-          "path": "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "operation": "modify",
-          "description": "Use the new templates listing hook to render Templates and call the create-from-template mutation from the \"Use template\" action; on success set the newly created project as current/active (same behavior as selecting a project) and show English success/error toasts."
-        },
-        {
-          "path": "frontend/src/features/projects/useCurrentProject.ts",
-          "operation": "modify",
-          "description": "Ensure the current project store API supports setting the active project id from non-Projects panels (used after creating from a template), without introducing new routes."
-        },
-        {
-          "path": "frontend/src/backend.d.ts",
-          "operation": "modify",
-          "description": "Update the frontend backend interface typings to include the template-listing and create-from-template backend capabilities used by the new hooks (keep types aligned with existing Template/ProjectSummary shapes)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-24",
-      "summary": "Add UI controls to publish/unpublish projects and ensure the Creations list shows only published projects and updates after changes.",
-      "acceptanceCriteria": [
-        "Backend stores a per-project published/shared flag (default: not published).",
-        "Backend exposes APIs to publish and unpublish a project, enforcing that only the project owner (or admin) can change publish state.",
-        "Backend exposes an API to list published projects for the gallery (only returns projects that are published).",
-        "Frontend provides a clear UI control to publish/unpublish the currently selected project (or within the Projects panel), and the Creations list updates after changes (via React Query invalidation/refetch)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add hooks for listing published projects for the gallery, plus publish and unpublish mutations calling the corresponding backend capabilities; on success invalidate both the published-creations query and the Projects list query."
-        },
-        {
-          "path": "frontend/src/features/projects/ProjectsPanel.tsx",
-          "operation": "modify",
-          "description": "Add a publish/unpublish control per project (or for the currently selected project) that calls the new publish/unpublish mutations, displays user-friendly English toast messages on success/failure, and preserves existing project selection behavior."
-        },
-        {
-          "path": "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "operation": "modify",
-          "description": "Render the Creations list using the published-projects listing hook so only published projects appear; ensure the list reflects publish state changes via React Query invalidation/refetch."
-        },
-        {
-          "path": "frontend/src/backend.d.ts",
-          "operation": "modify",
-          "description": "Update the frontend backend interface typings to include backend capabilities for listing published projects and for publish/unpublish mutations used by the new hooks."
-        }
-      ]
-    },
-    {
-      "id": "REQ-26",
-      "summary": "Add React Query hooks and cache invalidation for templates, published creations, and publish/unpublish mutations with user-friendly error handling.",
-      "acceptanceCriteria": [
-        "New hooks exist for: listing templates, listing published creations, publishing a project, unpublishing a project.",
-        "After publish/unpublish, the Creations/Templates gallery reflects the new state without a full page reload.",
-        "Errors from backend calls show a user-friendly English toast/message and do not break the dashboard."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Centralize the new React Query hooks (list templates, list published creations, publish, unpublish) with consistent query keys and invalidation, and ensure errors propagate cleanly for UI toast handling."
-        },
-        {
-          "path": "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "operation": "modify",
-          "description": "Add robust loading/empty/error UI states for both tabs and show English toast/messages for recoverable backend errors without breaking the dashboard layout."
-        },
-        {
-          "path": "frontend/src/features/projects/ProjectsPanel.tsx",
-          "operation": "modify",
-          "description": "Ensure publish/unpublish UI uses the new hooks and provides user-friendly English error messages (toast) when backend calls fail, while keeping the panel interactive."
+          "description": "Adjust global/mobile-friendly spacing and touch target styling where appropriate (without editing immutable UI component files) so slider sections and interactive rows remain comfortable for touch on smaller screens."
         }
       ]
     }

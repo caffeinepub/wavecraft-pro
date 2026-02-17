@@ -157,6 +157,8 @@ export interface _SERVICE {
   'getProject' : ActorMethod<[string], Project>,
   'getProjectStatistics' : ActorMethod<[], ProjectStatistics>,
   'getPublishedProjects' : ActorMethod<[bigint, bigint], Array<ProjectSummary>>,
+  'getShareToken' : ActorMethod<[string], [] | [string]>,
+  'getSharedProjectIfPublished' : ActorMethod<[string], Project>,
   'getSharedProjects' : ActorMethod<[bigint, bigint], Array<ProjectSummary>>,
   'getTemplates' : ActorMethod<[bigint, bigint], Array<Template>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,

@@ -1,68 +1,103 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T04:56:57.972Z",
-  "summary": "Diff adds a new \"Creations/Templates\" navigation section and panel in the creator dashboard, introduces a gallery UI with Templates/Creations tabs, and adds backend state fields (published/isShared) plus a migration to backfill defaults. React Query hooks appear to be added/used for templates, published projects, and publish/unpublish, but backend API implementations for listing templates/creating from template/publish workflows are not fully verifiable from the truncated backend diff.",
+  "generatedAt": "2026-02-17T17:06:07.360Z",
+  "summary": "Diff implements several requested frontend enhancements (responsive aspect-ratio preview container, smoothing slider UI + engine hook-up, beat detection toggle + timestamps in audio engine, timeline strip UI, drag-and-drop upload + 50MB validation + waveform preview, autosave hook, shared-project view route, and a YouTube-ready export preset). However, multiple requirements are only partially met: aspect ratio selection UI and persistence through project save/update are incomplete; smoothing is not persisted in projects; timeline beat markers are placeholder-generated instead of using detected beats; and share-link backend endpoints are not evidenced in the backend diff summary.",
   "missing_requirements": [
     {
-      "id": "REQ-23",
-      "requirement": "Backend exposes an API to list built-in templates and an API to create a new project from a template ID; frontend uses them so a created project appears and becomes selectable/active.",
-      "reason": "While backend types/stores for Template are present and the frontend calls hooks like useGetTemplates/useCreateProjectFromTemplate, the diff summary for backend/main.mo is truncated before any concrete template API methods are shown, and no template initialization is evidenced.",
+      "id": "REQ-38",
+      "requirement": "Users can select between 16:9, 9:16, and 1:1 presets in the creator UI, and the selection is persisted in saved projects and restored on load.",
+      "reason": "A canvas settings store and aspect-ratio-preserving preview container were added, and createProject includes canvas settings embedded in tunnelSettings. But the diff shows no UI control to change aspect ratio, and manual save/autosave updateProject calls do not include the canvas settings, so persistence across saves is not reliably implemented.",
       "evidence": [
-        "backend/main.mo (truncated)",
-        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx"
-      ]
-    },
-    {
-      "id": "REQ-24",
-      "requirement": "Backend exposes publish/unpublish APIs with owner/admin enforcement and an API to list published projects; only published projects appear in the gallery creations list.",
-      "reason": "Project types include published/isShared and the frontend uses publish/unpublish hooks, but the backend/main.mo diff is truncated before any publish/unpublish/listPublishedProjects methods (and their authorization filtering) are shown.",
-      "evidence": [
-        "backend/main.mo (truncated)",
+        "frontend/src/features/canvas/useCanvasSettings.ts",
+        "frontend/src/features/preview/PreviewCanvas.tsx",
+        "frontend/src/features/export/ExportPanel.tsx",
         "frontend/src/features/projects/ProjectsPanel.tsx",
-        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx"
+        "frontend/src/features/app-shell/TopBar.tsx",
+        "frontend/src/features/projects/useProjectAutosave.ts"
       ]
     },
     {
-      "id": "REQ-26",
-      "requirement": "Add React Query hooks and cache invalidation for templates listing, published creations listing, and publish/unpublish mutations; gallery updates after changes without reload; errors show user-friendly message.",
-      "reason": "Components import and use the expected hooks, but the diff summary for frontend/src/hooks/useQueries.ts is truncated before the relevant hook implementations and any invalidateQueries/refetch behavior for published creations can be confirmed from evidence.",
+      "id": "REQ-39",
+      "requirement": "Animation smoothing value is persisted in projects and restored on load.",
+      "reason": "A smoothing slider exists and is passed into the visualizer engine, but smoothing is stored in the audio engine state and is not encoded into project persistence (not included in visualizer serialization, projectSettingsCodec, applyLoadedProject, or updateProject payloads).",
       "evidence": [
-        "frontend/src/hooks/useQueries.ts (truncated)",
-        "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-        "frontend/src/features/projects/ProjectsPanel.tsx"
+        "frontend/src/features/audio/AnalysisStatus.tsx",
+        "frontend/src/features/audio/useAudioEngine.ts",
+        "frontend/src/features/visualizer/useVisualizerEngine.ts",
+        "frontend/src/features/visualizer/useVisualizerEngine.ts (serialize/deserialize do not include smoothing)",
+        "frontend/src/features/persistence/applyLoadedProject.ts",
+        "frontend/src/features/projects/useProjectAutosave.ts",
+        "frontend/src/features/app-shell/TopBar.tsx"
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "requirement": "Timeline displays beat markers derived from beat detection output (timestamps) when available.",
+      "reason": "TimelineStrip currently generates placeholder beat markers every 0.5 seconds and does not consume beat timestamps from the audio engine, so beat markers are not actually derived from beat detection results.",
+      "evidence": [
+        "frontend/src/features/timeline/TimelineStrip.tsx",
+        "frontend/src/features/audio/useAudioEngine.ts"
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "requirement": "Backend supports share-link generation and read-only loading that respects published/shared flags, with graceful failure for non-shared/non-published projects.",
+      "reason": "Frontend calls actor.getShareToken(...) and actor.getSharedProjectIfPublished(...), but the backend diff summary is truncated and does not provide evidence these endpoints (and corresponding access-control checks) were added in backend/main.mo.",
+      "evidence": [
+        "frontend/src/features/app-shell/TopBar.tsx",
+        "frontend/src/pages/SharedProjectView.tsx",
+        "backend/main.mo (truncated)"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Landing page changes including a pricing section and a Facebook link in the footer.",
-      "reason": "Not requested by the BuildRequest (which focuses on an authenticated creator-dashboard gallery feature set).",
+      "description": "Large marketing/landing page rewrite including pricing/FAQ/CTA and a Facebook footer link.",
+      "reason": "Not requested by any REQ-38 through REQ-46; scope is unrelated to the specified creator enhancements.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/pages/LandingPage.tsx summary)"
+        "frontend-file-summaries.txt (frontend/src/pages/LandingPage.tsx)"
       ]
     },
     {
-      "description": "Broad visualizer engine and mode enhancements (e.g., WebGL support detection, new rendering integrations/refactors) unrelated to the gallery/templates/publishing scope.",
-      "reason": "Not requested by the BuildRequest and outside the specified gallery/templates/publish feature additions.",
+      "description": "First-time profile setup modal behavior adjustments (passing avatar null) and expanded user profile features.",
+      "reason": "Not requested in REQ-38 through REQ-46.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/features/visualizer/useVisualizerEngine.ts summary)",
-        "frontend-file-summaries.txt (frontend/src/features/visualizer/VisualizerEngine.ts summary)"
+        "frontend-file-summaries.txt (frontend/src/features/auth/ProfileSetupModal.tsx)"
+      ]
+    },
+    {
+      "description": "Global CSS changes to enforce minimum touch target sizes on mobile for many elements (buttons/inputs/selects/etc.).",
+      "reason": "REQ-46 asks for collapsible controls and touch-friendly interaction, but this broad global rule is an unrequested cross-cutting change beyond the specified collapsible controls area behavior.",
+      "evidence": [
+        "frontend/src/index.css"
       ]
     }
   ],
-  "confidence": 0.58,
+  "confidence": 0.68,
   "changed_files": [
     "backend/main.mo",
-    "backend/migration.mo",
     "frontend-file-summaries.txt",
+    "frontend/src/App.tsx",
     "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-    "frontend/src/features/app-shell/SidebarNav.tsx",
     "frontend/src/features/app-shell/TopBar.tsx",
-    "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-    "frontend/src/features/gallery/formatters.ts",
+    "frontend/src/features/audio/AnalysisStatus.tsx",
+    "frontend/src/features/audio/AudioUploadPanel.tsx",
+    "frontend/src/features/audio/WaveformPreview.tsx",
+    "frontend/src/features/audio/useAudioEngine.ts",
+    "frontend/src/features/canvas/useCanvasSettings.ts",
+    "frontend/src/features/export/ExportPanel.tsx",
+    "frontend/src/features/persistence/applyLoadedProject.ts",
+    "frontend/src/features/persistence/projectSettingsCodec.ts",
+    "frontend/src/features/preview/PreviewCanvas.tsx",
     "frontend/src/features/projects/ProjectsPanel.tsx",
+    "frontend/src/features/projects/useProjectAutosave.ts",
+    "frontend/src/features/timeline/TimelineStrip.tsx",
+    "frontend/src/features/visualizer/VisualizerEngine.ts",
+    "frontend/src/features/visualizer/useVisualizerEngine.ts",
     "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/SharedProjectView.tsx",
     "project_state.json"
   ]
 }

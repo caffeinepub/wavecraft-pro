@@ -1,154 +1,187 @@
 {
   "kind": "build_request",
-  "title": "Add Creations/Templates gallery with built-in templates and published user projects",
+  "title": "Implement Vizzy-spec enhancements (aspect ratios, timeline, smoothing, autosave, sharing)",
   "projectName": "WaveCraft Pro",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-21",
-      "text": "Add a new left-sidebar navigation section labeled \"Creations/Templates\" that opens a dedicated gallery view inside the existing creator dashboard layout.",
+      "id": "REQ-38",
+      "text": "Add a canvas aspect-ratio system to the live preview and export settings with selectable presets: 16:9 (1280x720), 9:16 (1080x1920), and 1:1 (1080x1080). The preview must scale responsively to available space while preserving the selected aspect ratio, and the selected aspect ratio must be persisted in saved projects and restored on load.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-10",
-          "msg-12",
-          "msg-14"
+          "msg-1",
+          "msg-3"
         ],
         "quotes": [
-          "Yes",
-          "Both",
-          "All of them implant now"
+          "Canvas System\n16:9 default (1280x720)\n9:16 option (1080x1920) for Shorts\n1:1 option for Instagram\nResponsive scaling preview",
+          "Build now"
         ]
       },
       "acceptanceCriteria": [
-        "Sidebar shows a new item labeled \"Creations/Templates\" alongside existing sections.",
-        "Selecting \"Creations/Templates\" renders a new gallery panel in the right controls area (desktop) and bottom sheet (mobile/tablet), consistent with the current section-switching behavior.",
-        "All user-facing text for this section is in English."
+        "In the creator UI, users can switch between 16:9, 9:16, and 1:1 and see the preview immediately resize without stretching.",
+        "The preview maintains correct aspect ratio across mobile/tablet/desktop layouts without overlapping controls.",
+        "Saving a project and then loading it restores the selected aspect ratio."
       ]
     },
     {
-      "id": "REQ-22",
-      "text": "Implement a Creations/Templates gallery UI that displays (1) built-in starter templates and (2) user-generated projects that are published/shared.",
+      "id": "REQ-39",
+      "text": "Implement an \"Animation smoothing\" control that reduces jitter in audio-reactive visuals by smoothing the analysis/derived amplitude signals used by the visualizer engine. The smoothing value must update the live preview immediately and be persisted in projects.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-8",
-          "msg-10"
+          "msg-1"
         ],
         "quotes": [
-          "Yes",
-          "Both"
+          "Animation smoothing slider"
         ]
       },
       "acceptanceCriteria": [
-        "Gallery view contains two clearly separated lists (e.g., tabs): \"Templates\" and \"Creations\" (published projects).",
-        "Templates list renders built-in templates with at minimum: name and a short description, and provides a primary action to use the template.",
-        "Creations list renders published projects with at minimum: name, owner identifier (e.g., truncated principal), and BPM.",
-        "Loading states and empty states are handled (e.g., \"No templates available\" / \"No published creations yet\")."
+        "A new slider labeled \"Animation Smoothing\" is available in an appropriate existing control panel (e.g., Audio Analysis / Visualizer controls).",
+        "Increasing smoothing visibly reduces jittery motion; decreasing smoothing increases responsiveness.",
+        "The value is saved with the project and restored on load."
       ]
     },
     {
-      "id": "REQ-23",
-      "text": "Add backend support for built-in starter templates that can be listed by the frontend and used to create a new user project from a selected template.",
+      "id": "REQ-40",
+      "text": "Add best-effort beat detection output to the audio engine and expose beat events (timestamps) for UI and visualizer use, without degrading mobile performance.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Extract:\nBass frequencies\nMid frequencies\nHigh frequencies\nBeat detection"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When audio is loaded and played, the system computes beat events at best-effort quality and makes them available to the UI/visualizer engine.",
+        "Beat detection can be enabled/disabled or has a lightweight mode so mid-range Android devices remain responsive."
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "text": "Add a bottom timeline area in the creator UI that visualizes the loaded audio duration and current trim range, and can display beat markers derived from beat detection. The timeline must not block or overlap existing control panels on small screens.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Timeline at bottom",
+          "Beat marker timeline"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A timeline strip is visible at the bottom of the creator experience when audio is loaded.",
+        "The timeline shows the full duration and indicates trim start/end (read-only visualization is acceptable if editing remains in existing trim controls).",
+        "Beat markers appear on the timeline when beat detection is available.",
+        "On mobile/tablet, the timeline remains usable and does not overlap the Audio Upload/Editing panels."
+      ]
+    },
+    {
+      "id": "REQ-42",
+      "text": "Upgrade the Audio Upload experience to include: drag-and-drop upload support, a max file size limit of 50MB with a clear validation error, and a basic waveform or amplitude preview after upload (lightweight and mobile-safe).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Max file size: 50MB\nDrag & drop support\nShow waveform preview after upload"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can drag-and-drop an MP3/WAV onto the Audio Upload panel to load it.",
+        "Files larger than 50MB are rejected with a clear English error message and no crash.",
+        "After a successful upload, a waveform/amplitude preview is shown in the Audio Upload area (or immediately below it) without noticeable lag on mobile."
+      ]
+    },
+    {
+      "id": "REQ-43",
+      "text": "Implement project autosave every 30 seconds for authenticated users when a project is loaded/active and there are unsaved changes. Autosave must be network-efficient (avoid repeated saves when nothing changed) and provide clear UI feedback (e.g., \"Saving…\" / \"Saved\").",
       "target": "both",
       "source": {
         "messageIds": [
-          "msg-8",
-          "msg-10"
+          "msg-1"
         ],
         "quotes": [
-          "Yes",
-          "Both"
+          "Project auto-save every 30 seconds"
         ]
       },
       "acceptanceCriteria": [
-        "Backend exposes an API to list built-in templates (returning stable IDs and metadata needed by the gallery).",
-        "Backend exposes an API to create a new project from a template ID (resulting project is owned by the caller and appears in the Projects list).",
-        "Frontend calls the list-templates API to render the Templates list and calls the create-from-template API when the user selects \"Use template\".",
-        "Using a template results in a newly created project that becomes selectable/active in the app (same behavior as creating a new project)."
+        "When logged in and a project is active, the app autosaves at ~30s intervals only if settings have changed since the last save.",
+        "Autosave does not interrupt playback/preview rendering and does not spam the backend when idle.",
+        "The UI indicates autosave status in English (e.g., in the top bar)."
       ]
     },
     {
-      "id": "REQ-24",
-      "text": "Add a publish/unpublish capability for projects, and ensure only published projects appear in the Creations/Templates gallery under user-generated creations.",
+      "id": "REQ-44",
+      "text": "Add a share-link capability for projects that generates a URL a user can copy. The share link must open a view that can load the shared/published project configuration for viewing (read-only is acceptable), and access must respect the existing published/shared flags on the backend.",
       "target": "both",
       "source": {
         "messageIds": [
-          "msg-14"
+          "msg-1"
         ],
         "quotes": [
-          "All of them implant now"
+          "Share link to project"
         ]
       },
       "acceptanceCriteria": [
-        "Backend stores a per-project published/shared flag (default: not published).",
-        "Backend exposes APIs to publish and unpublish a project, enforcing that only the project owner (or admin) can change publish state.",
-        "Backend exposes an API to list published projects for the gallery (only returns projects that are published).",
-        "Frontend provides a clear UI control to publish/unpublish the currently selected project (or within the Projects panel), and the Creations list updates after changes (via React Query invalidation/refetch)."
+        "Users can click a \"Share\" action for a project and copy a URL.",
+        "Opening the URL in a new browser session loads the project configuration for viewing when the project is published/shared as intended.",
+        "Attempting to open a share link for a non-shared/non-published project fails gracefully with a clear message (no sensitive data leak)."
       ]
     },
     {
-      "id": "REQ-25",
-      "text": "Update persistence/migration so existing saved projects upgrade safely with the new publish/shared field defaulting to not published.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-14"
-        ],
-        "quotes": [
-          "All of them implant now"
-        ]
-      },
-      "acceptanceCriteria": [
-        "If existing stable state is present, upgrading does not trap and all existing projects gain the publish/shared field with a safe default (not published).",
-        "After upgrade, listProjects and getProject continue to work for existing users/projects.",
-        "No published projects appear unless explicitly published via the new API."
-      ]
-    },
-    {
-      "id": "REQ-26",
-      "text": "Add React Query hooks and cache invalidation for templates listing, published creations listing, and publish/unpublish mutations.",
+      "id": "REQ-45",
+      "text": "Add a one-click \"YouTube-ready\" export preset that preconfigures export settings to 1280x720 (16:9) with sensible default FPS/bitrate, while keeping the existing export flow and estimates consistent.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-14",
-          "msg-15"
+          "msg-1"
         ],
         "quotes": [
-          "start the build",
-          "Starting the build now."
+          "One-click YouTube ready export (1280x720 optimized)"
         ]
       },
       "acceptanceCriteria": [
-        "New hooks exist for: listing templates, listing published creations, publishing a project, unpublishing a project.",
-        "After publish/unpublish, the Creations/Templates gallery reflects the new state without a full page reload.",
-        "Errors from backend calls show a user-friendly English toast/message and do not break the dashboard."
+        "Export UI provides a \"YouTube-ready\" preset option that sets resolution to 720p (1280x720) and updates estimates immediately.",
+        "The preset does not remove access to other export settings; it is just a quick configuration option."
+      ]
+    },
+    {
+      "id": "REQ-46",
+      "text": "Update the mobile UI to support a collapsible settings/controls area (while keeping the existing stacked layout), ensuring touch-friendly interaction and that the preview remains visible and usable without controls overlapping it.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Mobile:\nStack layout\nCollapsible settings panel\nTouch optimized sliders"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On mobile/tablet, users can collapse/expand the controls area to prioritize preview space.",
+        "Controls remain scrollable and usable with touch; sliders have adequate touch targets.",
+        "No overlap occurs between preview and controls in any collapsed/expanded state."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; do not introduce additional backend services.",
-    "Only create/update backend/migration.mo if needed for an upgrade of existing state; migration must be conditional and safe.",
-    "Do not edit any frontend files under frontend/src/components/ui (shadcn components) or any other immutable paths listed in SYSTEM_CONTEXT.",
-    "No monetization, subscriptions, Stripe, or plan-gating may be introduced."
+    "Backend must remain a single Motoko actor in backend/main.mo; only add backend changes there unless an explicit stable-state migration is required by a schema/state change.",
+    "Do not edit files under frontend/src/components/ui or other frontend immutable paths listed in SYSTEM_CONTEXT; compose existing UI components instead.",
+    "Use only Internet Identity for authentication; do not add third-party auth systems.",
+    "Do not introduce Node.js/Express, Firebase, MongoDB, server-side FFmpeg, or any external database/storage services."
   ],
   "nonGoals": [
-    "Implementing a public anonymous gallery accessible without authentication.",
-    "Social features (likes, comments, follows), external sharing links, or moderation workflows.",
-    "Real-time updates (WebSockets) for the gallery."
+    "Implement server-side video rendering or server-side export queues.",
+    "Add subscription billing, plan gating, or monetization features.",
+    "Implement full keyframe animation tooling beyond the requested beat markers/timeline visualization (unless separately requested later)."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

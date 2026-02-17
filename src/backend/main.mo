@@ -11,10 +11,12 @@ import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
-import Migration "migration";
 
-(with migration = Migration.run)
+
+
 actor {
+  type ProjectId = Text;
+
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
   include MixinStorage();
@@ -82,11 +84,6 @@ actor {
     harmonicAnalysis : Text;
   };
 
-  public type UserProfile = {
-    name : Text;
-    avatar : ?Storage.ExternalBlob;
-  };
-
   public type ProjectFilters = {
     owner : ?Principal;
     keyword : ?Text;
@@ -109,6 +106,11 @@ actor {
     averageBpm : Float;
     polarityCount : Nat;
     mostCommonKey : Text;
+  };
+
+  public type UserProfile = {
+    name : Text;
+    avatar : ?Storage.ExternalBlob;
   };
 
   let projectStore = Map.empty<Text, Project>();
@@ -432,10 +434,10 @@ actor {
       case (?project) {
         let isAdmin = AccessControl.isAdmin(accessControlState, caller);
         let isOwner = Principal.equal(project.owner, caller);
-        let isPublished = project.published;
+        let isAccessible = project.published or project.isShared;
 
-        if (not isAdmin and not isOwner and not isPublished) {
-          Runtime.trap("Unauthorized: Can only view your own projects or published projects");
+        if (not isAdmin and not isOwner and not isAccessible) {
+          Runtime.trap("Unauthorized: Can only view your own projects or published/shared projects");
         };
         project;
       };
@@ -550,6 +552,40 @@ actor {
 
         let updated = { project with tunnelSettings = newSettings };
         projectStore.add(projectId, updated);
+      };
+    };
+  };
+
+  public shared ({ caller }) func getShareToken(projectId : Text) : async ?Text {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can generate share tokens");
+    };
+
+    switch (projectStore.get(projectId)) {
+      case (null) { Runtime.trap("Project does not exist") };
+      case (?project) {
+        let isAdmin = AccessControl.isAdmin(accessControlState, caller);
+        if (not isAdmin and not Principal.equal(project.owner, caller)) {
+          Runtime.trap("Unauthorized: Can only generate share tokens for your own projects");
+        };
+
+        if (not project.isShared and not project.published) {
+          Runtime.trap("Project must be shared or published to generate a share token");
+        };
+
+        ?projectId;
+      };
+    };
+  };
+
+  public query func getSharedProjectIfPublished(projectId : Text) : async Project {
+    switch (projectStore.get(projectId)) {
+      case (null) { Runtime.trap("Project does not exist") };
+      case (?project) {
+        if (not project.published and not project.isShared) {
+          Runtime.trap("Unauthorized: Project is not published or shared");
+        };
+        project;
       };
     };
   };

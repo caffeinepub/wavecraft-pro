@@ -178,6 +178,8 @@ export const idlService = IDL.Service({
       [IDL.Vec(ProjectSummary)],
       ['query'],
     ),
+  'getShareToken' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], []),
+  'getSharedProjectIfPublished' : IDL.Func([IDL.Text], [Project], ['query']),
   'getSharedProjects' : IDL.Func(
       [IDL.Nat, IDL.Nat],
       [IDL.Vec(ProjectSummary)],
@@ -393,6 +395,8 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(ProjectSummary)],
         ['query'],
       ),
+    'getShareToken' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], []),
+    'getSharedProjectIfPublished' : IDL.Func([IDL.Text], [Project], ['query']),
     'getSharedProjects' : IDL.Func(
         [IDL.Nat, IDL.Nat],
         [IDL.Vec(ProjectSummary)],

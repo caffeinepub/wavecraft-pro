@@ -1,12 +1,19 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 7,
-  "summary": "Build a production-ready music visualizer video maker web app called “WaveCraft Pro” for a personal website, with full feature access/unlocked (premium features available to the owner) and a premium dark creator-dashboard UX.",
+  "projectStateVersion": 15,
+  "summary": "Replace the existing WaveCraft Pro build plan with a Vizzy-style, fully functional browser-based music visualizer SaaS spec: audio upload + analysis, multiple visualizer types, rich customization panel, multi-aspect canvas system, export system, optional user accounts/projects, and mobile-first dark modern UI with strong Android performance requirements. (Backend/export tech stack choice remains unresolved vs prior IC/Motoko + ffmpeg.wasm constraints.)",
   "architectural_notes": [
     "Treat any UI sections/options marked “Coming Soon” (per user screenshots) as required for full implementation now; remove “Coming Soon” placeholders and wire them to real functionality (background controls, text/branding controls, and any other options shown).",
-    "Add a new left-sidebar section for Creations/Templates: gallery view includes built-in templates + user-generated projects; define a publish/share flag to control inclusion in the public/creations gallery."
+    "Add a new left-sidebar section for Creations/Templates: gallery view includes built-in templates + user-generated projects; define a publish/share flag to control inclusion in the public/creations gallery.",
+    "Add a right-side Controls tab/panel for a Presets & Particles Library with instant tap-to-apply behavior; include preset categories covering visualizers, backgrounds, effects, fonts, and particle packs.",
+    "Presets expansion: add a large/unlimited batch of high-complexity built-in presets spanning all categories (visualizer/background/text-font/particles/effects) with mixed styles, and ship them embedded in-app (no external browsing dependency).",
+    "Particle overlay must be fully transparent (no background panel/blur/backdrop); render only particle dots on top of the background image and visualizer so uploaded background images remain visible.",
+    "Project scope change: previous WaveCraft Pro plan is replaced by the Vizzy-style master spec; reconcile backend/export/storage architecture later (Vizzy prompt requests Node/Express + DB + server-side FFmpeg, which may conflict with existing IC/Motoko + ffmpeg.wasm approach)."
   ],
-  "known_issues": [],
+  "known_issues": [
+    "Mobile layout issue: preview area overlaps Audio Upload/Audio Editing panels on small screens, making controls hard to use.",
+    "Bug/UX: background particles layer is currently obscuring uploaded background images; particles should render with a transparent backdrop so only dots are visible."
+  ],
   "isFixRequest": false,
   "existing_features": [
     {
@@ -208,96 +215,207 @@
         "REQ-26"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-fix-the-mobile-tablet-creator-layout-so-the-preview-canvas-never-overlaps-or-blocks-the-audio-upload-audio-editing-controls-and-other-control-panels-on-small-screens-the-preview-and-controls-must-remain-fully-usable-with-touch-scrolling",
+      "title": "Fix the mobile/tablet creator layout so the Preview canvas never overlaps or blocks the Audio Upload / Audio Editing controls (and other control panels) on small screens; the preview and controls must remain fully usable with touch scrolling.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-professional-presets-particles-library-as-a-new-right-side-controls-tab-panel-not-a-sidebar-item-that-can-be-opened-from-within-the-existing-creator-dashboard-layout",
+      "title": "Add a professional “Presets & Particles” library as a new right-side controls tab/panel (not a sidebar item) that can be opened from within the existing creator dashboard layout.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-built-in-preset-categories-inside-the-presets-particles-library-for-1-visualizer-presets-2-background-presets-3-text-font-presets-4-particle-packs-and-5-additional-effects-style-presets-that-map-onto-existing-settings-e-g-sensitivity-band-multipliers-background-particles-toggles-overlay-animation-size-position-without-adding-any-internet-browsing-search-dependency",
+      "title": "Implement built-in preset categories inside the Presets & Particles library for: (1) Visualizer presets, (2) Background presets, (3) Text/Font presets, (4) Particle packs, and (5) Additional “effects-style” presets that map onto existing settings (e.g., sensitivity/band multipliers, background particles toggles, overlay animation/size/position) without adding any internet browsing/search dependency.",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enable-instant-tap-to-apply-behavior-when-a-user-taps-a-preset-pack-it-is-applied-immediately-to-the-live-preview-by-updating-the-appropriate-zustand-stores-visualizer-background-overlays-with-no-confirmation-dialog-required-include-a-lightweight-toast-snackbar-confirming-what-was-applied",
+      "title": "Enable instant tap-to-apply behavior: when a user taps a preset/pack, it is applied immediately to the live preview by updating the appropriate Zustand stores (visualizer/background/overlays) with no confirmation dialog required; include a lightweight toast/snackbar confirming what was applied.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-polish-the-presets-particles-library-for-a-professional-feel-add-search-filter-within-the-library-local-only-category-chips-tabs-consistent-spacing-typography-with-the-existing-premium-dark-theme-and-ensure-smooth-performance-on-mobile-avoid-unnecessary-react-re-renders-during-preview-animation",
+      "title": "Polish the Presets & Particles library for a “professional” feel: add search/filter within the library (local-only), category chips/tabs, consistent spacing/typography with the existing premium dark theme, and ensure smooth performance on mobile (avoid unnecessary React re-renders during preview animation).",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-expand-the-built-in-presets-particles-library-by-adding-a-large-batch-of-additional-built-in-presets-across-all-existing-categories-visualizers-backgrounds-text-fonts-particles-effects-in-the-presets-catalog-using-mixed-aesthetic-styles-and-higher-complexity-combinations-especially-in-the-effects-category-combining-visualizer-background-overlay-particles-settings",
+      "title": "Expand the built-in Presets & Particles library by adding a large batch of additional built-in presets across ALL existing categories (visualizers, backgrounds, text-fonts, particles, effects) in the presets catalog, using mixed aesthetic styles and higher-complexity combinations (especially in the effects category combining visualizer + background + overlay + particles settings).",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-all-newly-added-presets-can-be-applied-instantly-from-the-presetsparticlespanel-without-runtime-errors-and-that-applying-any-new-preset-updates-the-live-preview-by-correctly-driving-the-existing-zustand-stores-via-applypreset",
+      "title": "Ensure all newly added presets can be applied instantly from the PresetsParticlesPanel without runtime errors, and that applying any new preset updates the live preview by correctly driving the existing Zustand stores via applyPreset.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-keep-the-presets-catalog-organized-and-maintainable-as-it-grows-group-presets-clearly-by-category-within-the-catalog-file-and-ensure-category-labels-and-filtering-remain-correct-for-all-categories",
+      "title": "Keep the presets catalog organized and maintainable as it grows: group presets clearly by category within the catalog file and ensure category labels and filtering remain correct for all categories.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-decouple-the-background-panel-s-particles-tab-from-the-actual-background-render-type-so-enabling-configuring-particles-never-replaces-hides-the-currently-selected-background-solid-gradient-image-the-particles-feature-must-behave-as-a-fully-transparent-overlay-that-only-draws-particle-dots-on-top-of-whatever-background-is-selected",
+      "title": "Decouple the Background panel’s “Particles” tab from the actual background render type so enabling/configuring particles never replaces/hides the currently selected background (Solid/Gradient/Image). The particles feature must behave as a fully transparent overlay that only draws particle dots on top of whatever background is selected.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-background-settings-state-handling-to-avoid-treating-particles-as-a-persisted-rendered-background-type-instead-persist-particles-as-independent-settings-enabled-density-intensity-that-can-be-active-alongside-solid-gradient-image-backgrounds-ensure-loading-older-saved-settings-that-contain-type-particles-does-not-cause-the-preview-background-to-become-a-solid-fallback-that-hides-the-uploaded-image",
+      "title": "Update background settings state handling to avoid treating “particles” as a persisted/rendered background type; instead, persist particles as independent settings (enabled/density/intensity) that can be active alongside Solid/Gradient/Image backgrounds. Ensure loading older saved settings that contain type=\"particles\" does not cause the preview background to become a solid fallback that hides the uploaded image.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-live-preview-rendering-order-remains-background-solid-gradient-image-visualizer-particles-overlay-if-enabled-text-logo-watermark-overlays-with-no-background-type-branch-that-bypasses-image-rendering-when-particles-are-enabled",
+      "title": "Ensure the live preview rendering order remains: background (Solid/Gradient/Image) → visualizer → particles overlay (if enabled) → text/logo/watermark overlays, with no background-type branch that bypasses image rendering when particles are enabled.",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-canvas-aspect-ratio-system-to-the-live-preview-and-export-settings-with-selectable-presets-16-9-1280x720-9-16-1080x1920-and-1-1-1080x1080-the-preview-must-scale-responsively-to-available-space-while-preserving-the-selected-aspect-ratio-and-the-selected-aspect-ratio-must-be-persisted-in-saved-projects-and-restored-on-load",
+      "title": "Add a canvas aspect-ratio system to the live preview and export settings with selectable presets: 16:9 (1280x720), 9:16 (1080x1920), and 1:1 (1080x1080). The preview must scale responsively to available space while preserving the selected aspect ratio, and the selected aspect ratio must be persisted in saved projects and restored on load.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-an-animation-smoothing-control-that-reduces-jitter-in-audio-reactive-visuals-by-smoothing-the-analysis-derived-amplitude-signals-used-by-the-visualizer-engine-the-smoothing-value-must-update-the-live-preview-immediately-and-be-persisted-in-projects",
+      "title": "Implement an \"Animation smoothing\" control that reduces jitter in audio-reactive visuals by smoothing the analysis/derived amplitude signals used by the visualizer engine. The smoothing value must update the live preview immediately and be persisted in projects.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-best-effort-beat-detection-output-to-the-audio-engine-and-expose-beat-events-timestamps-for-ui-and-visualizer-use-without-degrading-mobile-performance",
+      "title": "Add best-effort beat detection output to the audio engine and expose beat events (timestamps) for UI and visualizer use, without degrading mobile performance.",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-bottom-timeline-area-in-the-creator-ui-that-visualizes-the-loaded-audio-duration-and-current-trim-range-and-can-display-beat-markers-derived-from-beat-detection-the-timeline-must-not-block-or-overlap-existing-control-panels-on-small-screens",
+      "title": "Add a bottom timeline area in the creator UI that visualizes the loaded audio duration and current trim range, and can display beat markers derived from beat detection. The timeline must not block or overlap existing control panels on small screens.",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-upgrade-the-audio-upload-experience-to-include-drag-and-drop-upload-support-a-max-file-size-limit-of-50mb-with-a-clear-validation-error-and-a-basic-waveform-or-amplitude-preview-after-upload-lightweight-and-mobile-safe",
+      "title": "Upgrade the Audio Upload experience to include: drag-and-drop upload support, a max file size limit of 50MB with a clear validation error, and a basic waveform or amplitude preview after upload (lightweight and mobile-safe).",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-project-autosave-every-30-seconds-for-authenticated-users-when-a-project-is-loaded-active-and-there-are-unsaved-changes-autosave-must-be-network-efficient-avoid-repeated-saves-when-nothing-changed-and-provide-clear-ui-feedback-e-g-saving-saved",
+      "title": "Implement project autosave every 30 seconds for authenticated users when a project is loaded/active and there are unsaved changes. Autosave must be network-efficient (avoid repeated saves when nothing changed) and provide clear UI feedback (e.g., \"Saving…\" / \"Saved\").",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-share-link-capability-for-projects-that-generates-a-url-a-user-can-copy-the-share-link-must-open-a-view-that-can-load-the-shared-published-project-configuration-for-viewing-read-only-is-acceptable-and-access-must-respect-the-existing-published-shared-flags-on-the-backend",
+      "title": "Add a share-link capability for projects that generates a URL a user can copy. The share link must open a view that can load the shared/published project configuration for viewing (read-only is acceptable), and access must respect the existing published/shared flags on the backend.",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-one-click-youtube-ready-export-preset-that-preconfigures-export-settings-to-1280x720-16-9-with-sensible-default-fps-bitrate-while-keeping-the-existing-export-flow-and-estimates-consistent",
+      "title": "Add a one-click \"YouTube-ready\" export preset that preconfigures export settings to 1280x720 (16:9) with sensible default FPS/bitrate, while keeping the existing export flow and estimates consistent.",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-mobile-ui-to-support-a-collapsible-settings-controls-area-while-keeping-the-existing-stacked-layout-ensuring-touch-friendly-interaction-and-that-the-preview-remains-visible-and-usable-without-controls-overlapping-it",
+      "title": "Update the mobile UI to support a collapsible settings/controls area (while keeping the existing stacked layout), ensuring touch-friendly interaction and that the preview remains visible and usable without controls overlapping it.",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
     {
-      "id": "AR-1",
-      "summary": "WaveCraft Pro core app: upload MP3/WAV, real-time preview, customizable visualizers, export high-quality MP4 up to 4K",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Audio engine features: waveform + FFT spectrum, BPM detection, bass/mid/treble separation, sensitivity, trim range, fade in/out without preview lag",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Modular visualizer system incl. circular spectrum, horizontal/vertical equalizers, waveform line, particles, 3D tunnel, radial neon ring, minimal lo-fi glow; with color/gradient/glow/blur/speed controls and band-reactive behavior",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Background options: solid, multi-stop gradients, image upload, subtle animated particles, AI abstract background generator",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Text & branding: song title/artist, custom fonts, position/size, entrance animations, logo upload, watermark toggle",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Export pipeline: FFmpeg-based rendering with 720p/1080p/4K, 30/60fps, bitrate selection, file size + time estimates, progress indicator, and render queue system",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Premium dashboard UI/UX: left sidebar (Dashboard/Projects/Templates/Pricing/Settings), center live preview canvas, right control panel, top bar with save/export/profile; micro-interactions",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-8",
-      "summary": "Performance & quality: WebGL optimization, no memory leaks, clean AudioContext handling, lazy loading heavy components, debounced state, efficient redraw strategy, production error handling, env config + .env template",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-9",
-      "summary": "Landing/marketing site: hero, demo preview, feature highlights, visualizer showcase, pricing, FAQ, CTA, SEO meta tags",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-10",
-      "summary": "Personal-site mode: full control with all features unlocked (premium made free for owner use; no plan restrictions)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-11",
-      "summary": "Include link to Facebook page (https://www.facebook.com/share/14SsrwttdEB/) in the website",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-12",
-      "summary": "Enable and fully implement all options currently labeled “Coming Soon” in the provided screenshots (at minimum: Background controls + Text & Branding controls; plus any other missing options shown)",
+      "id": "AR-21",
+      "summary": "Adopt Vizzy-style master spec as the new scope for the visualizer web app (replaces prior WaveCraft Pro plan)",
       "reqIds": [],
       "status": "in_progress"
     },
     {
-      "id": "AR-13",
-      "summary": "Add a Creations/Templates gallery (like vizzy.io/creations) as a new left-sidebar section, showing both built-in starter templates and user-generated projects (auto-included when published/shared)",
+      "id": "AR-22",
+      "summary": "Canvas system: selectable aspect ratios (16:9, 9:16, 1:1) with responsive scaling preview and GPU-accelerated high-performance rendering",
       "reqIds": [],
-      "status": "in_progress"
+      "status": "pending"
     },
     {
-      "id": "AR-18",
-      "summary": "Update persistence/migration so existing saved projects upgrade safely with the new publish/shared field defaulting to not published.",
-      "reqIds": [
-        "REQ-25"
-      ],
+      "id": "AR-23",
+      "summary": "Add animation response controls: animation smoothing slider plus beat detection support (for smoother, less jittery visuals)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "UI/UX updates per Vizzy prompt: glassmorphism-style panels, bottom timeline, mobile stacked layout with collapsible settings and touch-optimized sliders",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "User/projects system upgrades: optional signup/login, autosave every 30 seconds, re-edit/delete saved projects",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Advanced extras (if possible): beat marker timeline, keyframe animation, share link to project, and one-click YouTube-ready export preset",
+      "reqIds": [],
       "status": "pending"
     }
   ],
+  "gameProjectType": "none",
   "projectName": "WaveCraft Pro",
   "clarification_mode": "instant",
   "clarification_rounds": 0

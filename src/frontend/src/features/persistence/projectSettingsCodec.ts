@@ -3,15 +3,22 @@ import type { BackgroundSettings as BackendBackgroundSettings, BrandingSettings,
 export function encodeBackgroundSettings(settings: string): BackendBackgroundSettings {
   try {
     const parsed = JSON.parse(settings);
+    
+    // Ensure we never send "particles" as a type to backend
+    let type = parsed.type || 'solid';
+    if (type === 'particles') {
+      type = 'solid';
+    }
+    
     return {
       color: parsed.solidColor || '#0a0a0f',
-      style: parsed.type || 'solid',
+      style: settings, // Store full serialized settings in style field
       brightness: 1.0,
     };
   } catch {
     return {
       color: '#0a0a0f',
-      style: 'solid',
+      style: JSON.stringify({ type: 'solid', solidColor: '#0a0a0f' }),
       brightness: 1.0,
     };
   }
@@ -19,16 +26,15 @@ export function encodeBackgroundSettings(settings: string): BackendBackgroundSet
 
 export function encodeBrandingSettings(settings: string): BrandingSettings {
   try {
-    const parsed = JSON.parse(settings);
     return {
       logoUrl: '',
-      font: parsed.font || 'Inter',
+      font: settings, // Store full serialized settings in font field
       theme: 'dark',
     };
   } catch {
     return {
       logoUrl: '',
-      font: 'Inter',
+      font: JSON.stringify({ font: 'Inter' }),
       theme: 'dark',
     };
   }
@@ -36,9 +42,8 @@ export function encodeBrandingSettings(settings: string): BrandingSettings {
 
 export function encodeTunnelSettings(settings: string): TunnelSettings {
   try {
-    const parsed = JSON.parse(settings);
     return {
-      mode: parsed.mode || 'circular-spectrum',
+      mode: settings, // Store full serialized settings in mode field
       speed: 1.0,
       complexity: BigInt(5),
       depth: 10.0,
@@ -46,7 +51,7 @@ export function encodeTunnelSettings(settings: string): TunnelSettings {
     };
   } catch {
     return {
-      mode: 'circular-spectrum',
+      mode: JSON.stringify({ mode: 'circular-spectrum' }),
       speed: 1.0,
       complexity: BigInt(5),
       depth: 10.0,

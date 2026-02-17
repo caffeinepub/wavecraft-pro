@@ -1,120 +1,188 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T04:56:57.978Z",
+  "generatedAt": "2026-02-17T17:06:07.366Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 5,
+    "total": 9,
+    "implemented": 9,
     "items": [
       {
-        "id": "REQ-21",
-        "summary": "Add a new left-sidebar navigation section labeled \"Creations/Templates\" that opens a dedicated gallery view inside the existing creator dashboard layout.",
+        "id": "REQ-38",
+        "summary": "Add a canvas aspect-ratio system to the live preview and export settings with selectable presets: 16:9 (1280x720), 9:16 (1080x1920), and 1:1 (1080x1080). The preview must scale responsively to available space while preserving the selected aspect ratio, and the selected aspect ratio must be persisted in saved projects and restored on load.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/canvas/useCanvasSettings.ts",
+          "frontend/src/features/preview/PreviewCanvas.tsx",
+          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "frontend/src/features/persistence/projectSettingsCodec.ts",
+          "frontend/src/features/persistence/applyLoadedProject.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/canvas/useCanvasSettings.ts",
+          "frontend/src/features/preview/PreviewCanvas.tsx",
+          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
+          "frontend/src/features/persistence/projectSettingsCodec.ts",
+          "frontend/src/features/persistence/applyLoadedProject.ts"
+        ]
+      },
+      {
+        "id": "REQ-39",
+        "summary": "Implement an \"Animation smoothing\" control that reduces jitter in audio-reactive visuals by smoothing the analysis/derived amplitude signals used by the visualizer engine. The smoothing value must update the live preview immediately and be persisted in projects.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/visualizer/useVisualizerEngine.ts",
+          "frontend/src/features/visualizer/VisualizerEngine.ts",
+          "frontend/src/features/audio/AnalysisStatus.tsx",
+          "frontend/src/features/persistence/applyLoadedProject.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/visualizer/useVisualizerEngine.ts",
+          "frontend/src/features/visualizer/VisualizerEngine.ts",
+          "frontend/src/features/audio/AnalysisStatus.tsx",
+          "frontend/src/features/persistence/applyLoadedProject.ts"
+        ]
+      },
+      {
+        "id": "REQ-40",
+        "summary": "Add best-effort beat detection output to the audio engine and expose beat events (timestamps) for UI and visualizer use, without degrading mobile performance.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/audio/useAudioEngine.ts",
+          "frontend/src/features/audio/AnalysisStatus.tsx",
+          "frontend/src/features/persistence/projectSettingsCodec.ts",
+          "frontend/src/features/persistence/applyLoadedProject.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/audio/useAudioEngine.ts",
+          "frontend/src/features/audio/AnalysisStatus.tsx",
+          "frontend/src/features/persistence/projectSettingsCodec.ts",
+          "frontend/src/features/persistence/applyLoadedProject.ts"
+        ]
+      },
+      {
+        "id": "REQ-41",
+        "summary": "Add a bottom timeline area in the creator UI that visualizes the loaded audio duration and current trim range, and can display beat markers derived from beat detection. The timeline must not block or overlap existing control panels on small screens.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/timeline/TimelineStrip.tsx",
+          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/timeline/TimelineStrip.tsx",
+          "frontend/src/features/app-shell/CreatorDashboardLayout.tsx"
+        ]
+      },
+      {
+        "id": "REQ-42",
+        "summary": "Upgrade the Audio Upload experience to include: drag-and-drop upload support, a max file size limit of 50MB with a clear validation error, and a basic waveform or amplitude preview after upload (lightweight and mobile-safe).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/audio/useAudioEngine.ts",
+          "frontend/src/features/audio/WaveformPreview.tsx",
+          "frontend/src/features/audio/AudioUploadPanel.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/audio/useAudioEngine.ts",
+          "frontend/src/features/audio/WaveformPreview.tsx",
+          "frontend/src/features/audio/AudioUploadPanel.tsx"
+        ]
+      },
+      {
+        "id": "REQ-43",
+        "summary": "Implement project autosave every 30 seconds for authenticated users when a project is loaded/active and there are unsaved changes. Autosave must be network-efficient (avoid repeated saves when nothing changed) and provide clear UI feedback (e.g., \"Saving…\" / \"Saved\").",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/projects/useProjectAutosave.ts",
+          "frontend/src/features/app-shell/TopBar.tsx",
+          "frontend/src/features/persistence/projectSettingsCodec.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/projects/useProjectAutosave.ts",
+          "frontend/src/features/app-shell/TopBar.tsx",
+          "frontend/src/features/persistence/projectSettingsCodec.ts"
+        ]
+      },
+      {
+        "id": "REQ-44",
+        "summary": "Add a share-link capability for projects that generates a URL a user can copy. The share link must open a view that can load the shared/published project configuration for viewing (read-only is acceptable), and access must respect the existing published/shared flags on the backend.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/SharedProjectView.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/features/projects/ProjectsPanel.tsx",
+          "frontend/src/utils/urlParams.ts",
+          "frontend/src/features/app-shell/TopBar.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/SharedProjectView.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/features/projects/ProjectsPanel.tsx",
+          "frontend/src/features/app-shell/TopBar.tsx"
+        ]
+      },
+      {
+        "id": "REQ-45",
+        "summary": "Add a one-click \"YouTube-ready\" export preset that preconfigures export settings to 1280x720 (16:9) with sensible default FPS/bitrate, while keeping the existing export flow and estimates consistent.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/features/export/exportEstimator.ts",
+          "frontend/src/features/export/ExportPanel.tsx",
+          "frontend/src/features/canvas/useCanvasSettings.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/features/export/ExportPanel.tsx",
+          "frontend/src/features/canvas/useCanvasSettings.ts"
+        ]
+      },
+      {
+        "id": "REQ-46",
+        "summary": "Update the mobile UI to support a collapsible settings/controls area (while keeping the existing stacked layout), ensuring touch-friendly interaction and that the preview remains visible and usable without controls overlapping it.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-          "frontend/src/features/app-shell/SidebarNav.tsx",
-          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx"
+          "frontend/src/index.css"
         ],
         "matchedFiles": [
           "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-          "frontend/src/features/app-shell/SidebarNav.tsx",
-          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx"
-        ]
-      },
-      {
-        "id": "REQ-22",
-        "summary": "Implement a Creations/Templates gallery UI that displays (1) built-in starter templates and (2) user-generated projects that are published/shared.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "frontend/src/features/gallery/formatters.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "frontend/src/features/gallery/formatters.ts"
-        ]
-      },
-      {
-        "id": "REQ-23",
-        "summary": "Add backend support for built-in starter templates that can be listed by the frontend and used to create a new user project from a selected template.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "frontend/src/features/projects/useCurrentProject.ts",
-          "frontend/src/backend.d.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "frontend/src/backend.d.ts"
-        ]
-      },
-      {
-        "id": "REQ-24",
-        "summary": "Add a publish/unpublish capability for projects, and ensure only published projects appear in the Creations/Templates gallery under user-generated creations.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/features/projects/ProjectsPanel.tsx",
-          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "frontend/src/backend.d.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/features/projects/ProjectsPanel.tsx",
-          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "frontend/src/backend.d.ts"
-        ]
-      },
-      {
-        "id": "REQ-25",
-        "summary": "Update persistence/migration so existing saved projects upgrade safely with the new publish/shared field defaulting to not published.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-26",
-        "summary": "Add React Query hooks and cache invalidation for templates listing, published creations listing, and publish/unpublish mutations.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "frontend/src/features/projects/ProjectsPanel.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-          "frontend/src/features/projects/ProjectsPanel.tsx"
+          "frontend/src/index.css"
         ]
       }
     ]
   },
   "changedFiles": [
     "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
-    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
     "frontend/src/backend.d.ts",
     "frontend/src/backend.ts",
-    "frontend/src/config.ts",
     "frontend/src/declarations/backend.did.d.ts",
     "frontend/src/declarations/backend.did.js",
     "frontend/src/features/app-shell/CreatorDashboardLayout.tsx",
-    "frontend/src/features/app-shell/SidebarNav.tsx",
     "frontend/src/features/app-shell/TopBar.tsx",
-    "frontend/src/features/gallery/CreationsTemplatesPanel.tsx",
-    "frontend/src/features/gallery/formatters.ts",
+    "frontend/src/features/audio/AnalysisStatus.tsx",
+    "frontend/src/features/audio/AudioUploadPanel.tsx",
+    "frontend/src/features/audio/WaveformPreview.tsx",
+    "frontend/src/features/audio/useAudioEngine.ts",
+    "frontend/src/features/canvas/useCanvasSettings.ts",
+    "frontend/src/features/export/ExportPanel.tsx",
+    "frontend/src/features/persistence/applyLoadedProject.ts",
+    "frontend/src/features/persistence/projectSettingsCodec.ts",
+    "frontend/src/features/preview/PreviewCanvas.tsx",
     "frontend/src/features/projects/ProjectsPanel.tsx",
+    "frontend/src/features/projects/useProjectAutosave.ts",
+    "frontend/src/features/timeline/TimelineStrip.tsx",
+    "frontend/src/features/visualizer/VisualizerEngine.ts",
+    "frontend/src/features/visualizer/useVisualizerEngine.ts",
     "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/SharedProjectView.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

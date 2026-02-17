@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Palette, Plus, Trash2, Upload, X } from 'lucide-react';
+import { Palette, Plus, Trash2, Upload, X, Sparkles } from 'lucide-react';
 import { useBackgroundSettings } from './useBackgroundSettings';
 
 export function BackgroundControlsPanel() {
@@ -50,13 +50,10 @@ export function BackgroundControlsPanel() {
       </CardHeader>
       <CardContent className="space-y-4">
         <Tabs value={type} onValueChange={(v) => setType(v as typeof type)}>
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="solid">Solid</TabsTrigger>
             <TabsTrigger value="gradient">Gradient</TabsTrigger>
-          </TabsList>
-          <TabsList className="grid w-full grid-cols-2 mt-2">
             <TabsTrigger value="image">Image</TabsTrigger>
-            <TabsTrigger value="particles">Particles</TabsTrigger>
           </TabsList>
 
           <TabsContent value="solid" className="space-y-4 mt-4">
@@ -173,38 +170,42 @@ export function BackgroundControlsPanel() {
               />
             </div>
           </TabsContent>
-
-          <TabsContent value="particles" className="space-y-4 mt-4">
-            <div className="flex items-center justify-between">
-              <Label>Enable Particles</Label>
-              <Switch checked={particlesEnabled} onCheckedChange={setParticlesEnabled} />
-            </div>
-            {particlesEnabled && (
-              <>
-                <div className="space-y-2">
-                  <Label>Density: {particlesDensity}%</Label>
-                  <Slider
-                    value={[particlesDensity]}
-                    onValueChange={([v]) => setParticlesDensity(v)}
-                    min={10}
-                    max={100}
-                    step={5}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Intensity: {particlesIntensity}%</Label>
-                  <Slider
-                    value={[particlesIntensity]}
-                    onValueChange={([v]) => setParticlesIntensity(v)}
-                    min={10}
-                    max={100}
-                    step={5}
-                  />
-                </div>
-              </>
-            )}
-          </TabsContent>
         </Tabs>
+
+        {/* Particles Overlay - Independent from background type */}
+        <div className="border-t pt-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-muted-foreground" />
+              <Label className="text-base font-semibold">Particles Overlay</Label>
+            </div>
+            <Switch checked={particlesEnabled} onCheckedChange={setParticlesEnabled} />
+          </div>
+          {particlesEnabled && (
+            <>
+              <div className="space-y-2">
+                <Label>Density: {particlesDensity}%</Label>
+                <Slider
+                  value={[particlesDensity]}
+                  onValueChange={([v]) => setParticlesDensity(v)}
+                  min={10}
+                  max={100}
+                  step={5}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Intensity: {particlesIntensity}%</Label>
+                <Slider
+                  value={[particlesIntensity]}
+                  onValueChange={([v]) => setParticlesIntensity(v)}
+                  min={10}
+                  max={100}
+                  step={5}
+                />
+              </div>
+            </>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

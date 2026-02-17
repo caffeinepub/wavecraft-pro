@@ -73,7 +73,7 @@ export const useVisualizerEngineStore = create<VisualizerEngineState>((set, get)
 
 export function useVisualizerEngine() {
   const engineRef = useRef<VisualizerEngine | null>(null);
-  const { analyser, isPlaying } = useAudioEngine();
+  const { analyser, isPlaying, smoothing } = useAudioEngine();
   const store = useVisualizerEngineStore();
 
   const initializeCanvas = useCallback((canvas: HTMLCanvasElement) => {
@@ -116,8 +116,9 @@ export function useVisualizerEngine() {
     if (engineRef.current) {
       engineRef.current.setSensitivity(store.sensitivity);
       engineRef.current.setBandMultipliers(store.bassMultiplier, store.midMultiplier, store.trebleMultiplier);
+      engineRef.current.setSmoothing(smoothing);
     }
-  }, [store.sensitivity, store.bassMultiplier, store.midMultiplier, store.trebleMultiplier]);
+  }, [store.sensitivity, store.bassMultiplier, store.midMultiplier, store.trebleMultiplier, smoothing]);
 
   return {
     initializeCanvas,

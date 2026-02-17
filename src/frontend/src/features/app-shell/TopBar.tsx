@@ -4,7 +4,7 @@ import { useActor } from '../../hooks/useActor';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Save, Download, User, LogOut } from 'lucide-react';
+import { Save, Download, User, LogOut, Share2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCurrentProject } from '../projects/useCurrentProject';
 import { useBackgroundSettings } from '../background/useBackgroundSettings';
@@ -12,6 +12,7 @@ import { useOverlaySettings } from '../overlays/useOverlaySettings';
 import { useVisualizerEngineStore } from '../visualizer/useVisualizerEngine';
 import { encodeBackgroundSettings, encodeBrandingSettings, encodeTunnelSettings } from '../persistence/projectSettingsCodec';
 import { applyLoadedProject } from '../persistence/applyLoadedProject';
+import { useProjectAutosave } from '../projects/useProjectAutosave';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 
@@ -21,6 +22,7 @@ export function TopBar() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
   const { currentProjectId } = useCurrentProject();
+  const { status: autosaveStatus, markAsSaved } = useProjectAutosave();
   
   // Fetch current project data
   const { data: currentProject, refetch: refetchProject } = useGetProject(currentProjectId || '');
@@ -73,10 +75,47 @@ export function TopBar() {
       );
 
       await refetchProject();
+      markAsSaved();
       toast.success('Project saved successfully');
     } catch (error) {
       console.error('Failed to save project:', error);
       toast.error('Failed to save project');
+    }
+  };
+
+  const handleShare = async () => {
+    if (!currentProjectId || !currentProject) {
+      toast.error('No project selected');
+      return;
+    }
+
+    if (!actor) {
+      toast.error('Backend not available');
+      return;
+    }
+
+    try {
+      // Check if project is shared or published
+      if (!currentProject.isShared && !currentProject.published) {
+        toast.error('Project must be shared or published first. Use the Projects panel to enable sharing.');
+        return;
+      }
+
+      const shareToken = await actor.getShareToken(currentProjectId);
+      
+      if (!shareToken) {
+        toast.error('Failed to generate share link');
+        return;
+      }
+
+      const shareUrl = `${window.location.origin}?share=${encodeURIComponent(shareToken)}`;
+      
+      // Copy to clipboard
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success('Share link copied to clipboard!');
+    } catch (error: any) {
+      console.error('Failed to generate share link:', error);
+      toast.error(error.message || 'Failed to generate share link');
     }
   };
 
@@ -89,6 +128,19 @@ export function TopBar() {
         .slice(0, 2)
     : 'U';
 
+  const getAutosaveText = () => {
+    switch (autosaveStatus) {
+      case 'saving':
+        return 'Saving...';
+      case 'saved':
+        return 'Saved';
+      case 'error':
+        return 'Save failed';
+      default:
+        return '';
+    }
+  };
+
   return (
     <header className="h-16 border-b border-border/40 bg-card/30 backdrop-blur-sm flex items-center justify-between px-4 md:px-6">
       <div className="flex items-center gap-3">
@@ -98,9 +150,24 @@ export function TopBar() {
           className="h-8 w-auto lg:hidden"
         />
         <span className="font-bold text-lg lg:hidden">WaveCraft Pro</span>
+        {autosaveStatus !== 'idle' && (
+          <span className="text-xs text-muted-foreground hidden sm:inline">
+            {getAutosaveText()}
+          </span>
+        )}
       </div>
 
       <div className="flex items-center gap-2">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="hidden sm:flex"
+          onClick={handleShare}
+          disabled={!currentProjectId || !actor}
+        >
+          <Share2 className="h-4 w-4 mr-2" />
+          Share
+        </Button>
         <Button 
           variant="outline" 
           size="sm" 
